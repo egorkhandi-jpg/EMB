@@ -1,4 +1,4 @@
-"""Среда этапа 2 (набросок 2026-10-01, не используется в сериях): «смена знака».
+"""Среда этапа 2: «смена знака» (набросок 2026-10-01; с v2-flip — среда стенда stand_flip.py).
 
 Зачем. В исходной арене линейная политика на 8 признаках органа даёт 1,33–1,44 при жадной
 1,46 (5 посевов, CPU) — задача не требует ни памяти, ни знаний, и звено 2 на ней
@@ -35,6 +35,7 @@ E0 = 0.6
 VMAX = 0.03
 TURN = 0.6
 S_DIM = 12
+ENV_VERSION = 'flip-1'   # менять при любой правке констант или органа (правило 7 CLAUDE.md)
 REV_LO, REV_HI = 30, 70
 
 
@@ -113,13 +114,15 @@ def _steer(s, kind):
     return np.stack([np.clip(np.arctan2(sn, c) / TURN, -1, 1), np.ones(len(s))], 1)
 
 
-def run(policy, n_ep=200, base=999000, reversal=False):
+def run(policy, n_ep=200, base=999000, reversal=False, per_episode=False):
     b = FlipBodies(n_ep, [base + k for k in range(n_ep)], reversal)
     hist = []
     for _ in range(T):
         s = b.sense(); hist.append(s)
         a = policy(s, hist, b); a[~b.alive] = 0; b.step(a)
     f = b.fitness()
+    if per_episode:
+        return f
     return f.mean(), f.std(), b.n_good.mean(), b.n_bad.mean()
 
 
@@ -187,3 +190,16 @@ if __name__ == '__main__':
     ml, orc = res['жадно к любому (без памяти)'][0], res['оракул (знает знак)'][0]
     print(f'выгода памяти (оракул − без памяти): {orc - ml:.3f}; '
           f'различимость: {(orc - ml) / (res["жадно к любому (без памяти)"][1] + 1e-9):.1f} ст.откл.')
+    # Различимость за бюджет: тест стенда — 100 эпизодов с посевами 999000+k, общими для всех
+    # агентов, поэтому разность двух агентов считается попарно по эпизодам.
+    n_test = 100
+    pe = {k: run(rows[k], n_ep=n_test, reversal=REV, per_episode=True)
+          for k in ('жадно к любому (без памяти)', 'память, окно 8', 'память, окно 32', 'оракул (знает знак)')}
+    print(f'на тестовом наборе стенда ({n_test} эпизодов): ' +
+          '; '.join(f'{k.split(",")[-1].strip()} {v.mean():.3f}' for k, v in pe.items()))
+    for a_, b_ in (('память, окно 32', 'память, окно 8'), ('память, окно 32', 'жадно к любому (без памяти)'),
+                   ('оракул (знает знак)', 'память, окно 32')):
+        d = pe[a_] - pe[b_]
+        print(f'  {a_} − {b_}: {d.mean():+.3f}, ст.ош. попарно {d.std() / np.sqrt(n_test):.3f} '
+              f'(z = {d.mean() / (d.std() / np.sqrt(n_test) + 1e-9):.1f})')
+    print(f'порог остановки пилота (95 % оракула на тесте): {0.95 * pe["оракул (знает знак)"].mean():.3f}')
