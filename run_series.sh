@@ -2,12 +2,12 @@
 # Серия: муха, линейный контроль, предобученная LM, та же архитектура со случайными весами
 # (обе LM со стандартизацией). Случайная сеть сеется от посева (stand_gpu.py, с 2026-10-01).
 # Использование: bash run_series.sh <модель> <число посевов> [пауза, с] [доп. флаги stand_gpu.py...]
-# Пример: bash run_series.sh EleutherAI/pythia-70m 10 60
-#         OUT=results_qwen bash run_series.sh Qwen/Qwen2.5-1.5B 10 60 --dtype bfloat16 --chunk 128
+# Пример: bash run_series.sh EleutherAI/pythia-70m 10 10
+#         OUT=results_qwen bash run_series.sh Qwen/Qwen2.5-1.5B 10 10 --dtype bfloat16 --chunk 128
 # Посев, у которого уже есть result_*.json, пропускается — серию можно продолжить после остановки.
 MODEL=${1:-EleutherAI/pythia-70m}
 SEEDS=${2:-10}
-PAUSE=${3:-60}   # пауза для остывания ноутбука
+PAUSE=${3:-10}   # пауза между LM-прогонами; 10 с — решение Егора 2026-10-01 (было 60), остывание стережёт cool()
 shift 3 2>/dev/null
 EXTRA="$@"
 OUT=${OUT:-results}

@@ -15,6 +15,11 @@
 здесь сильный (Zhong & Andreas 2024, по памяти: случайный трансформер с обучаемыми
 входом/выходом решает часть алгоритмических задач).
 
+Разворот (reversal=True, ДОБАВЛЕНО 2026-10-01): знак меняется один раз в случайный такт
+из [REV_LO, REV_HI). Без разворота любой кадр-событие отвечает одинаково, и решение
+не зависит от порядка кадров — тогда контроль «LM с перемешанным окном» не
+диагностичен: он не упадёт и у модели, честно читающей последовательность.
+
 Интерфейс как у stand_gpu.Bodies: sense() -> (B, S_DIM), step(act), fitness(), alive.
 python env_flip.py  — предварительные проверки эвристиками (барьер, выгода, окно памяти).
 """
@@ -30,16 +35,19 @@ E0 = 0.6
 VMAX = 0.03
 TURN = 0.6
 S_DIM = 12
+REV_LO, REV_HI = 30, 70
 
 
 class FlipBodies:
-    def __init__(self, B, seeds):
+    def __init__(self, B, seeds, reversal=False):
         self.B = B
+        self.t = 0
         self.rs = [np.random.RandomState(s) for s in seeds]
         self.pos = np.stack([r.rand(2) for r in self.rs])
         self.head = np.array([r.rand() * 2 * np.pi for r in self.rs])
         self.items = np.stack([r.rand(2 * N_PER, 2) for r in self.rs])   # первые N_PER — A
         self.good_A = np.array([r.rand() < 0.5 for r in self.rs])
+        self.t_rev = np.array([r.randint(REV_LO, REV_HI) for r in self.rs]) if reversal else np.full(B, -1)
         self.E = np.full(B, E0)
         self.alive = np.ones(B, bool)
         self.t_alive = np.zeros(B)
@@ -72,6 +80,8 @@ class FlipBodies:
 
     def step(self, act):
         a = np.clip(act, -1, 1)
+        self.good_A ^= self.t_rev == self.t
+        self.t += 1
         self.head = self.head + a[:, 0] * TURN
         v = (a[:, 1] + 1) / 2 * VMAX
         self.pos = np.clip(self.pos + v[:, None] * np.stack([np.cos(self.head), np.sin(self.head)], 1), 0, 1)
@@ -103,8 +113,8 @@ def _steer(s, kind):
     return np.stack([np.clip(np.arctan2(sn, c) / TURN, -1, 1), np.ones(len(s))], 1)
 
 
-def run(policy, n_ep=200, base=999000):
-    b = FlipBodies(n_ep, [base + k for k in range(n_ep)])
+def run(policy, n_ep=200, base=999000, reversal=False):
+    b = FlipBodies(n_ep, [base + k for k in range(n_ep)], reversal)
     hist = []
     for _ in range(T):
         s = b.sense(); hist.append(s)
@@ -121,6 +131,22 @@ def greedy_any(s, hist, b):
 def oracle(s, hist, b):
     kind = (~b.good_A).astype(int)
     a = _steer(s, 0); a[kind == 1] = _steer(s, 1)[kind == 1]; return a
+
+
+def bag_learner(N):
+    """Без порядка: каждое событие в окне голосует за «какой вид пища», большинство решает.
+    Это потолок для политики, видящей окно как мешок кадров (перемешанный порядок)."""
+    def pol(s, hist, b):
+        H = np.stack(hist[-N:] if N else hist, 1)
+        a = greedy_any(s, hist, b)
+        for k in range(len(s)):
+            ev = H[k, H[k, :, 10:12].sum(1) > 0]
+            if len(ev):
+                vote = np.where((ev[:, 10] > 0) == (ev[:, 7] > 0), 1, -1).sum()   # +1 = «A пища»
+                if vote:
+                    a[k] = _steer(s[k:k + 1], 0 if vote > 0 else 1)[0]
+        return a
+    return pol
 
 
 def learner(N):
@@ -141,16 +167,21 @@ def learner(N):
 
 
 if __name__ == '__main__':
+    import sys
+    REV = '--reversal' in sys.argv
+    print('вариант:', 'с разворотом знака' if REV else 'знак постоянен')
     rng = np.random.RandomState(0)
     rows = {'стоять': lambda s, h, b: np.tile([0, -1.0], (len(s), 1)),
             'случайно': lambda s, h, b: rng.uniform(-1, 1, (len(s), 2)),
             'жадно к любому (без памяти)': greedy_any}
     for N in (1, 2, 4, 8, 16, 32, 0):
         rows[f'память, окно {N if N else "всё"}'] = learner(N)
+    for N in (8, 16, 32, 0):
+        rows[f'мешок, окно {N if N else "всё"}'] = bag_learner(N)
     rows['оракул (знает знак)'] = oracle
     res = {}
     for k, p in rows.items():
-        res[k] = run(p)
+        res[k] = run(p, reversal=REV)
         m, sd, g, bd = res[k]
         print(f'{k:30s} {m:.3f} ± {sd:.3f}   съедено: пищи {g:5.2f}, яда {bd:5.2f}')
     ml, orc = res['жадно к любому (без памяти)'][0], res['оракул (знает знак)'][0]
