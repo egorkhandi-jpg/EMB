@@ -8,7 +8,7 @@ ap = argparse.ArgumentParser()
 ap.add_argument('--model', default='EleutherAI/pythia-70m'); ap.add_argument('--weights', default='pretrained')
 ap.add_argument('--theta', default=None); ap.add_argument('--device', default='cuda' if torch.cuda.is_available() else 'cpu')
 a = ap.parse_args()
-dtype = torch.float16 if a.device == 'cuda' else torch.float32
+dtype = torch.float32  # как в stand_gpu.py с 2026-10-01; fp16 давал риск тихого NaN
 pol = LMPolicy(a.model, a.weights, False, a.device, dtype, 256, -1)
 th = pol.init(np.random.RandomState(0)) if a.theta is None else np.load(a.theta)
 def cosm(h):

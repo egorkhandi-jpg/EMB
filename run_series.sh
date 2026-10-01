@@ -1,14 +1,36 @@
 #!/usr/bin/env bash
-# Серия: муха, предобученная LM, та же архитектура со случайными весами (обе со стандартизацией).
-# Использование: bash run_series.sh <модель> <число посевов> [пауза между прогонами, с]
+# Серия: муха, линейный контроль, предобученная LM, та же архитектура со случайными весами
+# (обе LM со стандартизацией). Случайная сеть сеется от посева (stand_gpu.py, с 2026-10-01).
+# Использование: bash run_series.sh <модель> <число посевов> [пауза, с] [доп. флаги stand_gpu.py...]
 # Пример: bash run_series.sh EleutherAI/pythia-70m 10 60
+#         OUT=results_qwen bash run_series.sh Qwen/Qwen2.5-1.5B 10 60 --dtype bfloat16 --chunk 128
+# Посев, у которого уже есть result_*.json, пропускается — серию можно продолжить после остановки.
 MODEL=${1:-EleutherAI/pythia-70m}
 SEEDS=${2:-10}
 PAUSE=${3:-60}   # пауза для остывания ноутбука
-OUT=results
+shift 3 2>/dev/null
+EXTRA="$@"
+OUT=${OUT:-results}
+TAG=$(basename "$MODEL")
+mkdir -p "$OUT"
+
+temp() { nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader,nounits 2>/dev/null | head -1; }
+# Правило 5 CLAUDE.md: выше 85 °C — ждать остывания ниже 70 °C.
+cool() {
+  local t; t=$(temp); echo "$(date +%T) GPU ${t} °C" | tee -a "$OUT/thermal.log"
+  if [ -n "$t" ] && [ "$t" -gt 85 ]; then
+    while t=$(temp); [ "$t" -ge 70 ]; do echo "$(date +%T) остывание: ${t} °C" | tee -a "$OUT/thermal.log"; sleep 30; done
+  fi
+}
+run() {  # run <имя результата> <флаги...>
+  local name=$1; shift
+  if [ -f "$OUT/result_${name}.json" ]; then echo "есть: $name"; return; fi
+  cool; python stand_gpu.py "$@" --out "$OUT" || echo "ОШИБКА: $name" | tee -a "$OUT/errors.log"
+}
 for s in $(seq 1 $SEEDS); do
-  python stand_gpu.py --cond fly --seed $s --out $OUT
-  python stand_gpu.py --cond lm --model $MODEL --weights pretrained --seed $s --out $OUT; sleep $PAUSE
-  python stand_gpu.py --cond lm --model $MODEL --weights random --seed $s --out $OUT; sleep $PAUSE
+  run "fly_s$s" --cond fly --seed $s
+  run "lin_s$s" --cond lin --seed $s
+  run "${TAG}_pretrained_c_s$s" --cond lm --model $MODEL --weights pretrained --seed $s $EXTRA; sleep $PAUSE
+  run "${TAG}_random_c_s$s" --cond lm --model $MODEL --weights random --seed $s $EXTRA; sleep $PAUSE
 done
-python summarize.py $OUT
+python summarize.py "$OUT"

@@ -10,6 +10,21 @@ LM (заморожена): любая causal-модель из transformers с �
 Голова действия (эволюционирует): линейная со скрытого состояния последней позиции.
 Отбор: OpenAI-ES, антитетические пары, ранговая нормировка, Adam.
 
+Контроли: --cond fly (MLP без LM), --cond lin (линейная политика прямо на 8 признаках,
+  18 параметров), --weights random (та же LM со случайными весами; сеть сеется от --net-seed,
+  по умолчанию = --seed, чтобы разброс между случайными сетями попадал в выборку).
+
+ИЗМЕНЕНО 2026-10-01 (перед GPU-серией):
+- тип по умолчанию float32 и на CUDA (было fp16): Qwen2.5 в fp16 переполняется, а NaN
+  проходит tanh -> clip -> тело тихо умирает без исключения. Теперь _hidden падает на
+  первом нечисловом значении. bf16/fp16 — только явно через --dtype;
+- случайная сеть сеялась константой 12345 для всех посевов (одна сеть на всю серию);
+- добавлен контроль lin: на CPU 5 посевов дают тест 1,333–1,443 (ср. 1,395) при жадном 1,46,
+  т.е. задачу почти целиком решает линейное чтение признаков органа;
+- в результат пишется n_params: Adam шагает ~lr по каждой координате, поэтому сдвиг выхода
+  за поколение растёт с числом параметров головы, и «поколение до 1,2» отражает размерность,
+  а не только представление (выведено, не проверено).
+
 Примеры:
   python stand_gpu.py --cond fly --seed 1
   python stand_gpu.py --cond lm --model EleutherAI/pythia-70m --weights pretrained --seed 1
@@ -87,14 +102,14 @@ class Bodies:
 
 # ---------------- политики ----------------
 class LMPolicy:
-    def __init__(self, model, weights, center, device, dtype, chunk, layer, K=2):
+    def __init__(self, model, weights, center, device, dtype, chunk, layer, K=2, net_seed=12345):
         from transformers import AutoModel, AutoConfig
         self.device, self.dtype, self.chunk, self.layer = device, dtype, chunk, layer
         if weights == 'pretrained':
             self.lm = AutoModel.from_pretrained(model, dtype=dtype)
         else:
             cfg = AutoConfig.from_pretrained(model)
-            torch.manual_seed(12345)
+            torch.manual_seed(net_seed)
             self.lm = AutoModel.from_config(cfg).to(dtype)
         self.lm.to(device).eval()
         for p in self.lm.parameters():
@@ -117,6 +132,9 @@ class LMPolicy:
                     h = self.lm(inputs_embeds=x).last_hidden_state[:, -1]
                 else:
                     h = self.lm(inputs_embeds=x, output_hidden_states=True).hidden_states[self.layer][:, -1]
+            if not torch.isfinite(h).all():
+                raise FloatingPointError(f'нечисловое скрытое состояние (dtype={self.dtype}): '
+                                         f'{(~torch.isfinite(h)).sum().item()} из {h.numel()}')
             outs.append(h.float())
         return torch.cat(outs)
 
@@ -151,6 +169,24 @@ class LMPolicy:
         Wh = TH[:, self.n_proj:self.n_proj + self.D * 2].view(B, self.D, 2)
         bh = TH[:, self.n_proj + self.D * 2:]
         return torch.tanh(torch.einsum('bd,bdo->bo', h, Wh) + bh)
+
+
+class LinPolicy:
+    """Контроль: действие = tanh(W s + b) прямо на признаках органа."""
+
+    def __init__(self, device):
+        self.device = device
+        self.n = S_DIM * 2 + 2
+
+    def init(self, rng):
+        th = np.zeros(self.n, np.float32)
+        th[:S_DIM * 2] = rng.randn(S_DIM * 2) * 0.1
+        return th
+
+    def act(self, TH, s):
+        B = s.shape[0]
+        W = TH[:, :S_DIM * 2].view(B, S_DIM, 2)
+        return torch.tanh(torch.einsum('bs,bso->bo', s, W) + TH[:, S_DIM * 2:])
 
 
 class FlyPolicy:
@@ -192,12 +228,13 @@ def rollout(pol, TH, seeds, device):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--cond', choices=['fly', 'lm'], required=True)
+    ap.add_argument('--cond', choices=['fly', 'lin', 'lm'], required=True)
     ap.add_argument('--model', default='EleutherAI/pythia-70m')
     ap.add_argument('--weights', choices=['pretrained', 'random'], default='pretrained')
     ap.add_argument('--no-center', action='store_true', help='отключить стандартизацию скрытого состояния')
     ap.add_argument('--layer', type=int, default=-1, help='слой съёма состояния (-1 = последний)')
     ap.add_argument('--seed', type=int, default=1)
+    ap.add_argument('--net-seed', type=int, default=None, help='посев случайной сети (по умолчанию = --seed; 12345 = как в первой серии)')
     ap.add_argument('--gens', type=int, default=40)
     ap.add_argument('--pairs', type=int, default=16)
     ap.add_argument('--eps', type=int, default=2)
@@ -211,14 +248,19 @@ def main():
 
     if a.device == 'cpu':
         torch.set_num_threads(max(1, os.cpu_count() // 2))
-    dtype = getattr(torch, a.dtype) if a.dtype else (torch.float16 if a.device == 'cuda' else torch.float32)
+    dtype = getattr(torch, a.dtype) if a.dtype else torch.float32
+    net_seed = a.seed if a.net_seed is None else a.net_seed
     os.makedirs(a.out, exist_ok=True)
-    tag = 'fly' if a.cond == 'fly' else f"{a.model.split('/')[-1]}_{a.weights}{'' if a.no_center else '_c'}{'' if a.layer == -1 else f'_L{a.layer}'}"
+    tag = a.cond if a.cond != 'lm' else f"{a.model.split('/')[-1]}_{a.weights}{'' if a.no_center else '_c'}{'' if a.layer == -1 else f'_L{a.layer}'}"
     name = f'{tag}_s{a.seed}'
 
     rng = np.random.RandomState(a.seed)
-    pol = FlyPolicy(a.device) if a.cond == 'fly' else LMPolicy(
-        a.model, a.weights, not a.no_center, a.device, dtype, a.chunk, a.layer)
+    if a.cond == 'fly':
+        pol = FlyPolicy(a.device)
+    elif a.cond == 'lin':
+        pol = LinPolicy(a.device)
+    else:
+        pol = LMPolicy(a.model, a.weights, not a.no_center, a.device, dtype, a.chunk, a.layer, net_seed=net_seed)
     th = pol.init(rng)
     m = np.zeros_like(th); v = np.zeros_like(th)
     hist, t0 = [], time.time()
@@ -242,7 +284,8 @@ def main():
     np.save(os.path.join(a.out, f'theta_{name}.npy'), th)
     with open(os.path.join(a.out, f'result_{name}.json'), 'w') as fh:
         json.dump({'tag': tag, 'seed': a.seed, 'model': a.model, 'hist': hist, 'test': test,
-                   'sec': round(time.time() - t0), 'args': vars(a)}, fh)
+                   'sec': round(time.time() - t0), 'n_params': int(pol.n), 'dtype': str(dtype),
+                   'net_seed': net_seed if a.cond == 'lm' and a.weights == 'random' else None, 'args': vars(a)}, fh)
     print(name, 'test', round(test, 4), 'за', round(time.time() - t0), 'с')
 
 
