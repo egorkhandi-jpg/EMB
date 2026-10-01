@@ -21,6 +21,8 @@ LM (заморожена): любая causal-модель из transformers с �
 - случайная сеть сеялась константой 12345 для всех посевов (одна сеть на всю серию);
 - добавлен контроль lin: на CPU 5 посевов дают тест 1,333–1,443 (ср. 1,395) при жадном 1,46,
   т.е. задачу почти целиком решает линейное чтение признаков органа;
+- в результат пишутся git_commit и git_dirty (ДОБАВЛЕНО 2026-10-01 после смены fp16 -> fp32
+  и посева случайной сети: результаты разных версий кода несравнимы, а по файлу это не видно);
 - в результат пишется n_params: Adam шагает ~lr по каждой координате, поэтому сдвиг выхода
   за поколение растёт с числом параметров головы, и «поколение до 1,2» отражает размерность,
   а не только представление (выведено, не проверено).
@@ -30,7 +32,7 @@ LM (заморожена): любая causal-модель из transformers с �
   python stand_gpu.py --cond lm --model EleutherAI/pythia-70m --weights pretrained --seed 1
   python stand_gpu.py --cond lm --model Qwen/Qwen2.5-1.5B --weights random --seed 1 --chunk 128
 """
-import argparse, json, math, os, time
+import argparse, json, math, os, subprocess, time
 import numpy as np
 import torch
 
@@ -226,6 +228,20 @@ def rollout(pol, TH, seeds, device):
     return bodies.fitness().reshape(P, E).mean(1)
 
 
+def git_info():
+    """Коммит и «грязность» кода стенда. Грязным считается изменённый или неотслеживаемый
+    .py/.sh — результаты в results/ на это не влияют. Без git — None и предупреждение."""
+    here = os.path.dirname(os.path.abspath(__file__))
+    try:
+        run = lambda *c: subprocess.run(['git', *c], cwd=here, capture_output=True, text=True, check=True).stdout.strip()
+        commit = run('rev-parse', 'HEAD')
+        dirty = bool(run('status', '--porcelain', '--untracked-files=all', '--', '*.py', '*.sh'))
+        return commit, dirty
+    except (OSError, subprocess.CalledProcessError) as e:
+        print('ВНИМАНИЕ: версия кода не определена (git):', e, flush=True)
+        return None, None
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--cond', choices=['fly', 'lin', 'lm'], required=True)
@@ -254,6 +270,9 @@ def main():
     tag = a.cond if a.cond != 'lm' else f"{a.model.split('/')[-1]}_{a.weights}{'' if a.no_center else '_c'}{'' if a.layer == -1 else f'_L{a.layer}'}"
     name = f'{tag}_s{a.seed}'
 
+    commit, dirty = git_info()
+    if dirty:
+        print(f'ВНИМАНИЕ: прогон с незакоммиченным кодом стенда (HEAD {commit[:8]})', flush=True)
     rng = np.random.RandomState(a.seed)
     if a.cond == 'fly':
         pol = FlyPolicy(a.device)
@@ -285,7 +304,8 @@ def main():
     with open(os.path.join(a.out, f'result_{name}.json'), 'w') as fh:
         json.dump({'tag': tag, 'seed': a.seed, 'model': a.model, 'hist': hist, 'test': test,
                    'sec': round(time.time() - t0), 'n_params': int(pol.n), 'dtype': str(dtype),
-                   'net_seed': net_seed if a.cond == 'lm' and a.weights == 'random' else None, 'args': vars(a)}, fh)
+                   'net_seed': net_seed if a.cond == 'lm' and a.weights == 'random' else None,
+                   'git_commit': commit, 'git_dirty': dirty, 'args': vars(a)}, fh)
     print(name, 'test', round(test, 4), 'за', round(time.time() - t0), 'с')
 
 
