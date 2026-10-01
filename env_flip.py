@@ -20,6 +20,15 @@
 не зависит от порядка кадров — тогда контроль «LM с перемешанным окном» не
 диагностичен: он не упадёт и у модели, честно читающей последовательность.
 
+Момент разворота — случайный такт каждого эпизода (свой посев эпизода, равномерно из
+[REV_LO, REV_HI)), не связанный со съеденным: переключаться по счёту тактов или предметов
+нельзя, только по последствиям. Проверка «часы» в предварительных проверках.
+
+Версии среды (ДОБАВЛЕНО 2026-10-01, ENVS; константы модуля — это flip-1, не трогать):
+  flip-1 — яд 0,30. Пилот: почти не обучаема ES — без памяти подход к предметам не
+           вознаграждается («жадно к любому» 0,495 против «стоять» 0,490), плато;
+  flip-2 — яд 0,20: подход без памяти +0,16 к «стоять» (z 5,1), память сверху +0,68.
+
 Интерфейс как у stand_gpu.Bodies: sense() -> (B, S_DIM), step(act), fitness(), alive.
 python env_flip.py  — предварительные проверки эвристиками (барьер, выгода, окно памяти).
 """
@@ -35,13 +44,16 @@ E0 = 0.6
 VMAX = 0.03
 TURN = 0.6
 S_DIM = 12
-ENV_VERSION = 'flip-1'   # менять при любой правке констант или органа (правило 7 CLAUDE.md)
+ENV_VERSION = 'flip-1'   # версия констант модуля; новые версии — только через ENVS (правило 7)
+ENVS = {'flip-1': {'poison': POISON}, 'flip-2': {'poison': 0.20}}
 REV_LO, REV_HI = 30, 70
 
 
 class FlipBodies:
-    def __init__(self, B, seeds, reversal=False):
+    def __init__(self, B, seeds, reversal=False, env=ENV_VERSION):
         self.B = B
+        self.env = env
+        self.poison = ENVS[env]['poison']
         self.t = 0
         self.rs = [np.random.RandomState(s) for s in seeds]
         self.pos = np.stack([r.rand(2) for r in self.rs])
@@ -92,7 +104,7 @@ class FlipBodies:
         eat = (d[np.arange(self.B), i] < EAT_R) & self.alive
         is_A = i < N_PER
         good = is_A == self.good_A
-        self.E = np.where(eat, np.minimum(self.E + np.where(good, FOOD_GAIN, -POISON), 1.0), self.E)
+        self.E = np.where(eat, np.minimum(self.E + np.where(good, FOOD_GAIN, -self.poison), 1.0), self.E)
         self.ate[:] = 0
         self.ate[eat & is_A, 0] = 1
         self.ate[eat & ~is_A, 1] = 1
@@ -114,8 +126,8 @@ def _steer(s, kind):
     return np.stack([np.clip(np.arctan2(sn, c) / TURN, -1, 1), np.ones(len(s))], 1)
 
 
-def run(policy, n_ep=200, base=999000, reversal=False, per_episode=False):
-    b = FlipBodies(n_ep, [base + k for k in range(n_ep)], reversal)
+def run(policy, n_ep=200, base=999000, reversal=False, per_episode=False, env=ENV_VERSION):
+    b = FlipBodies(n_ep, [base + k for k in range(n_ep)], reversal, env)
     hist = []
     for _ in range(T):
         s = b.sense(); hist.append(s)
@@ -152,6 +164,17 @@ def bag_learner(N):
     return pol
 
 
+def timer(t_switch):
+    """«Часы»: знает начальный знак (как оракул) и переключается в фиксированный такт без
+    всяких последствий. Если это близко к оракулу, ES может выучить счёт вместо памяти."""
+    def pol(s, hist, b):
+        good_A = b.good_A.copy() ^ (b.t_rev >= 0) & (b.t_rev < b.t)    # начальный знак
+        good_A ^= (b.t_rev >= 0) & (b.t >= t_switch)
+        kind = (~good_A).astype(int)
+        a = _steer(s, 0); a[kind == 1] = _steer(s, 1)[kind == 1]; return a
+    return pol
+
+
 def learner(N):
     """Окно из N последних кадров: найти последний кадр с флагом «съел» и по знаку тренда
     энергии решить, какой вид пища. Нет такого кадра в окне — жадно к ближайшему."""
@@ -170,36 +193,41 @@ def learner(N):
 
 
 if __name__ == '__main__':
+    # python env_flip.py [--env flip-2] [--reversal]
+    # Предварительные проверки (правило 1 CLAUDE.md) на тестовом наборе стенда: 100 эпизодов
+    # с посевами 999000+k, общих для всех агентов, поэтому разности считаются попарно.
     import sys
     REV = '--reversal' in sys.argv
-    print('вариант:', 'с разворотом знака' if REV else 'знак постоянен')
+    ENV = sys.argv[sys.argv.index('--env') + 1] if '--env' in sys.argv else ENV_VERSION
+    n_test = 100
+    print(f'среда {ENV} (яд {ENVS[ENV]["poison"]:.2f}), {"с разворотом знака" if REV else "знак постоянен"}, '
+          f'тестовый набор стенда — {n_test} эпизодов')
     rng = np.random.RandomState(0)
     rows = {'стоять': lambda s, h, b: np.tile([0, -1.0], (len(s), 1)),
             'случайно': lambda s, h, b: rng.uniform(-1, 1, (len(s), 2)),
-            'жадно к любому (без памяти)': greedy_any}
-    for N in (1, 2, 4, 8, 16, 32, 0):
-        rows[f'память, окно {N if N else "всё"}'] = learner(N)
-    for N in (8, 16, 32, 0):
-        rows[f'мешок, окно {N if N else "всё"}'] = bag_learner(N)
-    rows['оракул (знает знак)'] = oracle
-    res = {}
+            'без памяти (жадно к любому)': greedy_any,
+            'окно 2': learner(2), 'окно 8': learner(8), 'окно 32': learner(32),
+            'мешок 32': bag_learner(32), 'оракул': oracle}
+    if REV:
+        rows['часы (знает начальный знак, переключается в такт 50)'] = timer(50)
+    pe = {}
     for k, p in rows.items():
-        res[k] = run(p, reversal=REV)
-        m, sd, g, bd = res[k]
-        print(f'{k:30s} {m:.3f} ± {sd:.3f}   съедено: пищи {g:5.2f}, яда {bd:5.2f}')
-    ml, orc = res['жадно к любому (без памяти)'][0], res['оракул (знает знак)'][0]
-    print(f'выгода памяти (оракул − без памяти): {orc - ml:.3f}; '
-          f'различимость: {(orc - ml) / (res["жадно к любому (без памяти)"][1] + 1e-9):.1f} ст.откл.')
-    # Различимость за бюджет: тест стенда — 100 эпизодов с посевами 999000+k, общими для всех
-    # агентов, поэтому разность двух агентов считается попарно по эпизодам.
-    n_test = 100
-    pe = {k: run(rows[k], n_ep=n_test, reversal=REV, per_episode=True)
-          for k in ('жадно к любому (без памяти)', 'память, окно 8', 'память, окно 32', 'оракул (знает знак)')}
-    print(f'на тестовом наборе стенда ({n_test} эпизодов): ' +
-          '; '.join(f'{k.split(",")[-1].strip()} {v.mean():.3f}' for k, v in pe.items()))
-    for a_, b_ in (('память, окно 32', 'память, окно 8'), ('память, окно 32', 'жадно к любому (без памяти)'),
-                   ('оракул (знает знак)', 'память, окно 32')):
-        d = pe[a_] - pe[b_]
-        print(f'  {a_} − {b_}: {d.mean():+.3f}, ст.ош. попарно {d.std() / np.sqrt(n_test):.3f} '
-              f'(z = {d.mean() / (d.std() / np.sqrt(n_test) + 1e-9):.1f})')
-    print(f'порог остановки пилота (95 % оракула на тесте): {0.95 * pe["оракул (знает знак)"].mean():.3f}')
+        pe[k] = run(p, n_ep=n_test, reversal=REV, per_episode=True, env=ENV)
+        f = pe[k]
+        print(f'{k:52s} {f.mean():.3f} ± {f.std():.3f}   доля эпизодов < 0,7: {(f < 0.7).mean():.2f}')
+    def diff(a_, b_):
+        d = pe[a_] - pe[b_]; se = d.std() / np.sqrt(n_test)
+        return f'{a_} − {b_}: {d.mean():+.3f} (z {d.mean() / (se + 1e-9):.1f})'
+    print('1. барьер против политики без памяти:', diff('окно 32', 'без памяти (жадно к любому)'))
+    print('2. выгода идеального решения:', diff('оракул', 'стоять'))
+    print('3. в валюте обучающегося — приспособленность ES и есть эта величина')
+    print('4. различимость за бюджет:', diff('окно 32', 'окно 8'), '|', diff('оракул', 'окно 32'))
+    print('5. канал эффекта (выбор вида) не совпадает с каналом шума (раскладка предметов) — по построению')
+    print('6. путь с вознаграждением частичных решений (каждый шаг лучше предыдущего):')
+    for a_, b_ in (('без памяти (жадно к любому)', 'стоять'), ('окно 2', 'без памяти (жадно к любому)'),
+                   ('окно 8', 'окно 2'), ('окно 32', 'окно 8')):
+        print('   ', diff(a_, b_))
+    if REV:
+        print('порядок нужен (П2 диагностичен):', diff('окно 32', 'мешок 32'))
+        print('счёт тактов не заменяет память:', diff('окно 32', 'часы (знает начальный знак, переключается в такт 50)'))
+    print(f'порог остановки пилота (95 % оракула): {0.95 * pe["оракул"].mean():.3f}')

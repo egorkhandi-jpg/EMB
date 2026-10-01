@@ -19,7 +19,12 @@ Pythia-70M неотличима от случайной (p 0,20), а скрыт�
 Окно пересчитывается целиком на каждом такте (без KV-кэша): для Pythia-70M это не узкое место.
 
 Отбор: OpenAI-ES, антитетические пары, общие посевы среды на поколение, ранги, Adam.
-Тест — 100 отложенных эпизодов (посевы 999000+k), общих для всех агентов.
+Тест — 100 отложенных эпизодов (посевы 999000+k), общих для всех агентов; приспособленность
+по каждому эпизоду пишется в результат (test_per_episode) — для попарных сравнений и формы
+распределения.
+Среда — --env (версии в env_flip.ENVS) и --reversal; версия пишется в результат.
+ИСПРАВЛЕНО 2026-10-01: статистика стандартизации LM снималась на flip-1 без разворота
+независимо от условия; теперь — на той же среде и с тем же разворотом, что у прогона.
 
 Примеры:
   python stand_flip.py --cond flywin --N 32 --seed 1
@@ -39,7 +44,9 @@ TEST_SEEDS = [999000 + k for k in range(100)]
 
 # ---------------- политики ----------------
 class LMWindow:
-    def __init__(self, model, weights, N, shuffle, device, dtype, chunk, net_seed, K=2):
+    def __init__(self, model, weights, N, shuffle, device, dtype, chunk, net_seed, K=2,
+                 env=ef.ENV_VERSION, reversal=False):
+        self.env, self.reversal = env, reversal
         from transformers import AutoModel, AutoConfig
         self.device, self.dtype, self.chunk = device, dtype, chunk
         self.N, self.shuffle, self.K = N, shuffle, K
@@ -96,7 +103,7 @@ class LMWindow:
         th[self.n_proj:self.n_proj + self.D * 2] = rng.randn(self.D * 2) * 0.01
         # Фиксированная стандартизация: статистика по всем тактам 20 эпизодов при случайном
         # поведении, с тем же окном и тем же перемешиванием, что у условия.
-        b = FlipBodies(20, [555000 + k for k in range(20)])
+        b = FlipBodies(20, [555000 + k for k in range(20)], self.reversal, self.env)
         TH = torch.as_tensor(np.repeat(th[None], 20, 0), device=self.device)
         self.reset(20); H = []
         for _ in range(T):
@@ -182,10 +189,10 @@ class GRUFly:
         return torch.tanh(torch.einsum('bh,bho->bo', self.h, Wo) + TH[:, self.g + H * 2:])
 
 
-def rollout(pol, TH, seeds, device, reversal, stats=False):
+def rollout(pol, TH, seeds, device, reversal, env, stats=False):
     P, E = TH.shape[0], len(seeds)
     THb = torch.as_tensor(np.repeat(TH, E, axis=0).astype(np.float32), device=device)
-    bodies = FlipBodies(P * E, list(seeds) * P, reversal)
+    bodies = FlipBodies(P * E, list(seeds) * P, reversal, env)
     pol.reset(P * E)
     for _ in range(T):
         if not bodies.alive.any():
@@ -194,15 +201,15 @@ def rollout(pol, TH, seeds, device, reversal, stats=False):
         a = pol.act(THb, s).cpu().numpy()
         a[~bodies.alive] = 0
         bodies.step(a)
-    f = bodies.fitness().reshape(P, E).mean(1)
     if stats:
-        return f, bodies
-    return f
+        return bodies.fitness().reshape(P, E), bodies
+    return bodies.fitness().reshape(P, E).mean(1)
 
 
 def make_policy(a, dtype, net_seed):
     if a.cond in ('lm', 'lm_shuf'):
-        return LMWindow(a.model, a.weights, a.N, a.cond == 'lm_shuf', a.device, dtype, a.chunk, net_seed)
+        return LMWindow(a.model, a.weights, a.N, a.cond == 'lm_shuf', a.device, dtype, a.chunk, net_seed,
+                        env=a.env, reversal=a.reversal)
     if a.cond == 'flywin':
         return WindowNet(a.N, 32, a.device)
     if a.cond == 'linwin':
@@ -226,6 +233,7 @@ def main():
     ap.add_argument('--N', type=int, default=32, help='длина окна в тактах')
     ap.add_argument('--H', type=int, default=56, help='размер состояния GRU')
     ap.add_argument('--reversal', action='store_true', help='знак меняется один раз внутри эпизода')
+    ap.add_argument('--env', choices=sorted(ef.ENVS), default=ef.ENV_VERSION, help='версия среды (сила яда)')
     ap.add_argument('--seed', type=int, default=1)
     ap.add_argument('--net-seed', type=int, default=None)
     ap.add_argument('--gens', type=int, default=40)
@@ -244,7 +252,7 @@ def main():
     dtype = getattr(torch, a.dtype)
     net_seed = a.seed if a.net_seed is None else a.net_seed
     os.makedirs(a.out, exist_ok=True)
-    tag = make_tag(a) + ('_rev' if a.reversal else '')
+    tag = make_tag(a) + ('_rev' if a.reversal else '') + ('' if a.env == 'flip-1' else '_' + a.env.replace('-', ''))
     name = f'{tag}_s{a.seed}'
     commit, dirty = git_info()
     if dirty:
@@ -260,7 +268,7 @@ def main():
             env_seeds = [a.seed * 100000 + g * 10 + k for k in range(a.eps)]
             noise = rng.randn(a.pairs, pol.n).astype(np.float32)
             TH = np.concatenate([th + a.sigma * noise, th - a.sigma * noise])
-            f = rollout(pol, TH, env_seeds, a.device, a.reversal)
+            f = rollout(pol, TH, env_seeds, a.device, a.reversal, a.env)
             ranks = f.argsort().argsort() / (len(f) - 1) - 0.5
             grad = ((ranks[:a.pairs] - ranks[a.pairs:])[:, None] * noise).sum(0) / (2 * a.pairs * a.sigma)
             m = 0.9 * m + 0.1 * grad
@@ -271,16 +279,17 @@ def main():
             rec = {'gen': g, 'mean': round(float(f.mean()), 4), 'max': round(float(f.max()), 4), 'sec': round(time.time() - t0)}
             print(json.dumps(rec), file=log, flush=True)
             print(name, rec, flush=True)
-    ft, b = rollout(pol, th[None], TEST_SEEDS, a.device, a.reversal, stats=True)
+    fe, b = rollout(pol, th[None], TEST_SEEDS, a.device, a.reversal, a.env, stats=True)
+    fe = fe[0]
     np.save(os.path.join(a.out, f'theta_{name}.npy'), th)
     with open(os.path.join(a.out, f'result_{name}.json'), 'w') as fh:
         json.dump({'tag': tag, 'cond': a.cond, 'seed': a.seed, 'model': a.model if a.cond.startswith('lm') else None,
-                   'N': a.N if a.cond != 'gru' else None, 'reversal': a.reversal, 'env_version': ef.ENV_VERSION,
-                   'hist': hist, 'test': float(ft[0]), 'test_food': float(b.n_good.mean()), 'test_poison': float(b.n_bad.mean()),
+                   'N': a.N if a.cond != 'gru' else None, 'reversal': a.reversal, 'env_version': a.env,
+                   'hist': hist, 'test': float(fe.mean()), 'test_per_episode': [round(float(x), 4) for x in fe], 'test_food': float(b.n_good.mean()), 'test_poison': float(b.n_bad.mean()),
                    'sec': round(time.time() - t0), 'n_params': int(pol.n), 'dtype': str(dtype),
                    'net_seed': net_seed if a.cond.startswith('lm') and a.weights == 'random' else None,
                    'git_commit': commit, 'git_dirty': dirty, 'args': vars(a)}, fh)
-    print(name, 'test', round(float(ft[0]), 4), f'(пища {b.n_good.mean():.2f}, яд {b.n_bad.mean():.2f})',
+    print(name, 'test', round(float(fe.mean()), 4), f'(пища {b.n_good.mean():.2f}, яд {b.n_bad.mean():.2f})',
           'за', round(time.time() - t0), 'с')
 
 
