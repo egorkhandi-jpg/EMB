@@ -1,0 +1,80 @@
+21:44:51 GPU 48 °C
+21:45:29 pythia-70m flip-2_rev pretrained посев 1: 47 с
+21:45:29 GPU 71 °C
+21:46:11 pythia-70m flip-2_rev pretrained посев 2: 90 с
+21:46:11 GPU 69 °C
+21:46:50 pythia-70m flip-2_rev pretrained посев 3: 129 с
+21:46:50 GPU 72 °C
+21:47:26 pythia-70m flip-2_rev pretrained посев 4: 165 с
+21:47:26 GPU 73 °C
+21:48:02 pythia-70m flip-2_rev pretrained посев 5: 201 с
+21:48:02 GPU 69 °C
+21:48:43 pythia-70m flip-2_rev pretrained посев 6: 242 с
+21:48:43 GPU 75 °C
+21:49:19 pythia-70m flip-2_rev pretrained посев 7: 278 с
+21:49:19 GPU 73 °C
+21:49:55 pythia-70m flip-2_rev pretrained посев 8: 313 с
+21:49:55 GPU 73 °C
+21:50:34 pythia-70m flip-2_rev pretrained посев 9: 353 с
+21:50:34 GPU 68 °C
+21:51:11 pythia-70m flip-2_rev pretrained посев 10: 390 с
+21:51:12 GPU 73 °C
+21:51:38 pythia-70m flip-2_rev random посев 1: 416 с
+21:51:38 GPU 73 °C
+21:52:03 pythia-70m flip-2_rev random посев 2: 442 с
+21:52:03 GPU 74 °C
+21:52:30 pythia-70m flip-2_rev random посев 3: 469 с
+21:52:30 GPU 74 °C
+21:52:56 pythia-70m flip-2_rev random посев 4: 495 с
+21:52:56 GPU 74 °C
+21:53:23 pythia-70m flip-2_rev random посев 5: 522 с
+21:53:23 GPU 74 °C
+21:53:49 pythia-70m flip-2_rev random посев 6: 548 с
+21:53:49 GPU 74 °C
+21:54:15 pythia-70m flip-2_rev random посев 7: 574 с
+21:54:15 GPU 74 °C
+21:54:41 pythia-70m flip-2_rev random посев 8: 600 с
+21:54:41 GPU 74 °C
+21:55:09 pythia-70m flip-2_rev random посев 9: 627 с
+21:55:09 GPU 70 °C
+21:55:36 pythia-70m flip-2_rev random посев 10: 655 с
+21:55:38 GPU 63 °C
+21:56:09 pythia-70m flip-1_const pretrained посев 1: 688 с
+21:56:09 GPU 74 °C
+21:56:40 pythia-70m flip-1_const pretrained посев 2: 718 с
+21:56:40 GPU 73 °C
+21:57:12 pythia-70m flip-1_const pretrained посев 3: 751 с
+21:57:12 GPU 74 °C
+21:57:41 pythia-70m flip-1_const pretrained посев 4: 780 с
+21:57:41 GPU 66 °C
+21:58:11 pythia-70m flip-1_const pretrained посев 5: 810 с
+21:58:11 GPU 73 °C
+21:58:43 pythia-70m flip-1_const pretrained посев 6: 842 с
+21:58:43 GPU 73 °C
+21:59:13 pythia-70m flip-1_const pretrained посев 7: 872 с
+21:59:13 GPU 74 °C
+21:59:43 pythia-70m flip-1_const pretrained посев 8: 901 с
+21:59:43 GPU 73 °C
+22:00:17 pythia-70m flip-1_const pretrained посев 9: 935 с
+22:00:17 GPU 70 °C
+22:00:52 pythia-70m flip-1_const pretrained посев 10: 971 с
+22:00:52 GPU 70 °C
+22:01:15 pythia-70m flip-1_const random посев 1: 994 с
+22:01:15 GPU 69 °C
+22:01:38 pythia-70m flip-1_const random посев 2: 1017 с
+22:01:38 GPU 72 °C
+22:02:01 pythia-70m flip-1_const random посев 3: 1040 с
+22:02:01 GPU 73 °C
+22:02:24 pythia-70m flip-1_const random посев 4: 1063 с
+22:02:24 GPU 71 °C
+22:02:47 pythia-70m flip-1_const random посев 5: 1086 с
+22:02:47 GPU 72 °C
+22:03:10 pythia-70m flip-1_const random посев 6: 1109 с
+22:03:10 GPU 72 °C
+22:03:33 pythia-70m flip-1_const random посев 7: 1132 с
+22:03:33 GPU 71 °C
+22:03:56 pythia-70m flip-1_const random посев 8: 1155 с
+22:03:56 GPU 72 °C
+22:04:20 pythia-70m flip-1_const random посев 9: 1179 с
+22:04:20 GPU 73 °C
+22:04:43 pythia-70m flip-1_const random посев 10: 1202 с
