@@ -1,0 +1,16 @@
+# Очередь A + C (v3-words): 160M — 10 посевов с условиями C, 410M — 5 посевов (описательно).
+python probe_words.py --model EleutherAI/pythia-160m --first 1 --last 1 --with-c
+python probe_words.py --model EleutherAI/pythia-160m --first 2 --last 2 --with-c
+python probe_words.py --model EleutherAI/pythia-160m --first 3 --last 3 --with-c
+python probe_words.py --model EleutherAI/pythia-160m --first 4 --last 4 --with-c
+python probe_words.py --model EleutherAI/pythia-160m --first 5 --last 5 --with-c
+python probe_words.py --model EleutherAI/pythia-160m --first 6 --last 6 --with-c
+python probe_words.py --model EleutherAI/pythia-160m --first 7 --last 7 --with-c
+python probe_words.py --model EleutherAI/pythia-160m --first 8 --last 8 --with-c
+python probe_words.py --model EleutherAI/pythia-160m --first 9 --last 9 --with-c
+python probe_words.py --model EleutherAI/pythia-160m --first 10 --last 10 --with-c
+python probe_words.py --model EleutherAI/pythia-410m --first 1 --last 1
+python probe_words.py --model EleutherAI/pythia-410m --first 2 --last 2
+python probe_words.py --model EleutherAI/pythia-410m --first 3 --last 3
+python probe_words.py --model EleutherAI/pythia-410m --first 4 --last 4
+python probe_words.py --model EleutherAI/pythia-410m --first 5 --last 5
