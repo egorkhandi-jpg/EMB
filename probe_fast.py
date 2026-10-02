@@ -11,6 +11,12 @@ torch.linalg.solve на пачке гессианов (F·L штук). При d 
 
 Использовать только после сверки с probe_untrained.probe на 70M (совпадение до 3-го знака) —
 см. check_probe_fast() и docs/RESULTS_2026-10-01_flip.md.
+
+ИСПРАВЛЕНО 2026-10-02 (первая сверка: макс. |Δ| 0,192 — только на lm_last предобученной).
+Переобучение на всей обучающей части прогревалось решением внутреннего разбиения, стандартизованным
+по другой статистике; при λ = 10⁻³ Ньютон без шага с проверкой от такой точки разлетался (|w| ~10⁵,
+точность 0,500 в 3 фолдах из 5). Теперь: переобучение с нуля и шаг с откатом (половиним, пока
+потеря не перестанет расти). Сам Ньютон от нуля совпадал с sklearn до 5-го знака при всех λ.
 """
 import numpy as np
 import torch
@@ -36,6 +42,9 @@ def _newton(X1, y, lam, w0, iters=30, tol=1e-5):
     n, d1 = X1.shape
     reg = torch.ones(d1, device=X1.device); reg[-1] = 0
     w = w0.clone()
+    def loss(v):
+        return (torch.nn.functional.binary_cross_entropy_with_logits(X1 @ v, y) + lam / 2 * ((v * reg) ** 2).sum()).item()
+    cur = loss(w)
     for _ in range(iters):
         p = torch.sigmoid(X1 @ w)
         g = X1.T @ (p - y) / n + lam * reg * w
@@ -46,8 +55,15 @@ def _newton(X1, y, lam, w0, iters=30, tol=1e-5):
             step = torch.linalg.solve(H, g)
         else:
             step = torch.cholesky_solve(g[:, None], L)[:, 0]
-        w = w - step
-        if step.abs().max().item() < tol:
+        t = 1.0
+        while True:                                 # шаг с откатом: потеря не должна расти
+            w_new = w - t * step
+            new = loss(w_new)
+            if new <= cur + 1e-7 or t < 1e-4:
+                break
+            t /= 2
+        w, cur = w_new, new
+        if (t * step).abs().max().item() < tol:
             break
     return w
 
@@ -74,7 +90,7 @@ def probe(X, y, groups, device, folds=5):
         # при равенстве точности — меньший λ, как np.nanargmax по возрастающей сетке в probe_untrained
         # 2) переобучение на всей обучающей части
         X1 = torch.cat([_std(Xt, tr_t), ones], 1)
-        w = _newton(X1[tr_t], yt[tr_t], best, ws[best])
+        w = _newton(X1[tr_t], yt[tr_t], best, torch.zeros(X1.shape[1], device=device))
         pred[te] = (X1[torch.as_tensor(te, device=device)] @ w).cpu().numpy() > 0
     return pred, _bacc(pred, y)
 
