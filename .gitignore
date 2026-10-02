@@ -3,3 +3,7 @@ results_smoke*/
 __pycache__/
 *.log
 nohup.out
+PAUSE
+STOP
+*.done
+*.failed

@@ -1,0 +1,26 @@
+# Очередь 2026-10-02: досчёт 1B (шкала, случайная, посевы 2-5; старый решатель, как у всей шкалы),
+# затем п. 4 — контроль интерфейса (160M, 410M по посеву на задачу). Пауза — файл PAUSE, выход — STOP.
+python probe_scale.py --model EleutherAI/pythia-1b --envs flip-2_rev --first 2 --seeds 2
+python probe_scale.py --model EleutherAI/pythia-1b --envs flip-2_rev --first 3 --seeds 3
+python probe_scale.py --model EleutherAI/pythia-1b --envs flip-2_rev --first 4 --seeds 4
+python probe_scale.py --model EleutherAI/pythia-1b --envs flip-2_rev --first 5 --seeds 5
+python probe_interface.py --model EleutherAI/pythia-160m --first 1 --last 1
+python probe_interface.py --model EleutherAI/pythia-160m --first 2 --last 2
+python probe_interface.py --model EleutherAI/pythia-160m --first 3 --last 3
+python probe_interface.py --model EleutherAI/pythia-160m --first 4 --last 4
+python probe_interface.py --model EleutherAI/pythia-160m --first 5 --last 5
+python probe_interface.py --model EleutherAI/pythia-160m --first 6 --last 6
+python probe_interface.py --model EleutherAI/pythia-160m --first 7 --last 7
+python probe_interface.py --model EleutherAI/pythia-160m --first 8 --last 8
+python probe_interface.py --model EleutherAI/pythia-160m --first 9 --last 9
+python probe_interface.py --model EleutherAI/pythia-160m --first 10 --last 10
+python probe_interface.py --model EleutherAI/pythia-410m --first 1 --last 1
+python probe_interface.py --model EleutherAI/pythia-410m --first 2 --last 2
+python probe_interface.py --model EleutherAI/pythia-410m --first 3 --last 3
+python probe_interface.py --model EleutherAI/pythia-410m --first 4 --last 4
+python probe_interface.py --model EleutherAI/pythia-410m --first 5 --last 5
+python probe_interface.py --model EleutherAI/pythia-410m --first 6 --last 6
+python probe_interface.py --model EleutherAI/pythia-410m --first 7 --last 7
+python probe_interface.py --model EleutherAI/pythia-410m --first 8 --last 8
+python probe_interface.py --model EleutherAI/pythia-410m --first 9 --last 9
+python probe_interface.py --model EleutherAI/pythia-410m --first 10 --last 10
