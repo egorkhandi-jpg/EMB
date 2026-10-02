@@ -33,3 +33,27 @@ python probe_words.py --model EleutherAI/pythia-410m --first 2 --last 2
 python probe_words.py --model EleutherAI/pythia-410m --first 3 --last 3
 python probe_words.py --model EleutherAI/pythia-410m --first 4 --last 4
 python probe_words.py --model EleutherAI/pythia-410m --first 5 --last 5
+# п. 1-2 решения по пилоту D (v3-readout): считывание, абляция индукционных голов, азбука ощущений
+python readout.py --seeds 1
+python readout.py --seeds 2
+python readout.py --seeds 3
+python probe_mech.py --part ablation --first 1 --last 1
+python probe_mech.py --part ablation --first 2 --last 2
+python probe_mech.py --part ablation --first 3 --last 3
+python probe_mech.py --part ablation --first 4 --last 4
+python probe_mech.py --part ablation --first 5 --last 5
+python probe_mech.py --part ablation --first 6 --last 6
+python probe_mech.py --part ablation --first 7 --last 7
+python probe_mech.py --part ablation --first 8 --last 8
+python probe_mech.py --part ablation --first 9 --last 9
+python probe_mech.py --part ablation --first 10 --last 10
+python probe_mech.py --part alphabet --first 1 --last 1
+python probe_mech.py --part alphabet --first 2 --last 2
+python probe_mech.py --part alphabet --first 3 --last 3
+python probe_mech.py --part alphabet --first 4 --last 4
+python probe_mech.py --part alphabet --first 5 --last 5
+python probe_mech.py --part alphabet --first 6 --last 6
+python probe_mech.py --part alphabet --first 7 --last 7
+python probe_mech.py --part alphabet --first 8 --last 8
+python probe_mech.py --part alphabet --first 9 --last 9
+python probe_mech.py --part alphabet --first 10 --last 10

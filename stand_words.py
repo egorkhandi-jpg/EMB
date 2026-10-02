@@ -22,6 +22,11 @@
   gru     — GRU (H = 56) на one-hot событиях такта.
 
 python stand_words.py --cond lm --weights pretrained --words c --N 32 --seed 1
+python stand_words.py --cond lm ... --init-probe results_readout/probe_pretrained_c_s1.npz   # п. 3: BC + ES
+
+--init-probe (ДОБАВЛЕНО 2026-10-02, п. 3): голова инициализируется линейным зондом знака, обученным
+с учителем (readout.py): логит зонда w·(h − μ_з)/σ_з + b переводится в стандартизацию головы
+(h − μ)/σ: веса w·σ/σ_з, смещение b + Σ w(μ − μ_з)/σ_з; скорость — смещение 2 (tanh ≈ 0,96).
 """
 import argparse, json, math, os, time
 import numpy as np
@@ -273,6 +278,7 @@ def main():
     ap.add_argument('--lr', type=float, default=0.03)
     ap.add_argument('--device', default='cuda' if torch.cuda.is_available() else 'cpu')
     ap.add_argument('--out', default='results_reflex')
+    ap.add_argument('--init-probe', default=None, help='npz зонда из readout.py: голова стартует с него')
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     if a.cond == 'lm':
@@ -290,6 +296,17 @@ def main():
         print(f'ВНИМАНИЕ: прогон с незакоммиченным кодом стенда (HEAD {commit[:8]})', flush=True)
     rng = np.random.RandomState(a.seed)
     th = pol.init(rng)
+    if a.init_probe:
+        z = np.load(a.init_probe)
+        mu, sd = pol.mu.cpu().numpy(), pol.sd.cpu().numpy()
+        w, bias = z['w'][:-1], float(z['w'][-1])
+        D = pol.D
+        W = th[:D * 2].reshape(D, 2).copy()
+        W[:, 0] = w * sd / z['sd']; W[:, 1] = 0
+        th[:D * 2] = W.reshape(-1)
+        th[D * 2] = bias + float((w * (mu - z['mu']) / z['sd']).sum())
+        th[D * 2 + 1] = 2.0
+        tag += '_bc'; name = f'{tag}_s{a.seed}'
     m = np.zeros_like(th); v = np.zeros_like(th)
     hist, t0 = [], time.time()
     with open(os.path.join(a.out, f'log_{name}.jsonl'), 'w') as log:
@@ -320,7 +337,7 @@ def main():
                    'hist': hist, 'test': float(fe.mean()), 'test_per_episode': [round(float(x), 4) for x in fe],
                    'test_food': float(b.n_good.mean()), 'test_poison': float(b.n_bad.mean()), 'choice': choice,
                    'sec': round(time.time() - t0), 'n_params': int(pol.n), 'dtype': 'torch.float32',
-                   'git_commit': commit, 'git_dirty': dirty, 'args': vars(a)}, fh)
+                   'init_probe': a.init_probe, 'git_commit': commit, 'git_dirty': dirty, 'args': vars(a)}, fh)
     print(name, 'test', round(float(fe.mean()), 4), f'(пища {b.n_good.mean():.2f}, яд {b.n_bad.mean():.2f}, '
           f'выбор верен на информированных тактах {choice["informed"]})', 'за', round(time.time() - t0), 'с')
 
