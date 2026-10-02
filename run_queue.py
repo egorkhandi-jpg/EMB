@@ -27,6 +27,9 @@ def temp():
 
 
 def main():
+    # Вывод в консоль Windows без PYTHONIOENCODING идёт в cp1251 и падает на «≤» — первый запуск
+    # 2026-10-02 упал так до первой задачи. Кодировку выставляем сами.
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
     ap = argparse.ArgumentParser()
     ap.add_argument('queue')
     ap.add_argument('--part-hours', type=float, default=2.0)
