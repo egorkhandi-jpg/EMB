@@ -10,6 +10,25 @@ python probe_words.py --model EleutherAI/pythia-160m --first 8 --last 8 --with-c
 python probe_words.py --model EleutherAI/pythia-160m --first 9 --last 9 --with-c
 python probe_words.py --model EleutherAI/pythia-160m --first 10 --last 10 --with-c
 python probe_words.py --model EleutherAI/pythia-410m --first 1 --last 1
+# D: пилот «LM + рефлекс» (вставлено 2026-10-02 после сверки c с п. 4 — совпадение до 4-го знака)
+python stand_words.py --cond lm --weights pretrained --words c --N 32 --seed 1
+python stand_words.py --cond lm --weights random --words c --N 32 --seed 1
+python stand_words.py --cond lm --weights pretrained --words c_arb1 --N 32 --seed 1
+python stand_words.py --cond quad --N 32 --seed 1
+python stand_words.py --cond flywin --N 32 --seed 1
+python stand_words.py --cond gru --seed 1
+python stand_words.py --cond lm --weights pretrained --words c --N 32 --seed 2
+python stand_words.py --cond lm --weights random --words c --N 32 --seed 2
+python stand_words.py --cond lm --weights pretrained --words c_arb1 --N 32 --seed 2
+python stand_words.py --cond quad --N 32 --seed 2
+python stand_words.py --cond flywin --N 32 --seed 2
+python stand_words.py --cond gru --seed 2
+python stand_words.py --cond lm --weights pretrained --words c --N 32 --seed 3
+python stand_words.py --cond lm --weights random --words c --N 32 --seed 3
+python stand_words.py --cond lm --weights pretrained --words c_arb1 --N 32 --seed 3
+python stand_words.py --cond quad --N 32 --seed 3
+python stand_words.py --cond flywin --N 32 --seed 3
+python stand_words.py --cond gru --seed 3
 python probe_words.py --model EleutherAI/pythia-410m --first 2 --last 2
 python probe_words.py --model EleutherAI/pythia-410m --first 3 --last 3
 python probe_words.py --model EleutherAI/pythia-410m --first 4 --last 4
