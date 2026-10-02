@@ -11,3 +11,12 @@
 07:08:52 GPU 60 °C
 07:18:49 pythia-1b flip-2_rev random посев 1: 3876 с
 07:18:50 GPU 57 °C
+09:17:28 GPU 47 °C
+09:26:35 pythia-1b flip-2_rev random посев 2: 557 с
+09:26:50 GPU 50 °C
+09:35:17 pythia-1b flip-2_rev random посев 3: 518 с
+09:35:29 GPU 49 °C
+09:44:08 pythia-1b flip-2_rev random посев 4: 527 с
+09:44:23 GPU 50 °C
+09:48:10 GPU 46 °C
+09:57:44 pythia-1b flip-2_rev random посев 5: 581 с

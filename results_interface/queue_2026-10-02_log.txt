@@ -1,0 +1,53 @@
+2026-10-02 09:17:16 старт: часть ≤ 2.0 ч, перерыв 20.0 мин
+2026-10-02 09:17:16 GPU 43 °C | задача: python probe_scale.py --model EleutherAI/pythia-1b --envs flip-2_rev --first 2 --seeds 2
+2026-10-02 09:26:37 готово за 561 с: python probe_scale.py --model EleutherAI/pythia-1b --envs flip-2_rev --first 2 --seeds 2
+2026-10-02 09:26:37 GPU 52 °C | задача: python probe_scale.py --model EleutherAI/pythia-1b --envs flip-2_rev --first 3 --seeds 3
+2026-10-02 09:35:19 готово за 522 с: python probe_scale.py --model EleutherAI/pythia-1b --envs flip-2_rev --first 3 --seeds 3
+2026-10-02 09:35:19 GPU 51 °C | задача: python probe_scale.py --model EleutherAI/pythia-1b --envs flip-2_rev --first 4 --seeds 4
+2026-10-02 09:44:10 готово за 531 с: python probe_scale.py --model EleutherAI/pythia-1b --envs flip-2_rev --first 4 --seeds 4
+2026-10-02 09:44:10 GPU 53 °C | задача: python probe_scale.py --model EleutherAI/pythia-1b --envs flip-2_rev --first 5 --seeds 5
+2026-10-02 09:48:00 старт: часть ≤ 2.0 ч, перерыв 20.0 мин
+2026-10-02 09:48:00 GPU 44 °C | задача: python probe_scale.py --model EleutherAI/pythia-1b --envs flip-2_rev --first 5 --seeds 5
+2026-10-02 09:57:46 готово за 586 с: python probe_scale.py --model EleutherAI/pythia-1b --envs flip-2_rev --first 5 --seeds 5
+2026-10-02 09:57:46 GPU 53 °C | задача: python probe_interface.py --model EleutherAI/pythia-160m --first 1 --last 1
+2026-10-02 10:01:27 готово за 221 с: python probe_interface.py --model EleutherAI/pythia-160m --first 1 --last 1
+2026-10-02 10:01:27 GPU 56 °C | задача: python probe_interface.py --model EleutherAI/pythia-160m --first 2 --last 2
+2026-10-02 10:05:10 готово за 223 с: python probe_interface.py --model EleutherAI/pythia-160m --first 2 --last 2
+2026-10-02 10:05:10 GPU 56 °C | задача: python probe_interface.py --model EleutherAI/pythia-160m --first 3 --last 3
+2026-10-02 10:08:59 готово за 229 с: python probe_interface.py --model EleutherAI/pythia-160m --first 3 --last 3
+2026-10-02 10:08:59 GPU 56 °C | задача: python probe_interface.py --model EleutherAI/pythia-160m --first 4 --last 4
+2026-10-02 10:12:42 готово за 222 с: python probe_interface.py --model EleutherAI/pythia-160m --first 4 --last 4
+2026-10-02 10:12:42 GPU 56 °C | задача: python probe_interface.py --model EleutherAI/pythia-160m --first 5 --last 5
+2026-10-02 10:16:19 готово за 217 с: python probe_interface.py --model EleutherAI/pythia-160m --first 5 --last 5
+2026-10-02 10:16:19 GPU 58 °C | задача: python probe_interface.py --model EleutherAI/pythia-160m --first 6 --last 6
+2026-10-02 10:19:55 готово за 217 с: python probe_interface.py --model EleutherAI/pythia-160m --first 6 --last 6
+2026-10-02 10:19:55 GPU 56 °C | задача: python probe_interface.py --model EleutherAI/pythia-160m --first 7 --last 7
+2026-10-02 10:23:33 готово за 218 с: python probe_interface.py --model EleutherAI/pythia-160m --first 7 --last 7
+2026-10-02 10:23:33 GPU 57 °C | задача: python probe_interface.py --model EleutherAI/pythia-160m --first 8 --last 8
+2026-10-02 10:27:23 готово за 230 с: python probe_interface.py --model EleutherAI/pythia-160m --first 8 --last 8
+2026-10-02 10:27:23 GPU 56 °C | задача: python probe_interface.py --model EleutherAI/pythia-160m --first 9 --last 9
+2026-10-02 10:30:56 готово за 213 с: python probe_interface.py --model EleutherAI/pythia-160m --first 9 --last 9
+2026-10-02 10:30:56 GPU 57 °C | задача: python probe_interface.py --model EleutherAI/pythia-160m --first 10 --last 10
+2026-10-02 10:34:22 готово за 207 с: python probe_interface.py --model EleutherAI/pythia-160m --first 10 --last 10
+2026-10-02 10:34:23 GPU 57 °C | задача: python probe_interface.py --model EleutherAI/pythia-410m --first 1 --last 1
+2026-10-02 10:45:44 готово за 682 с: python probe_interface.py --model EleutherAI/pythia-410m --first 1 --last 1
+2026-10-02 10:45:44 GPU 54 °C | задача: python probe_interface.py --model EleutherAI/pythia-410m --first 2 --last 2
+2026-10-02 10:56:48 готово за 664 с: python probe_interface.py --model EleutherAI/pythia-410m --first 2 --last 2
+2026-10-02 10:56:48 GPU 58 °C | задача: python probe_interface.py --model EleutherAI/pythia-410m --first 3 --last 3
+2026-10-02 11:07:32 готово за 644 с: python probe_interface.py --model EleutherAI/pythia-410m --first 3 --last 3
+2026-10-02 11:07:32 GPU 58 °C | задача: python probe_interface.py --model EleutherAI/pythia-410m --first 4 --last 4
+2026-10-02 11:18:06 готово за 633 с: python probe_interface.py --model EleutherAI/pythia-410m --first 4 --last 4
+2026-10-02 11:18:06 GPU 58 °C | задача: python probe_interface.py --model EleutherAI/pythia-410m --first 5 --last 5
+2026-10-02 11:28:18 готово за 613 с: python probe_interface.py --model EleutherAI/pythia-410m --first 5 --last 5
+2026-10-02 11:28:18 GPU 59 °C | задача: python probe_interface.py --model EleutherAI/pythia-410m --first 6 --last 6
+2026-10-02 11:38:30 готово за 611 с: python probe_interface.py --model EleutherAI/pythia-410m --first 6 --last 6
+2026-10-02 11:38:30 GPU 61 °C | задача: python probe_interface.py --model EleutherAI/pythia-410m --first 7 --last 7
+2026-10-02 11:48:37 готово за 608 с: python probe_interface.py --model EleutherAI/pythia-410m --first 7 --last 7
+2026-10-02 11:48:37 часть длилась 2.01 ч — перерыв 20.0 мин
+2026-10-02 12:08:37 GPU 44 °C | задача: python probe_interface.py --model EleutherAI/pythia-410m --first 8 --last 8
+2026-10-02 12:19:06 готово за 629 с: python probe_interface.py --model EleutherAI/pythia-410m --first 8 --last 8
+2026-10-02 12:19:06 GPU 58 °C | задача: python probe_interface.py --model EleutherAI/pythia-410m --first 9 --last 9
+2026-10-02 12:29:11 готово за 605 с: python probe_interface.py --model EleutherAI/pythia-410m --first 9 --last 9
+2026-10-02 12:29:11 GPU 62 °C | задача: python probe_interface.py --model EleutherAI/pythia-410m --first 10 --last 10
+2026-10-02 12:38:54 готово за 583 с: python probe_interface.py --model EleutherAI/pythia-410m --first 10 --last 10
+2026-10-02 12:38:54 очередь пуста — готово
