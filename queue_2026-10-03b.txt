@@ -1,0 +1,47 @@
+# v3-nlms: голова от тела с нормированным шагом (сначала lm pretrained c — от неё выбор варианта меток), затем ES с простым шагом.
+python body_head2.py --cond lm --weights pretrained --words c --labels event --readout full --tune
+python body_head2.py --cond lm --weights pretrained --words c --labels event --readout full
+python body_head2.py --cond lm --weights random --words c --labels event --readout full --tune
+python body_head2.py --cond lm --weights random --words c --labels event --readout full
+python body_head2.py --cond lm --weights pretrained --words c_arb1 --labels event --readout full --tune
+python body_head2.py --cond lm --weights pretrained --words c_arb1 --labels event --readout full
+python body_head2.py --cond quad --labels event --readout full --tune
+python body_head2.py --cond quad --labels event --readout full
+python body_head2.py --cond raw --labels event --readout full --tune
+python body_head2.py --cond raw --labels event --readout full
+python body_head2.py --cond lm --weights pretrained --words c --labels all --readout full --tune
+python body_head2.py --cond lm --weights pretrained --words c --labels all --readout full
+python body_head2.py --cond lm --weights random --words c --labels all --readout full --tune
+python body_head2.py --cond lm --weights random --words c --labels all --readout full
+python body_head2.py --cond lm --weights pretrained --words c_arb1 --labels all --readout full --tune
+python body_head2.py --cond lm --weights pretrained --words c_arb1 --labels all --readout full
+python body_head2.py --cond quad --labels all --readout full --tune
+python body_head2.py --cond quad --labels all --readout full
+python body_head2.py --cond raw --labels all --readout full --tune
+python body_head2.py --cond raw --labels all --readout full
+python body_head2.py --cond lm --weights pretrained --words c --labels all --readout pca --tune
+python body_head2.py --cond lm --weights pretrained --words c --labels all --readout pca
+python body_head2.py --cond lm --weights random --words c --labels all --readout pca --tune
+python body_head2.py --cond lm --weights random --words c --labels all --readout pca
+python body_head2.py --cond lm --weights pretrained --words c_arb1 --labels all --readout pca --tune
+python body_head2.py --cond lm --weights pretrained --words c_arb1 --labels all --readout pca
+python body_head2.py --cond quad --labels all --readout pca --tune
+python body_head2.py --cond quad --labels all --readout pca
+python body_head2.py --cond raw --labels all --readout pca --tune
+python body_head2.py --cond raw --labels all --readout pca
+python body_head2.py --cond lm --weights pretrained --words c --labels all --readout dual --tune
+python body_head2.py --cond lm --weights pretrained --words c --labels all --readout dual
+python body_head2.py --cond lm --weights random --words c --labels all --readout dual --tune
+python body_head2.py --cond lm --weights random --words c --labels all --readout dual
+python body_head2.py --cond lm --weights pretrained --words c_arb1 --labels all --readout dual --tune
+python body_head2.py --cond lm --weights pretrained --words c_arb1 --labels all --readout dual
+python body_head2.py --cond quad --labels all --readout dual --tune
+python body_head2.py --cond quad --labels all --readout dual
+python body_head2.py --cond raw --labels all --readout dual --tune
+python body_head2.py --cond raw --labels all --readout dual
+python es_simple.py --lr 0.002 --seed 1
+python es_simple.py --lr 0.002 --seed 2
+python es_simple.py --lr 0.002 --seed 3
+python es_simple.py --lr 0.005 --seed 1
+python es_simple.py --lr 0.005 --seed 2
+python es_simple.py --lr 0.005 --seed 3
