@@ -1,0 +1,26 @@
+# План 2026-10-03 (v3-body): п. 1 — дрейф ES; п. 2 — голова от тела (подбор η, затем 10 жизней).
+python es_drift.py --mode noise --seed 1
+python es_drift.py --mode noise --seed 2
+python es_drift.py --mode noise --seed 3
+python es_drift.py --mode eval --seed 1
+python es_drift.py --mode eval --seed 2
+python es_drift.py --mode eval --seed 3
+python body_head.py --cond lm --weights pretrained --words c --tune
+python body_head.py --cond lm --weights pretrained --words c
+python body_head.py --cond lm --weights random --words c --tune
+python body_head.py --cond lm --weights random --words c
+python body_head.py --cond lm --weights pretrained --words c_arb1 --tune
+python body_head.py --cond lm --weights pretrained --words c_arb1
+python body_head.py --cond quad --tune
+python body_head.py --cond quad
+python body_head.py --cond raw --tune
+python body_head.py --cond raw
+python body_head.py --cond lm --weights pretrained --words c --mode ii --tune
+python body_head.py --cond lm --weights pretrained --words c --mode ii
+python body_head.py --cond lm --weights random --words c --mode ii --tune
+python body_head.py --cond lm --weights random --words c --mode ii
+python body_head.py --cond raw --mode ii --tune
+python body_head.py --cond raw --mode ii
+python es_drift.py --mode sgd --seed 1
+python es_drift.py --mode sgd --seed 2
+python es_drift.py --mode sgd --seed 3
