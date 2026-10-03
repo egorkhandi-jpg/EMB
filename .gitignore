@@ -7,3 +7,5 @@ PAUSE
 STOP
 *.done
 *.failed
+results_*_smoke/
+results_bodyhead3/pairs/

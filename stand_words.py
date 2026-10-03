@@ -40,7 +40,8 @@ TEST_SEEDS = [999000 + k for k in range(100)]
 ENV, REVERSAL = 'flip-2', True
 BOS = 0
 WORDS = {'c': ((329, 378, 5293), (598, 1066, 1072)),          # ' A' ' B' ' none' | ' up' ' down' ' same'
-         'c_arb1': ((5798, 2829, 8805), (8281, 6951, 3369))}  # ' cat' ' table' ' stone' | ' river' ' chair' ' door'
+         'c_arb1': ((5798, 2829, 8805), (8281, 6951, 3369)),  # ' cat' ' table' ' stone' | ' river' ' chair' ' door'
+         'c_arb2': ((18067, 9005, 20098), (29514, 10329, 3497))}  # ' lamp' ' cloud' ' brick' | ' pencil' ' garden' ' window' (как в A)
 
 
 def events(s):
