@@ -57,3 +57,13 @@ python probe_mech.py --part alphabet --first 7 --last 7
 python probe_mech.py --part alphabet --first 8 --last 8
 python probe_mech.py --part alphabet --first 9 --last 9
 python probe_mech.py --part alphabet --first 10 --last 10
+# п. 3 (BC + ES): условие выполнено — probe_head у lm pretrained c различает в 3/3 посевах (выбор 0,96-0,97, пища/яд 2,5)
+python stand_words.py --cond lm --weights pretrained --words c --N 32 --seed 1 --init-probe results_readout/probe_pretrained_c_s1.npz --out results_bc
+python stand_words.py --cond lm --weights random --words c --N 32 --seed 1 --init-probe results_readout/probe_random_c_s1.npz --out results_bc
+python stand_words.py --cond lm --weights pretrained --words c_arb1 --N 32 --seed 1 --init-probe results_readout/probe_pretrained_c_arb1_s1.npz --out results_bc
+python stand_words.py --cond lm --weights pretrained --words c --N 32 --seed 2 --init-probe results_readout/probe_pretrained_c_s2.npz --out results_bc
+python stand_words.py --cond lm --weights random --words c --N 32 --seed 2 --init-probe results_readout/probe_random_c_s2.npz --out results_bc
+python stand_words.py --cond lm --weights pretrained --words c_arb1 --N 32 --seed 2 --init-probe results_readout/probe_pretrained_c_arb1_s2.npz --out results_bc
+python stand_words.py --cond lm --weights pretrained --words c --N 32 --seed 3 --init-probe results_readout/probe_pretrained_c_s3.npz --out results_bc
+python stand_words.py --cond lm --weights random --words c --N 32 --seed 3 --init-probe results_readout/probe_random_c_s3.npz --out results_bc
+python stand_words.py --cond lm --weights pretrained --words c_arb1 --N 32 --seed 3 --init-probe results_readout/probe_pretrained_c_arb1_s3.npz --out results_bc
