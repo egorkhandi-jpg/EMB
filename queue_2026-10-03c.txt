@@ -1,0 +1,39 @@
+python body_head3.py repro --cond lm --weights pretrained --words c --labels all --readout full
+python body_head3.py repro --cond lm --weights random --words c --labels all --readout full
+python body_head3.py repro --cond lm --weights pretrained --words c_arb1 --labels all --readout full
+python body_head3.py repro --cond quad --labels all --readout full
+python body_head3.py repro --cond raw --labels all --readout full
+python body_head3.py repro --cond lm --weights pretrained --words c --labels all --readout dual
+python body_head3.py repro --cond lm --weights random --words c --labels all --readout dual
+python body_head3.py repro --cond lm --weights pretrained --words c_arb1 --labels all --readout dual
+python body_head3.py repro --cond quad --labels all --readout dual
+python body_head3.py repro --cond raw --labels all --readout dual
+python body_head2.py --cond lm --weights pretrained --words c_arb2 --labels all --readout dual --tune --out results_bodyhead3
+python body_head2.py --cond lm --weights pretrained --words c_arb2 --labels all --readout dual --out results_bodyhead3
+python body_head3.py repro --cond lm --weights pretrained --words c_arb2 --labels all --readout dual --src results_bodyhead3
+python body_head3.py fastonly --cond lm --weights pretrained --words c
+python body_head3.py fastonly --cond lm --weights pretrained --words c_arb1
+python body_head3.py fastonly --cond lm --weights pretrained --words c_arb2
+python body_head3.py fastonly --cond lm --weights random --words c
+python body_head3.py fastonly --cond quad
+python body_head3.py fastonly --cond raw
+python body_head3.py repro --cond lm --weights pretrained --words c --labels event --readout full
+python body_head3.py repro --cond lm --weights pretrained --words c --labels all --readout pca
+python body_head3.py repro --cond lm --weights random --words c --labels event --readout full
+python body_head3.py repro --cond lm --weights random --words c --labels all --readout pca
+python body_head3.py repro --cond lm --weights pretrained --words c_arb1 --labels event --readout full
+python body_head3.py repro --cond lm --weights pretrained --words c_arb1 --labels all --readout pca
+python body_head3.py repro --cond quad --labels event --readout full
+python body_head3.py repro --cond quad --labels all --readout pca
+python body_head3.py repro --cond raw --labels event --readout full
+python body_head3.py repro --cond raw --labels all --readout pca
+python body_head3.py replay --cond lm --weights pretrained --words c --tune
+python body_head3.py replay --cond lm --weights pretrained --words c
+python body_head3.py replay --cond lm --weights random --words c --tune
+python body_head3.py replay --cond lm --weights random --words c
+python body_head3.py replay --cond quad --tune
+python body_head3.py replay --cond quad
+python body_head3.py replay --cond lm --weights pretrained --words c_arb1 --tune
+python body_head3.py replay --cond lm --weights pretrained --words c_arb1
+python body_head3.py replay --cond raw --tune
+python body_head3.py replay --cond raw
