@@ -1,0 +1,6 @@
+# v4-copies: сверка пакет/по одной на посеве 1 → серия (8 посевов pretrained c, только при pass) → random c 3 посева
+python copies.py --seeds 1 --name check
+python copies.py --seeds 1 --name check --sequential
+python copies_check.py --seed 1
+python copies.py --weights pretrained --seeds 1 2 3 4 5 6 7 8 --require-check results_copies/check.json
+python copies.py --weights random --seeds 1 2 3 --require-check results_copies/check.json

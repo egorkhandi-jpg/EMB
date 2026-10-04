@@ -36,6 +36,12 @@ import argparse, json, math, os, subprocess, time
 import numpy as np
 import torch
 
+# fp32 без TF32 на любой карте (правило 10; 2026-10-04 — для RTX 5090 на Vast, чтобы числа были сравнимы с ноутбуком).
+# Все скрипты опытов импортируют этот модуль (git_info), так что настройка действует везде; по умолчанию torch и так «highest».
+torch.set_float32_matmul_precision('highest')
+torch.backends.cuda.matmul.allow_tf32 = False
+torch.backends.cudnn.allow_tf32 = False
+
 # ---------------- тело ----------------
 T = 100
 N_FOOD = 3
