@@ -16,7 +16,7 @@ lm random c — сеть посева s (как в A14); quad — новые с�
 
 python transfer_symbols.py
 """
-import json, math, os, time
+import copy, json, math, os, time
 from types import SimpleNamespace
 import numpy as np
 import torch
@@ -52,8 +52,20 @@ def make(cond, words, seed, dev):
     return sw.LMWords('EleutherAI/pythia-160m', 'pretrained' if cond == 'pretrained_c' else 'random', words, 32, dev, seed)
 
 
-def traj(feat, seeds, mu, sd, dev):
-    """Слепая политика: стандартизованные (mu, sd) признаки, метки тела, знак, маски."""
+def with_words(fX, words):
+    """Та же LM (та же сеть посева), другие токены видов: копия объекта признаков без второй модели в памяти."""
+    f = copy.copy(fX)
+    (tA, tB, tN), _ = sw.WORDS[words]
+    f.kind_tok = torch.tensor([tA, tB, tN], device=fX.kind_tok.device)
+    return f
+
+
+def traj(feat, seeds, mu, sd, dev, chunk=100):
+    """Слепая политика: стандартизованные (mu, sd) признаки, метки тела, знак, маски. Пакеты ≤ chunk эпизодов (видеопамять)."""
+    if len(seeds) > chunk:
+        parts = [traj(feat, seeds[i:i + chunk], mu, sd, dev, chunk) for i in range(0, len(seeds), chunk)]
+        off = np.cumsum([0] + [len(seeds[i:i + chunk]) for i in range(0, len(seeds), chunk)])[:-1]
+        return {k: np.concatenate([(p[k] + o) if k == 'EP' else p[k] for p, o in zip(parts, off)]) for k in parts[0]}
     n = len(seeds)
     b = ef.FlipBodies(n, seeds, True, 'flip-2'); feat.reset(n)
     belief = np.zeros(n, bool); has_b = np.zeros(n, bool); last_post = np.full(n, -1); rev_seen = np.zeros(n, bool)
@@ -96,7 +108,7 @@ def main():
                 fX = make(cond, 'c', key, dev); fX.fit_std(np.random.RandomState(0))
                 fY = {}
                 for nm, w in (('y1', 'y1'), ('y2', 'y2')):
-                    f = QuadNew(fX, 1 if nm == 'y1' else 2) if cond == 'quad' else make(cond, w, key, dev)
+                    f = QuadNew(fX, 1 if nm == 'y1' else 2) if cond == 'quad' else with_words(fX, w)
                     f.mu, f.sd = fX.mu, fX.sd
                     fY[nm] = f
                 tests = {'X': traj(fX, sw.TEST_SEEDS, fX.mu, fX.sd, dev)}
@@ -111,7 +123,7 @@ def main():
                 hY = fit(trainY['Z'][trainY['HB']], trainY['BEL'][trainY['HB']], trainY['EP'][trainY['HB']], dev)
                 cache[key] = (tests, {'blind_X': {'X': acc(hX, tests['X']), 'y1': acc(hX, tests['y1'])},
                                       'blind_Y1': {'y1': acc(hY, tests['y1']), 'X': acc(hY, tests['X'])}})
-                del fX, fY; torch.cuda.empty_cache() if dev == 'cuda' else None
+                del fX, fY, f1; torch.cuda.empty_cache() if dev == 'cuda' else None
             tests, blind = cache[key]
             p = np.load(os.path.join(PAIRS, f'pairs_{cond}_all_full_s{s}.npz'))
             h = fit(p['z'], p['body'], p['ep'], dev)

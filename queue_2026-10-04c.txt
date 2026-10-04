@@ -1,0 +1,8 @@
+# v4-transfer: перенос символов (A20) → сверка пакет/по одной на ноутбуке → серия копий 9–16 → H4
+python transfer_symbols.py
+python copies.py --seeds 1 --name check --out results_copies_laptop
+python copies.py --seeds 1 --name check --sequential --out results_copies_laptop
+python copies_check.py --seed 1 --out results_copies_laptop
+python copies.py --weights pretrained --seeds 9 10 11 12 13 14 15 16 --require-check results_copies_laptop/check.json --out results_copies_laptop
+python h4_copies.py
+python summarize_copies.py results_copies_laptop > results_copies_laptop/summary.txt
