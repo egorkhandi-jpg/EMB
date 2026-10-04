@@ -13,6 +13,10 @@
 стена, «съел вид 0 / вид 1». Токсина в датчиках нет; о нём говорит только тренд энергии в такт съедения богатой.
 Мягкое выживание (как S2): смерти нет, энергия в [0, 1]; приспособленность — средняя энергия за жизнь L = 1000.
 
+Токсин-2 (tau_abs, ДОБАВЛЕНО 2026-10-04; по умолчанию None — токсин-1 без изменений): медленное всасывание. Богатая кладёт
+дозу (те же dose · 100 / τ) в отсек G; за такт из G в кровь X переходит доля 1 − e^{−1/τ_abs}; X выводится с τ; прирост и вред —
+по X, как в токсине-1. Вся доза доходит до X, поэтому при ровном темпе X ≈ r по-прежнему.
+
 Посевы: раскладка, место после съедения и дозы задаются таблицами от посева, а не потоком генератора, — у всех политик
 с одним посевом один и тот же мир (k-я переставленная вещь в гнезде, k-я доза), разности считаются попарно.
 """
@@ -31,7 +35,7 @@ MAX_RICH = 600
 
 
 class ToxinBodies:
-    def __init__(self, seeds, tau, L=L, g_ord=G_ORD, g_rich=G_RICH, x_c=X_C, toxin=True):
+    def __init__(self, seeds, tau, L=L, g_ord=G_ORD, g_rich=G_RICH, x_c=X_C, toxin=True, tau_abs=None):
         seeds = np.asarray(seeds)
         self.B, self.L, self.tau, self.g_ord, self.g_rich, self.x_c, self.toxin = len(seeds), L, tau, g_ord, g_rich, x_c, toxin
         uniq, self.sidx = np.unique(seeds, return_inverse=True)
@@ -45,6 +49,7 @@ class ToxinBodies:
         self.pos = init[self.sidx, :2].copy(); self.head = head[self.sidx].copy()
         self.n_resp = np.zeros((self.B, 2 * N_PER), int); self.n_rich = np.zeros(self.B, int)
         self.E = np.full(self.B, ef.E0); self.prev_E = self.E.copy(); self.X = np.zeros(self.B)
+        self.tau_abs = tau_abs; self.G = np.zeros(self.B)                             # отсек всасывания (токсин-2)
         self.t = 0; self.E_sum = np.zeros(self.B); self.t_floor = np.zeros(self.B)
         self.ate = np.zeros((self.B, 2)); self.n_ord = np.zeros(self.B); self.n_rich_eat = np.zeros(self.B)
         self.n_harm = np.zeros(self.B); self.last_gain = np.full(self.B, np.nan)
@@ -79,6 +84,8 @@ class ToxinBodies:
         v = (a[:, 1] + 1) / 2 * ef.VMAX
         self.pos = np.clip(self.pos + v[:, None] * np.stack([np.cos(self.head), np.sin(self.head)], 1), 0, 1)
         self.X *= np.exp(-1.0 / self.tau)
+        if self.tau_abs:
+            flow = self.G * (1 - np.exp(-1.0 / self.tau_abs)); self.G -= flow; self.X += flow
         E_before = self.E - ef.DRIFT
         d = np.linalg.norm(self.items - self.pos[:, None, :], axis=2)
         i = d.argmin(1)
@@ -88,7 +95,10 @@ class ToxinBodies:
         gain = np.where(rich, g_r, np.where(ordn, self.g_ord, 0.0))
         self.E = np.clip(E_before + gain, 0.0, 1.0)
         dose = self.dose_tab[self.sidx, np.minimum(self.n_rich, MAX_RICH - 1)]
-        self.X = np.where(rich, self.X + dose * 100.0 / self.tau, self.X)
+        if self.tau_abs:
+            self.G = np.where(rich, self.G + dose * 100.0 / self.tau, self.G)
+        else:
+            self.X = np.where(rich, self.X + dose * 100.0 / self.tau, self.X)
         self.n_rich += rich
         self.last_gain = np.where(rich, self.E - E_before, self.last_gain)          # наблюдаемый прирост (с обрезкой 0 / 1)
         self.n_harm += rich & (g_r < 0)
