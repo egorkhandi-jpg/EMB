@@ -1,0 +1,6 @@
+python copies.py --seeds 1 --name check --out results_copies_vast
+python copies.py --seeds 1 --name check --sequential --out results_copies_vast
+python copies_check.py --seed 1 --out results_copies_vast
+python copies.py --weights pretrained --seeds 1 2 3 4 5 6 7 8 --require-check results_copies_vast/check.json --out results_copies_vast
+python copies.py --weights random --seeds 1 2 3 --require-check results_copies_vast/check.json --out results_copies_vast
+python summarize_copies.py results_copies_vast > results_copies_vast/summary.txt
