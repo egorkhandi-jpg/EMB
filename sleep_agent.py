@@ -15,7 +15,9 @@
   Сон — правило: давление (съедено с последнего сна) ≥ θ → спать k тактов. «Бесплатный сон» — то же проигрывание
        (10 проходов) мгновенно и без сна. Оракул — знает знак, LM не нужна.
 
-python sleep_agent.py --theta 6 --k 5 [--lives 200] [--tau 0] [--policy pressure|never|free|oracle]
+python sleep_agent.py --theta 6 --k 5 [--lives 200] [--tau 0] [--policy pressure|never|free|oracle|online]
+«онлайн без сна» (дополнение 2026-10-04): сна нет, медленная голова учится на каждом бодрствующем такте по метке тела
+нормированным правилом A11 (η = 0,3 из подбора A11; устойчиво при 0 < η < 2).
 """
 import argparse, json, math, os, time
 import numpy as np
@@ -31,6 +33,7 @@ POOL = [28725, 16583, 11281, 11472, 18553, 9729, 11996, 22676, 36608, 23656, 579
 NONE, UP, DOWN, SAME, BOS = 5293, 598, 1066, 1072, sw.BOS
 PRESS = [6146, 9268, 6420, 8935]                     # ' north' ' east' ' south' ' west' — давление 0 | 1–2 | 3–5 | ≥ 6 (проверено токенизатором)
 ETA, MB, BMAX, WIN = 1.999609452367605, 32, 200, 32
+ETA_ONLINE = 0.3          # «онлайн без сна»: η A11 для pretrained c, all/full (results_bodyhead2/tune_pretrained_c_all_full.json, замороженная голова на посевах 101–103)
 
 
 class SleepLM:
@@ -142,6 +145,10 @@ def run(feat, mu, sd, policy, theta, k, lives, L, device, tau=0, seed0=50000, me
             bufz[:, slot] = torch.where(lab[:, None], z, bufz[:, slot]); bufy[:, slot] = torch.where(lab, yb, bufy[:, slot])
             buft[:, slot] = torch.where(lab, torch.tensor(float(t), device=device), torch.tensor(-1e9, device=device))
             bufv[:, slot] = lab
+            if policy == 'online':                                            # медленная голова учится на каждом бодрствующем такте (A11)
+                err = (yb - torch.sigmoid((w * z).sum(1) + bb)) * lab.float()
+                g = ETA_ONLINE * err / ((z * z).sum(1) + 1)
+                w += g[:, None] * z; bb += g
             if tau:
                 wf.mul_(decay)
                 err = (yb - torch.sigmoid(((w + wf) * z).sum(1) + bb)) * lab.float()
@@ -181,7 +188,7 @@ def run(feat, mu, sd, policy, theta, k, lives, L, device, tau=0, seed0=50000, me
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--policy', choices=['pressure', 'never', 'free', 'oracle'], default='pressure')
+    ap.add_argument('--policy', choices=['pressure', 'never', 'free', 'oracle', 'online'], default='pressure')
     ap.add_argument('--theta', type=int, default=None)
     ap.add_argument('--k', type=int, default=5)
     ap.add_argument('--tau', type=float, default=0)
