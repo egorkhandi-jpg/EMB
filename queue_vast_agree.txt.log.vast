@@ -1,0 +1,9 @@
+2026-10-04 08:06:44 удалённый старт очереди (tmux queue_vast_agree, 18986de)
+2026-10-04 08:08:12 удалённый старт очереди (tmux, 050af3d, Python 3.12.14)
+2026-10-04 08:08:12 старт: часть ≤ 2.0 ч, перерыв 0.0 мин
+2026-10-04 08:08:12 GPU 35 °C | задача: python body_head3.py replay --cond lm --weights pretrained --words c --params results_evo/evo_A_pretrained_c.json --name evo --out results_vast_agree
+2026-10-04 08:09:39 готово за 87 с: python body_head3.py replay --cond lm --weights pretrained --words c --params results_evo/evo_A_pretrained_c.json --name evo --out results_vast_agree
+2026-10-04 08:09:39 GPU 66 °C | задача: python copies.py --seeds 1 --name check --out results_vast_agree
+2026-10-04 08:12:42 готово за 183 с: python copies.py --seeds 1 --name check --out results_vast_agree
+2026-10-04 08:12:42 очередь пуста — готово
+2026-10-04 08:12:42 удалённый конец очереди (rc=0)
