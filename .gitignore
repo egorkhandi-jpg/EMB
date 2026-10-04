@@ -9,3 +9,5 @@ STOP
 *.failed
 results_*_smoke/
 results_bodyhead3/pairs/
+results_evo/record/
+results_scratch*/

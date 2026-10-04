@@ -46,7 +46,8 @@ life_seeds = lambda s: [500000 + 1000 * s + e for e in range(LIFE)]
 
 def live_c(feat, seeds_per_life, head, labels_mode, device, collect=False, after_episode=None):
     """Повтор body_head2.live (поведение то же) со сбором пар (z, метка тела, истинный знак, информирован)
-    на тактах обновления меток all и с вызовом after_episode(Z, Y, M) в паузе после каждого эпизода."""
+    на тактах обновления меток all и с вызовом after_episode(ep) в паузе после каждого эпизода; ep — словарь
+    тензоров эпизода (L, T, …): z, bel (метка all), m_all, yA (исход события), m_ev (такт события, t ≥ 1), sign, inf."""
     L, n_ep = len(seeds_per_life), len(seeds_per_life[0])
     online = []; stats = {'fitness': [], 'food': [], 'poison': [], 'log': []}
     pairs = [[] for _ in range(L)]
@@ -58,7 +59,7 @@ def live_c(feat, seeds_per_life, head, labels_mode, device, collect=False, after
         z_prev = None
         belief = np.zeros(L, bool); has_belief = np.zeros(L, bool)
         last_post = np.full(L, -1); rev_seen = np.zeros(L, bool); log = []
-        EZ, EY, EM = [], [], []
+        EP = {k: [] for k in ('z', 'bel', 'm_all', 'yA', 'm_ev', 'sign', 'inf')}
         for t in range(T):
             s = bodies.sense()
             has_ev, yA = bh.labels(s)
@@ -82,8 +83,9 @@ def live_c(feat, seeds_per_life, head, labels_mode, device, collect=False, after
                 for i in np.where(m_all)[0]:
                     pairs[i].append((zc[i], belief[i], bodies.good_A[i], informed[i], e, t))
             if after_episode is not None:
-                EZ.append(z); EY.append(torch.as_tensor(belief, dtype=torch.float32, device=device))
-                EM.append(torch.as_tensor(m_all, dtype=torch.float32, device=device))
+                f32 = lambda x: torch.as_tensor(x, dtype=torch.float32, device=device)
+                EP['z'].append(z); EP['bel'].append(f32(belief)); EP['m_all'].append(f32(m_all)); EP['yA'].append(f32(yA))
+                EP['m_ev'].append(f32(has_ev & bodies.alive & (t > 0))); EP['sign'].append(f32(bodies.good_A)); EP['inf'].append(f32(informed))
             chA = (head.logit(z) >= 0).cpu().numpy()
             correct = chA == bodies.good_A
             for i in np.where(informed)[0]:
@@ -97,7 +99,7 @@ def live_c(feat, seeds_per_life, head, labels_mode, device, collect=False, after
         stats['fitness'] += bodies.fitness().tolist(); stats['food'] += bodies.n_good.tolist(); stats['poison'] += bodies.n_bad.tolist()
         stats['log'].append(np.stack(log, 1))
         if after_episode is not None:
-            after_episode(torch.stack(EZ, 1), torch.stack(EY, 1), torch.stack(EM, 1))      # (L, T, d), (L, T), (L, T)
+            after_episode({k: torch.stack(v, 1) for k, v in EP.items()})      # (L, T, d) и (L, T)
     return online, stats, pairs
 
 
@@ -168,7 +170,8 @@ def build(a, net_seed, readout):
 
 
 def tag_of(a, suffix):
-    return (f"{a.weights}_{a.words}" if a.cond == 'lm' else a.cond) + suffix
+    m = '' if a.model == 'EleutherAI/pythia-160m' else a.model.split('-')[-1] + '_'
+    return m + (f"{a.weights}_{a.words}" if a.cond == 'lm' else a.cond) + suffix
 
 
 def is_shared(a):
@@ -274,18 +277,26 @@ def run_fastonly(a, commit, dirty):
     json.dump(res, open(path, 'w'), ensure_ascii=False)
 
 
-def make_replayer(head, etas, B, gen):
+def make_replayer(head, etas, B, gen, K=REPLAY_PASSES, rule='all', record=None):
     """Пауза после эпизода: проигрывание буфера последних B эпизодов (включая текущий), K проходов,
-    мини-пакеты по 32, нормированный шаг по медленным весам (логистическая потеря, только медленный логит)."""
+    мини-пакеты по 32, нормированный шаг по медленным весам (логистическая потеря, только медленный логит).
+    rule: all — пары (z_t, «последний исход») на тактах с меткой; event — (z_{t−1}, исход) в такт события.
+    record — список, куда складываются эпизоды на CPU (режим record)."""
     buf = []
     etas = torch.as_tensor(etas, dtype=torch.float32, device=head.w.device)
 
-    def after_episode(Z, Y, M):
+    def after_episode(ep):
+        if record is not None:
+            record.append({k: v.cpu().numpy() for k, v in ep.items()})
+        if rule == 'all':
+            Z, Y, M = ep['z'], ep['bel'], ep['m_all']
+        else:
+            Z = torch.cat([torch.zeros_like(ep['z'][:, :1]), ep['z'][:, :-1]], 1); Y, M = ep['yA'], ep['m_ev']
         buf.append((Z, Y, M, (Z * Z).sum(-1) + 1))
         del buf[:-B]
         Zb, Yb, Mb, Nb = (torch.cat([x[k] for x in buf], 1) for k in range(4))
         n = Zb.shape[1]
-        for _ in range(REPLAY_PASSES):
+        for _ in range(K):
             perm = torch.randperm(n, generator=gen).to(Zb.device)
             for k in range(0, n, REPLAY_MB):
                 idx = perm[k:k + REPLAY_MB]
@@ -299,15 +310,17 @@ def make_replayer(head, etas, B, gen):
     return after_episode
 
 
-def replay_life(a, feat, P, seeds, etas, B, gen_seed):
+def replay_life(a, feat, P, seeds, etas, B, gen_seed, K=REPLAY_PASSES, rule='all', n_ep=None, record=None):
     head = bh2.Head(len(seeds), feat.mu.shape[0], [0.0] * len(seeds), a.device, 'dual', P)   # онлайн — только быстрая часть
     gen = torch.Generator().manual_seed(gen_seed)
-    online, st, _ = live_c(feat, [life_seeds(s) for s in seeds], head, 'all', a.device, after_episode=make_replayer(head, etas, B, gen))
+    n_ep = n_ep or LIFE
+    online, st, _ = live_c(feat, [[500000 + 1000 * s + e for e in range(n_ep)] for s in seeds], head, 'all', a.device,
+                           after_episode=make_replayer(head, etas, B, gen, K, rule, record))
     return head, online, st
 
 
 def run_replay(a, commit, dirty):
-    tag = tag_of(a, '_replay')
+    tag = tag_of(a, '_replay' + (f'_{a.name}' if a.name else ''))
     if a.tune:
         res = {'tag': tag, 'grid': {}, 'git_commit': commit, 'git_dirty': dirty}
         t0 = time.time()
@@ -329,9 +342,16 @@ def run_replay(a, commit, dirty):
         json.dump(res, open(os.path.join(a.out, f'tune_{tag}.json'), 'w'), ensure_ascii=False)
         print('выбрано', res['best'], flush=True)
         return
-    best = json.load(open(os.path.join(a.out, f'tune_{tag}.json')))['best']
+    if a.params:
+        best = json.load(open(a.params))[a.params_key]
+    elif a.eta is not None:
+        best = {'eta': a.eta, 'B': a.B, 'K': a.K, 'rule': a.rule}
+    else:
+        best = json.load(open(os.path.join(a.out, f'tune_{tag}.json')))['best']
+    best = {'K': REPLAY_PASSES, 'rule': 'all', **best}
     path = os.path.join(a.out, f'replay_{tag}.json')
-    res = json.load(open(path)) if os.path.exists(path) else {'tag': tag, 'eta': best['eta'], 'B': best['B'], 'results': [], 'runs': []}
+    res = json.load(open(path)) if os.path.exists(path) else {'tag': tag, 'eta': best['eta'], 'B': best['B'], 'K': best['K'],
+                                                              'rule': best['rule'], 'model': a.model, 'results': [], 'runs': []}
     res['runs'].append({'git_commit': commit, 'git_dirty': dirty, 'seeds': a.seeds})
     todo = [s for s in a.seeds if s not in {x['seed'] for x in res['results']}]
     t0 = time.time()
@@ -339,7 +359,7 @@ def run_replay(a, commit, dirty):
         if not grp:
             continue
         feat, P = build(a, grp[0], 'dual')
-        head, online, st = replay_life(a, feat, P, grp, [best['eta']] * len(grp), best['B'], 9000 + grp[0])
+        head, online, st = replay_life(a, feat, P, grp, [best['eta']] * len(grp), best['B'], 9000 + grp[0], best['K'], best['rule'])
         bt = blind_traj(feat, head.proj, sw.TEST_SEEDS, a.device)
         for j, s in enumerate(grp):
             sub = {kk: (vv[j::len(grp)] if kk in ('fitness', 'food', 'poison') else vv) for kk, vv in st.items()}
@@ -358,9 +378,25 @@ def run_replay(a, commit, dirty):
     json.dump(res, open(path, 'w'), ensure_ascii=False)
 
 
+def run_record(a, commit, dirty):
+    """Запись опыта для эволюции правила (п. 1A): жизни агента с проигрыванием (параметры сетки A15), a.n_ep эпизодов
+    на посев; по каждому посеву — все такты (L, T): z, метки, маски. Только для общих сетей (lm pretrained)."""
+    assert is_shared(a)
+    os.makedirs(os.path.join(a.out, 'record'), exist_ok=True)
+    feat, P = build(a, a.seeds[0], 'dual')
+    rec = []; t0 = time.time()
+    replay_life(a, feat, P, a.seeds, [a.eta] * len(a.seeds), a.B, 9000 + a.seeds[0], a.K, a.rule, n_ep=a.n_ep, record=rec)
+    for j, s in enumerate(a.seeds):
+        np.savez(os.path.join(a.out, 'record', f'rec_{tag_of(a, "")}_s{s}.npz'),
+                 **{k: np.stack([ep[k][j] for ep in rec]) for k in rec[0]})      # (эпизоды, T, …)
+    json.dump({'seeds': a.seeds, 'n_ep': a.n_ep, 'eta': a.eta, 'B': a.B, 'K': a.K, 'rule': a.rule, 'git_commit': commit,
+               'git_dirty': dirty, 'sec': round(time.time() - t0)}, open(os.path.join(a.out, 'record', f'rec_{tag_of(a, "")}.json'), 'w'))
+    print(f'записано {len(a.seeds)} жизней × {a.n_ep} эпизодов за {time.time() - t0:.0f} с', flush=True)
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('mode', choices=['repro', 'fastonly', 'replay'])
+    ap.add_argument('mode', choices=['repro', 'fastonly', 'replay', 'record'])
     ap.add_argument('--cond', choices=['lm', 'quad', 'raw'], required=True)
     ap.add_argument('--model', default='EleutherAI/pythia-160m')
     ap.add_argument('--weights', choices=['pretrained', 'random'], default='pretrained')
@@ -368,6 +404,14 @@ def main():
     ap.add_argument('--labels', choices=['event', 'all'], default='all')
     ap.add_argument('--readout', choices=['full', 'pca', 'dual'], default='full')
     ap.add_argument('--tune', action='store_true')
+    ap.add_argument('--eta', type=float, default=None, help='replay/record: явный шаг медленных')
+    ap.add_argument('--B', type=int, default=50)
+    ap.add_argument('--K', type=int, default=REPLAY_PASSES)
+    ap.add_argument('--rule', choices=['all', 'event'], default='all')
+    ap.add_argument('--params', default=None, help='replay: JSON с параметрами (eta, B, K, rule)')
+    ap.add_argument('--params-key', default='es_final')
+    ap.add_argument('--name', default='', help='replay: суффикс метки')
+    ap.add_argument('--n-ep', type=int, default=100, help='record: эпизодов на посев')
     ap.add_argument('--seeds', type=int, nargs='+', default=list(range(1, 11)))
     ap.add_argument('--src', default='results_bodyhead2')
     ap.add_argument('--device', default='cuda' if torch.cuda.is_available() else 'cpu')
@@ -381,7 +425,7 @@ def main():
     commit, dirty = git_info()
     if dirty:
         print(f'ВНИМАНИЕ: незакоммиченный код (HEAD {commit[:8]})', flush=True)
-    {'repro': run_repro, 'fastonly': run_fastonly, 'replay': run_replay}[a.mode](a, commit, dirty)
+    {'repro': run_repro, 'fastonly': run_fastonly, 'replay': run_replay, 'record': run_record}[a.mode](a, commit, dirty)
 
 
 if __name__ == '__main__':

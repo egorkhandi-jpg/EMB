@@ -41,7 +41,8 @@ ENV, REVERSAL = 'flip-2', True
 BOS = 0
 WORDS = {'c': ((329, 378, 5293), (598, 1066, 1072)),          # ' A' ' B' ' none' | ' up' ' down' ' same'
          'c_arb1': ((5798, 2829, 8805), (8281, 6951, 3369)),  # ' cat' ' table' ' stone' | ' river' ' chair' ' door'
-         'c_arb2': ((18067, 9005, 20098), (29514, 10329, 3497))}  # ' lamp' ' cloud' ' brick' | ' pencil' ' garden' ' window' (как в A)
+         'c_arb2': ((18067, 9005, 20098), (29514, 10329, 3497)),  # ' lamp' ' cloud' ' brick' | ' pencil' ' garden' ' window' (как в A)
+         'c_arb3': ((36608, 23656, 11129), (11996, 22676, 23465))}  # ' violin' ' carpet' ' mountain' | ' bottle' ' feather' ' ladder'
 
 
 def events(s):
