@@ -1,0 +1,24 @@
+# Настоящий агент в S2, 5090: основная семья → ориентиры → k = 10 → быстрые веса → сводка
+python sleep_agent.py --policy pressure --theta 6 --k 5 --out results_sleep_agent
+python sleep_agent.py --policy online --out results_sleep_agent
+python sleep_agent.py --policy pressure --theta 1 --k 5 --out results_sleep_agent
+python sleep_agent.py --policy pressure --theta 2 --k 5 --out results_sleep_agent
+python sleep_agent.py --policy pressure --theta 4 --k 5 --out results_sleep_agent
+python sleep_agent.py --policy pressure --theta 8 --k 5 --out results_sleep_agent
+python sleep_agent.py --policy pressure --theta 16 --k 5 --out results_sleep_agent
+python sleep_agent.py --policy never --out results_sleep_agent
+python sleep_agent.py --policy free --theta 2 --out results_sleep_agent
+python sleep_agent.py --policy oracle --out results_sleep_agent
+python sleep_agent.py --policy pressure --theta 1 --k 10 --out results_sleep_agent
+python sleep_agent.py --policy pressure --theta 2 --k 10 --out results_sleep_agent
+python sleep_agent.py --policy pressure --theta 4 --k 10 --out results_sleep_agent
+python sleep_agent.py --policy pressure --theta 6 --k 10 --out results_sleep_agent
+python sleep_agent.py --policy pressure --theta 8 --k 10 --out results_sleep_agent
+python sleep_agent.py --policy pressure --theta 16 --k 10 --out results_sleep_agent
+python sleep_agent.py --policy never --tau 10 --out results_sleep_agent
+python sleep_agent.py --policy pressure --theta 1 --k 5 --tau 10 --out results_sleep_agent
+python sleep_agent.py --policy pressure --theta 6 --k 5 --tau 10 --out results_sleep_agent
+python sleep_agent.py --policy never --tau 20 --out results_sleep_agent
+python sleep_agent.py --policy pressure --theta 1 --k 5 --tau 20 --out results_sleep_agent
+python sleep_agent.py --policy pressure --theta 6 --k 5 --tau 20 --out results_sleep_agent
+python summarize_sleep_agent.py results_sleep_agent > results_sleep_agent/summary.txt

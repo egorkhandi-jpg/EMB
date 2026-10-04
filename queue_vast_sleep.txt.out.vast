@@ -1,0 +1,71 @@
+2026-10-04 14:10:15 старт: часть ≤ 2.0 ч, перерыв 0.0 мин
+2026-10-04 14:10:15 GPU 38 °C | задача: python sleep_agent.py --policy pressure --theta 6 --k 5 --out results_sleep_agent
+pressure_th6_k5: F 0.4397 | сон 0.064 | выбор 0.569 (медленная 0.569) | пища/яд 64.7/53.3 | на нуле 0.295 | 233 с
+2026-10-04 14:14:09 готово за 235 с: python sleep_agent.py --policy pressure --theta 6 --k 5 --out results_sleep_agent
+2026-10-04 14:14:09 GPU 73 °C | задача: python sleep_agent.py --policy online --out results_sleep_agent
+online_thNone_k5: F 0.6237 | сон 0.000 | выбор 0.781 (медленная 0.781) | пища/яд 90.2/35.9 | на нуле 0.105 | 101 с
+2026-10-04 14:15:52 готово за 103 с: python sleep_agent.py --policy online --out results_sleep_agent
+2026-10-04 14:15:52 GPU 78 °C | задача: python sleep_agent.py --policy pressure --theta 1 --k 5 --out results_sleep_agent
+pressure_th1_k5: F 0.5169 | сон 0.299 | выбор 0.704 (медленная 0.704) | пища/яд 57.8/32.1 | на нуле 0.168 | 108 с
+2026-10-04 14:17:42 готово за 110 с: python sleep_agent.py --policy pressure --theta 1 --k 5 --out results_sleep_agent
+2026-10-04 14:17:42 GPU 90 °C — остывание
+2026-10-04 14:18:12 GPU 57 °C | задача: python sleep_agent.py --policy pressure --theta 2 --k 5 --out results_sleep_agent
+pressure_th2_k5: F 0.5024 | сон 0.174 | выбор 0.664 (медленная 0.664) | пища/яд 65.1/40.1 | на нуле 0.210 | 107 с
+2026-10-04 14:20:01 готово за 109 с: python sleep_agent.py --policy pressure --theta 2 --k 5 --out results_sleep_agent
+2026-10-04 14:20:01 GPU 77 °C | задача: python sleep_agent.py --policy pressure --theta 4 --k 5 --out results_sleep_agent
+pressure_th4_k5: F 0.4666 | сон 0.094 | выбор 0.607 (медленная 0.607) | пища/яд 66.5/48.3 | на нуле 0.257 | 108 с
+2026-10-04 14:21:50 готово за 109 с: python sleep_agent.py --policy pressure --theta 4 --k 5 --out results_sleep_agent
+2026-10-04 14:21:50 GPU 84 °C | задача: python sleep_agent.py --policy pressure --theta 8 --k 5 --out results_sleep_agent
+pressure_th8_k5: F 0.4490 | сон 0.049 | выбор 0.571 (медленная 0.571) | пища/яд 67.4/53.9 | на нуле 0.286 | 108 с
+2026-10-04 14:23:40 готово за 109 с: python sleep_agent.py --policy pressure --theta 8 --k 5 --out results_sleep_agent
+2026-10-04 14:23:40 GPU 81 °C | задача: python sleep_agent.py --policy pressure --theta 16 --k 5 --out results_sleep_agent
+pressure_th16_k5: F 0.4244 | сон 0.025 | выбор 0.541 (медленная 0.541) | пища/яд 66.6/59.1 | на нуле 0.311 | 107 с
+2026-10-04 14:25:28 готово за 108 с: python sleep_agent.py --policy pressure --theta 16 --k 5 --out results_sleep_agent
+2026-10-04 14:25:28 GPU 80 °C | задача: python sleep_agent.py --policy never --out results_sleep_agent
+never_thNone_k5: F 0.3937 | сон 0.000 | выбор 0.503 (медленная 0.503) | пища/яд 80.5/79.7 | на нуле 0.232 | 103 с
+2026-10-04 14:27:13 готово за 105 с: python sleep_agent.py --policy never --out results_sleep_agent
+2026-10-04 14:27:13 GPU 80 °C | задача: python sleep_agent.py --policy free --theta 2 --out results_sleep_agent
+free_th2_k5: F 0.5431 | сон 0.000 | выбор 0.707 (медленная 0.707) | пища/яд 82.2/44.7 | на нуле 0.176 | 115 с
+2026-10-04 14:29:10 готово за 117 с: python sleep_agent.py --policy free --theta 2 --out results_sleep_agent
+2026-10-04 14:29:10 GPU 80 °C | задача: python sleep_agent.py --policy oracle --out results_sleep_agent
+oracle_thNone_k5: F 0.8493 | сон 0.000 | выбор 1.000 (медленная 1.000) | пища/яд 110.3/14.1 | на нуле 0.001 | 1 с
+2026-10-04 14:29:12 готово за 2 с: python sleep_agent.py --policy oracle --out results_sleep_agent
+2026-10-04 14:29:12 GPU 75 °C | задача: python sleep_agent.py --policy pressure --theta 1 --k 10 --out results_sleep_agent
+pressure_th1_k10: F 0.4471 | сон 0.458 | выбор 0.656 (медленная 0.656) | пища/яд 41.9/27.1 | на нуле 0.213 | 114 с
+2026-10-04 14:31:07 готово за 115 с: python sleep_agent.py --policy pressure --theta 1 --k 10 --out results_sleep_agent
+2026-10-04 14:31:07 GPU 80 °C | задача: python sleep_agent.py --policy pressure --theta 2 --k 10 --out results_sleep_agent
+pressure_th2_k10: F 0.4592 | сон 0.296 | выбор 0.633 (медленная 0.633) | пища/яд 53.0/36.5 | на нуле 0.234 | 114 с
+2026-10-04 14:33:03 готово за 116 с: python sleep_agent.py --policy pressure --theta 2 --k 10 --out results_sleep_agent
+2026-10-04 14:33:03 GPU 81 °C | задача: python sleep_agent.py --policy pressure --theta 4 --k 10 --out results_sleep_agent
+pressure_th4_k10: F 0.4445 | сон 0.172 | выбор 0.593 (медленная 0.593) | пища/яд 59.2/45.5 | на нуле 0.269 | 114 с
+2026-10-04 14:34:59 готово за 116 с: python sleep_agent.py --policy pressure --theta 4 --k 10 --out results_sleep_agent
+2026-10-04 14:34:59 GPU 80 °C | задача: python sleep_agent.py --policy pressure --theta 6 --k 10 --out results_sleep_agent
+pressure_th6_k10: F 0.4475 | сон 0.121 | выбор 0.584 (медленная 0.584) | пища/яд 62.3/49.0 | на нуле 0.278 | 113 с
+2026-10-04 14:36:54 готово за 115 с: python sleep_agent.py --policy pressure --theta 6 --k 10 --out results_sleep_agent
+2026-10-04 14:36:54 GPU 81 °C | задача: python sleep_agent.py --policy pressure --theta 8 --k 10 --out results_sleep_agent
+pressure_th8_k10: F 0.4275 | сон 0.093 | выбор 0.558 (медленная 0.558) | пища/яд 62.2/53.3 | на нуле 0.302 | 112 с
+2026-10-04 14:38:48 готово за 114 с: python sleep_agent.py --policy pressure --theta 8 --k 10 --out results_sleep_agent
+2026-10-04 14:38:48 GPU 80 °C | задача: python sleep_agent.py --policy pressure --theta 16 --k 10 --out results_sleep_agent
+pressure_th16_k10: F 0.4304 | сон 0.048 | выбор 0.556 (медленная 0.556) | пища/яд 66.0/56.4 | на нуле 0.294 | 152 с
+2026-10-04 14:41:22 готово за 154 с: python sleep_agent.py --policy pressure --theta 16 --k 10 --out results_sleep_agent
+2026-10-04 14:41:22 GPU 76 °C | задача: python sleep_agent.py --policy never --tau 10 --out results_sleep_agent
+never_thNone_k5_tau10: F 0.7076 | сон 0.000 | выбор 0.867 (медленная 0.595) | пища/яд 97.6/28.7 | на нуле 0.048 | 107 с
+2026-10-04 14:43:11 готово за 109 с: python sleep_agent.py --policy never --tau 10 --out results_sleep_agent
+2026-10-04 14:43:11 GPU 78 °C | задача: python sleep_agent.py --policy pressure --theta 1 --k 5 --tau 10 --out results_sleep_agent
+pressure_th1_k5_tau10: F 0.5358 | сон 0.299 | выбор 0.720 (медленная 0.709) | пища/яд 58.7/31.1 | на нуле 0.154 | 133 с
+2026-10-04 14:45:26 готово за 135 с: python sleep_agent.py --policy pressure --theta 1 --k 5 --tau 10 --out results_sleep_agent
+2026-10-04 14:45:26 GPU 77 °C | задача: python sleep_agent.py --policy pressure --theta 6 --k 5 --tau 10 --out results_sleep_agent
+pressure_th6_k5_tau10: F 0.5369 | сон 0.064 | выбор 0.677 (медленная 0.600) | пища/яд 74.6/43.3 | на нуле 0.197 | 121 с
+2026-10-04 14:47:29 готово за 123 с: python sleep_agent.py --policy pressure --theta 6 --k 5 --tau 10 --out results_sleep_agent
+2026-10-04 14:47:29 GPU 80 °C | задача: python sleep_agent.py --policy never --tau 20 --out results_sleep_agent
+never_thNone_k5_tau20: F 0.6931 | сон 0.000 | выбор 0.848 (медленная 0.588) | пища/яд 96.1/29.9 | на нуле 0.057 | 103 с
+2026-10-04 14:49:13 готово за 105 с: python sleep_agent.py --policy never --tau 20 --out results_sleep_agent
+2026-10-04 14:49:13 GPU 80 °C | задача: python sleep_agent.py --policy pressure --theta 1 --k 5 --tau 20 --out results_sleep_agent
+pressure_th1_k5_tau20: F 0.5360 | сон 0.298 | выбор 0.719 (медленная 0.700) | пища/яд 58.6/30.8 | на нуле 0.154 | 109 с
+2026-10-04 14:51:04 готово за 111 с: python sleep_agent.py --policy pressure --theta 1 --k 5 --tau 20 --out results_sleep_agent
+2026-10-04 14:51:04 GPU 80 °C | задача: python sleep_agent.py --policy pressure --theta 6 --k 5 --tau 20 --out results_sleep_agent
+pressure_th6_k5_tau20: F 0.5626 | сон 0.064 | выбор 0.707 (медленная 0.606) | пища/яд 77.6/40.2 | на нуле 0.169 | 108 с
+2026-10-04 14:52:54 готово за 110 с: python sleep_agent.py --policy pressure --theta 6 --k 5 --tau 20 --out results_sleep_agent
+2026-10-04 14:52:54 GPU 79 °C | задача: python summarize_sleep_agent.py results_sleep_agent > results_sleep_agent/summary.txt
+2026-10-04 14:52:54 готово за 0 с: python summarize_sleep_agent.py results_sleep_agent > results_sleep_agent/summary.txt
+2026-10-04 14:52:54 очередь пуста — готово
