@@ -2,7 +2,7 @@
 import itertools, json, os
 import numpy as np
 
-os.chdir(r'C:\embodied-lm-stand')
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 import sys
 D = sys.argv[1] if len(sys.argv) > 1 else 'results_copies'
 C = ['s1', 's2', 'h_hi', 'h_lo', 'dense']
