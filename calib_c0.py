@@ -66,7 +66,7 @@ def main():
               + f" | до 0,85 — эпизодов {e85}, событий {c85}; по посевам {per_seed} | C₀ = {c0}", flush=True)
     out['sec'] = round(time.time() - t0)
     os.makedirs('results_sleep2', exist_ok=True)
-    json.dump(out, open('results_sleep2/calib_c0.json', 'w'), ensure_ascii=False)
+    json.dump(out, open('results_sleep2/calib_c0.json', 'w', encoding='utf-8'), ensure_ascii=False)
 
 
 if __name__ == '__main__':
