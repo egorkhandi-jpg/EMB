@@ -1,0 +1,14 @@
+2026-10-04 18:18:11 удалённый старт очереди (tmux, 40fecea, Python 3.12.14)
+2026-10-04 18:18:11 старт: часть ≤ 2.0 ч, перерыв 0.0 мин
+2026-10-04 18:18:11 GPU 43 °C | задача: python report_icl.py --model EleutherAI/pythia-160m --weights pretrained --chunk 128
+2026-10-04 18:21:27 готово за 196 с: python report_icl.py --model EleutherAI/pythia-160m --weights pretrained --chunk 128
+2026-10-04 18:21:27 GPU 54 °C | задача: python report_icl.py --model EleutherAI/pythia-160m --weights random --chunk 128
+2026-10-04 18:26:11 готово за 284 с: python report_icl.py --model EleutherAI/pythia-160m --weights random --chunk 128
+2026-10-04 18:26:11 GPU 52 °C | задача: python report_icl.py --model EleutherAI/pythia-1b --weights pretrained --chunk 128
+2026-10-04 18:43:54 готово за 1063 с: python report_icl.py --model EleutherAI/pythia-1b --weights pretrained --chunk 128
+2026-10-04 18:43:54 GPU 54 °C | задача: python report_icl.py --model EleutherAI/pythia-1b --weights random --chunk 128
+2026-10-04 19:09:20 готово за 1526 с: python report_icl.py --model EleutherAI/pythia-1b --weights random --chunk 128
+2026-10-04 19:09:20 GPU 55 °C | задача: python summarize_icl.py results_report > results_report/summary_icl.txt
+2026-10-04 19:09:20 готово за 0 с: python summarize_icl.py results_report > results_report/summary_icl.txt
+2026-10-04 19:09:20 очередь пуста — готово
+2026-10-04 19:09:20 удалённый конец очереди (rc=0)
