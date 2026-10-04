@@ -16,6 +16,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--out', default=None)
     ap.add_argument('--compare', nargs=2, default=None)
+    ap.add_argument('--device', default=None, help='cpu — калибровка без видеокарты')
     a = ap.parse_args()
     if a.compare:
         x, y = np.load(a.compare[0]), np.load(a.compare[1])
@@ -27,7 +28,7 @@ def main():
     import torch
     import stand_gpu  # noqa: F401  — fp32 без TF32
     import body_head as bh, env_flip as ef, stand_words as sw
-    dev = 'cuda' if torch.cuda.is_available() else 'cpu'
+    dev = a.device or ('cuda' if torch.cuda.is_available() else 'cpu')
     feat = bh.make_feat(SimpleNamespace(cond='lm', model='EleutherAI/pythia-160m', weights='pretrained', words='c', device=dev), 1, 32)
     n = 16
     b = ef.FlipBodies(n, [999000 + k for k in range(n)], True, 'flip-2'); feat.reset(n)
