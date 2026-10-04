@@ -1,0 +1,5 @@
+# v4-report: 160M (пред, случ) → 1B (пред, случ)
+python report_body.py --model EleutherAI/pythia-160m --weights pretrained
+python report_body.py --model EleutherAI/pythia-160m --weights random
+python report_body.py --model EleutherAI/pythia-1b --weights pretrained --chunk 64
+python report_body.py --model EleutherAI/pythia-1b --weights random --chunk 64
