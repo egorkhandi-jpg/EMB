@@ -226,16 +226,18 @@ def run_seeds(a, seeds, feat, prm, bs, out, commit, dirty, sequential=False):
         r.gens = [torch.Generator().manual_seed(9100 + 100 * seeds[i // len(COPIES)] + i % len(COPIES)) for i in grp]
         pw = parent_w[rows[g]]
         cps, ons = [], []
+        nm = f"{a.tag}_{'seq' if sequential else 'bat'}_{seeds[grp[0] // len(COPIES)]}{COPIES[grp[0] % len(COPIES)]}"
+        save_cp = lambda c: (np.save(os.path.join(out, f'w_{nm}_cp{c}.npy'), h.w.cpu().numpy()),
+                             np.save(os.path.join(out, f'b_{nm}_cp{c}.npy'), h.b.cpu().numpy()))   # веса каждой контрольной точки (п. Б, 2026-10-04)
         for j in range(a.div_lives):
             sp = [[600000 + 10000 * seeds[i // len(COPIES)] + 1000 * (i % len(COPIES)) + a.life * j + e for e in range(a.life)] for i in grp]
             ons.append(live(feat, h, r, [envs[i] for i in grp], sp, a.device))
-            cps.append(checkpoint(feat, h, pw, bs, tests, a.device))
+            cps.append(checkpoint(feat, h, pw, bs, tests, a.device)); save_cp(j + 1)
         sp = [[700000 + 1000 * seeds[i // len(COPIES)] + e for e in range(a.life)] for i in grp]
         ons.append(live(feat, h, r, ['base'] * L, sp, a.device))
-        cps.append(checkpoint(feat, h, pw, bs, tests, a.device))
+        cps.append(checkpoint(feat, h, pw, bs, tests, a.device)); save_cp('ret')
         for k, i in enumerate(grp):
             res_by_life[i] = {'cps': cps, 'k': k, 'ons': ons, 'w': [None]}
-        nm = f"{a.tag}_{'seq' if sequential else 'bat'}_{seeds[grp[0] // len(COPIES)]}{COPIES[grp[0] % len(COPIES)]}"
         np.save(os.path.join(out, f'w_{nm}.npy'), h.w.cpu().numpy()); np.save(os.path.join(out, f'b_{nm}.npy'), h.b.cpu().numpy())
         print(f"{time.strftime('%H:%M:%S')} копии {[envs[i] for i in grp][:5]}{'…' if L > 5 else ''} посевов "
               f"{sorted({seeds[i // len(COPIES)] for i in grp})}: готово | {time.time() - t0:.0f} с", flush=True)
