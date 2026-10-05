@@ -1,0 +1,132 @@
+"""Тезис 5 (геометрия): среда «я / мир» — разделение изменений мира и изменений, вызванных собой.
+Пререгистрация — docs/RESULTS_2026-10-05_geometry.md.
+
+Мир. Арена [0, 1]², тело с курсом. Действие кадра: поворот (−1 влево / 0 / +1 вправо) × TURN_G и движение (0 стоять /
+1 вперёд на VMAX). K предметов, ровно один живой: медленно смещается сам (случайное блуждание с инерцией ρ, типичный шаг U),
+остальные неподвижны. Живой — пища, неподвижные — пустышки.
+Раунд: все K предметов ставятся заново, живой — случайный номер. Раунд кончается, когда живой съеден (дистанция < EAT_R)
+или прожил L_food тактов (пища потеряна). Касание пустышки: она переставляется в новое место (появилась заново).
+Энергия дрейфует (DRIFT), пища +FOOD_GAIN, мягкое выживание (как S2); главная мера — число съеденных за жизнь L.
+
+Датчики — строго в собственных координатах: для каждого предмета направление b (рад, 0 — прямо, + — влево) и дистанция d,
+с шумом (σ_b, σ_d); плюс флаг «предмет появился заново» (перестановка видна как событие). Ничего в мировых координатах.
+Шум нужен по построению: без него неподвижный предмет при стоянии не сдвигается вовсе, и «замри и смотри» за один кадр
+так же точен, как вычитание своего действия.
+
+Посевы: расстановки, номер живого, шум блуждания и шум датчиков — таблицы от посева, общие у всех политик (разности попарны).
+"""
+import numpy as np
+
+ARENA_LO, ARENA_HI = 0.1, 0.9
+TURN_G = 0.3
+VMAX = 0.03
+EAT_R = 0.05
+RHO = 0.95
+SIG_B = 0.02
+SIG_D = 0.01
+DRIFT = 0.012
+FOOD_GAIN = 0.35
+E0 = 0.6
+L = 1000
+MAXP = 1200          # расстановок предметов на посев (с запасом)
+MAXR = 400           # раундов на посев
+
+
+def wrap(a):
+    return (a + np.pi) % (2 * np.pi) - np.pi
+
+
+class GeoBodies:
+    def __init__(self, seeds, K, U, L_food, L=L, sig_b=SIG_B, sig_d=SIG_D):
+        seeds = np.asarray(seeds)
+        self.B, self.K, self.U, self.L_food, self.L = len(seeds), K, U, L_food, L
+        uniq, self.sidx = np.unique(seeds, return_inverse=True)
+        rs = [np.random.RandomState(int(s)) for s in uniq]
+        self.place_tab = np.stack([r.uniform(ARENA_LO, ARENA_HI, (MAXP, 2)) for r in rs])
+        self.alive_tab = np.stack([r.randint(0, K, MAXR) for r in rs])
+        self.walk_tab = np.stack([r.randn(L + 1, 2) for r in rs]).astype(np.float32)
+        self.nb_tab = np.stack([r.randn(L + 1, K) * sig_b for r in rs]).astype(np.float32)
+        self.nd_tab = np.stack([r.randn(L + 1, K) * sig_d for r in rs]).astype(np.float32)
+        init = np.stack([np.r_[r.uniform(0.2, 0.8, 2), r.rand() * 2 * np.pi] for r in rs])
+        self.pos = init[self.sidx, :2].copy(); self.head = init[self.sidx, 2].copy()
+        self._ar = np.arange(self.B)
+        self.n_place = np.zeros(self.B, int); self.n_round = np.zeros(self.B, int)
+        self.items = np.zeros((self.B, K, 2)); self.vel = np.zeros((self.B, 2))
+        self.alive_i = np.zeros(self.B, int); self.age = np.zeros(self.B, int)
+        self.respawn = np.ones((self.B, K), bool)
+        self.E = np.full(self.B, E0); self.E_sum = np.zeros(self.B)
+        self.eaten = np.zeros(self.B); self.expired = np.zeros(self.B); self.dummy_hits = np.zeros(self.B)
+        self.t = 0
+        self._new_round(np.ones(self.B, bool))
+
+    def _place(self, b, k):
+        """Новые места для предметов (b[j], k[j]) из таблицы посева; повторы одного тела в вызове — подряд по таблице."""
+        o = np.argsort(b, kind='stable'); b, k = b[o], k[o]
+        first = np.r_[True, b[1:] != b[:-1]]
+        grp = np.cumsum(first) - 1
+        rank = np.arange(len(b)) - np.flatnonzero(first)[grp]
+        n = self.n_place[b] + rank
+        self.items[b, k] = self.place_tab[self.sidx[b], np.minimum(n, MAXP - 1)]
+        np.add.at(self.n_place, b, 1)
+
+    def _new_round(self, m):
+        b = np.where(m)[0]
+        if not len(b):
+            return
+        for k in range(self.K):
+            self._place(b, np.full(len(b), k))
+        self.alive_i[b] = self.alive_tab[self.sidx[b], np.minimum(self.n_round[b], MAXR - 1)]
+        self.n_round[b] += 1
+        self.vel[b] = 0.0; self.age[b] = 0
+        self.respawn[b] = True
+
+    def true_rel(self):
+        """Истинное положение предметов в собственных координатах (x — вперёд, y — влево): (B, K, 2)."""
+        w = self.items - self.pos[:, None, :]
+        c, s = np.cos(self.head)[:, None], np.sin(self.head)[:, None]
+        return np.stack([c * w[..., 0] + s * w[..., 1], -s * w[..., 0] + c * w[..., 1]], -1)
+
+    def sense(self):
+        """b (B, K), d (B, K) с шумом; respawn (B, K) — предмет появился заново с прошлого кадра."""
+        rel = self.true_rel()
+        b = wrap(np.arctan2(rel[..., 1], rel[..., 0]) + self.nb_tab[self.sidx, self.t])
+        d = np.maximum(np.linalg.norm(rel, axis=-1) + self.nd_tab[self.sidx, self.t], 1e-3)
+        rsp = self.respawn.copy(); self.respawn[:] = False
+        return b, d, rsp
+
+    def step(self, turn, move):
+        """turn ∈ {−1, 0, 1} (+ — влево, против часовой), move ∈ {0, 1}."""
+        self.t += 1
+        self.head = self.head + turn * TURN_G
+        self.pos = np.clip(self.pos + (move * VMAX)[:, None] * np.stack([np.cos(self.head), np.sin(self.head)], 1), 0, 1)
+        # живой: блуждание с инерцией, типичный шаг U, отражение от стен
+        self.vel = RHO * self.vel + np.sqrt(1 - RHO ** 2) * self.U * self.walk_tab[self.sidx, self.t] / np.sqrt(2)
+        ai = self.alive_i
+        p = self.items[self._ar, ai] + self.vel
+        out = (p < ARENA_LO) | (p > ARENA_HI)
+        self.vel = np.where(out, -self.vel, self.vel)
+        self.items[self._ar, ai] = np.clip(p, ARENA_LO, ARENA_HI)
+        self.age += 1
+        self.E -= DRIFT
+        dist = np.linalg.norm(self.items - self.pos[:, None, :], axis=-1)
+        touch = dist < EAT_R
+        ate = touch[self._ar, ai]
+        hit = touch.copy(); hit[self._ar, ai] = False
+        hit[ate] = False
+        bb, kk = np.where(hit)
+        if len(bb):
+            self._place(bb, kk); self.respawn[bb, kk] = True
+        self.dummy_hits += hit.sum(1)
+        self.E = np.where(ate, self.E + FOOD_GAIN, self.E)
+        self.E = np.clip(self.E, 0.0, 1.0)
+        self.eaten += ate
+        exp = ~ate & (self.age >= self.L_food)
+        self.expired += exp
+        self._new_round(ate | exp)
+        self.E_sum += self.E
+
+    def fitness(self):
+        return self.eaten.copy()
+
+    def mean_energy(self):
+        return self.E_sum / self.L
