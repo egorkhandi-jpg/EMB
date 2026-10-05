@@ -1,0 +1,15 @@
+{
+  "_note": "Шлюз к варианту C (2026-10-05). Зафиксировано и закоммичено до расчёта. Все слова — однотокенные с ведущим пробелом в токенизаторе Pythia (проверено на pythia-160m; на экземпляре — повторная проверка токенизатором каждой модели). Прямые слова (edible, food, safe, good, poison, toxic, danger, bad, eat и близкие) в пулы food/harm/neutral не входят.",
+  "food": ["apple", "bread", "rice", "cheese", "milk", "egg", "meat", "fish", "soup", "corn", "honey", "butter", "banana", "grape", "carrot", "potato", "tomato", "onion", "cake", "pie", "nut", "pear", "plum", "salad", "pasta", "sugar", "chicken", "beef", "pork", "cookie"],
+  "harm": ["mold", "rot", "rust", "ash", "glass", "mud", "dirt", "acid", "soap", "gasoline", "nail", "needle", "ink", "paint", "dust", "plastic", "wire", "tar", "coal", "gravel", "cement", "wax", "rubber", "sewage", "asbestos", "mercury", "razor", "glue", "diesel", "ammonia"],
+  "neutral": ["table", "chair", "river", "window", "door", "cloud", "mountain", "lamp", "pencil", "garden", "bridge", "tunnel", "carpet", "violin", "ladder", "bottle", "feather", "cat", "jacket", "basket", "mirror", "street", "book", "letter", "music", "song", "clock", "train", "planet", "island"],
+  "direct_food": ["edible", "delicious", "healthy", "tasty", "safe"],
+  "direct_harm": ["poison", "toxic", "deadly", "lethal", "harmful", "dangerous"],
+  "template_pairs": [
+    ["You can eat the{w}.", "You should never eat the{w}."],
+    ["The{w} is part of a meal.", "The{w} will make you sick."],
+    ["Eating{w} is healthy.", "Eating{w} is dangerous."],
+    ["I had{w} for dinner.", "I went to the hospital after eating{w}."]
+  ],
+  "neutral_template": "The{w}."
+}
