@@ -37,7 +37,7 @@ def wrap(a):
 
 
 class GeoBodies:
-    def __init__(self, seeds, K, U, L_food, L=L, sig_b=SIG_B, sig_d=SIG_D):
+    def __init__(self, seeds, K, U, L_food, L=L, sig_b=SIG_B, sig_d=SIG_D, wall_block=False):
         seeds = np.asarray(seeds)
         self.B, self.K, self.U, self.L_food, self.L = len(seeds), K, U, L_food, L
         uniq, self.sidx = np.unique(seeds, return_inverse=True)
@@ -56,7 +56,7 @@ class GeoBodies:
         self.respawn = np.ones((self.B, K), bool)
         self.E = np.full(self.B, E0); self.E_sum = np.zeros(self.B)
         self.eaten = np.zeros(self.B); self.expired = np.zeros(self.B); self.dummy_hits = np.zeros(self.B)
-        self.t = 0
+        self.t = 0; self.wall_block = wall_block; self.exec_move = np.zeros(self.B, int)
         self._new_round(np.ones(self.B, bool))
 
     def _place(self, b, k):
@@ -98,7 +98,12 @@ class GeoBodies:
         """turn ∈ {−1, 0, 1} (+ — влево, против часовой), move ∈ {0, 1}."""
         self.t += 1
         self.head = self.head + turn * TURN_G
-        self.pos = np.clip(self.pos + (move * VMAX)[:, None] * np.stack([np.cos(self.head), np.sin(self.head)], 1), 0, 1)
+        new = self.pos + (move * VMAX)[:, None] * np.stack([np.cos(self.head), np.sin(self.head)], 1)
+        if self.wall_block:                     # шаг за стену не выполняется, тело знает это (exec_move — исполненное движение)
+            inside = ((new >= 0) & (new <= 1)).all(1)
+            self.exec_move = np.where(inside, move, 0); self.pos = np.where(inside[:, None], new, self.pos)
+        else:
+            self.exec_move = np.asarray(move); self.pos = np.clip(new, 0, 1)
         # живой: блуждание с инерцией, типичный шаг U, отражение от стен
         self.vel = RHO * self.vel + np.sqrt(1 - RHO ** 2) * self.U * self.walk_tab[self.sidx, self.t] / np.sqrt(2)
         ai = self.alive_i
@@ -120,6 +125,113 @@ class GeoBodies:
         self.E = np.where(ate, self.E + FOOD_GAIN, self.E)
         self.E = np.clip(self.E, 0.0, 1.0)
         self.eaten += ate
+        exp = ~ate & (self.age >= self.L_food)
+        self.expired += exp
+        self._new_round(ate | exp)
+        self.E_sum += self.E
+
+    def fitness(self):
+        return self.eaten.copy()
+
+    def mean_energy(self):
+        return self.E_sum / self.L
+
+
+class GeoBodies2:
+    """Версия по дополнениям 1–2 (2026-10-05). Кандидаты: Kc = 2 — живой (снос с инерцией) и пустышка, дрожащая на месте
+    без сноса (покадровый шаг того же распределения, что у живого: o_t ~ N(0, (U/2)²) на ось, отсчёт от «дома»), так что
+    величина сдвига в одном кадре их не различает. Плюс n_lm неподвижных ориентиров известного непищевого вида
+    (стоят всю жизнь, не цели, сквозь них можно пройти) с шумом датчиков × lm_noise — опора на мир; при n_lm = 0 опоры нет.
+    Шаг за стену не выполняется, и тело это знает (exec_move). Поворот связи: с такта t_switch (из таблицы посева,
+    равномерно 300–700) фактический поворот тела = rot_g × команда (−1 — зеркало, 2 — двойной); rot_g = None — без поворота.
+    Столбцы датчиков: 0..Kc−1 — кандидаты, далее ориентиры. Таблицы кандидатов не зависят от n_lm (те же миры)."""
+
+    def __init__(self, seeds, U, L_food, n_lm=0, lm_noise=1.0, rot_g=None, L=L, Kc=2):
+        seeds = np.asarray(seeds)
+        self.B, self.K, self.Kc, self.n_lm, self.U, self.L_food, self.L, self.rot_g = len(seeds), Kc + n_lm, Kc, n_lm, U, L_food, L, rot_g
+        uniq, self.sidx = np.unique(seeds, return_inverse=True)
+        rs = [np.random.RandomState(int(s)) for s in uniq]
+        self.place_tab = np.stack([r.uniform(ARENA_LO, ARENA_HI, (MAXP, 2)) for r in rs])
+        self.alive_tab = np.stack([r.randint(0, Kc, MAXR) for r in rs])
+        self.walk_tab = np.stack([r.randn(L + 1, 2) for r in rs]).astype(np.float32)
+        self.jit_tab = np.stack([r.randn(L + 1, Kc, 2) for r in rs]).astype(np.float32)
+        nbc = np.stack([r.randn(L + 1, Kc) * SIG_B for r in rs]); ndc = np.stack([r.randn(L + 1, Kc) * SIG_D for r in rs])
+        init = np.stack([np.r_[r.uniform(0.2, 0.8, 2), r.rand() * 2 * np.pi] for r in rs])
+        self.t_switch_tab = np.array([r.randint(300, 701) for r in rs])
+        rl = [np.random.RandomState(int(s) + 5_000_000) for s in uniq]          # ориентиры — отдельный поток
+        lm = np.stack([r.uniform(ARENA_LO, ARENA_HI, (3, 2)) for r in rl])[:, :n_lm]
+        nbl = np.stack([r.randn(L + 1, 3) for r in rl])[:, :, :n_lm] * SIG_B * lm_noise
+        ndl = np.stack([r.randn(L + 1, 3) for r in rl])[:, :, :n_lm] * SIG_D * lm_noise
+        self.nb_tab = np.concatenate([nbc, nbl], 2).astype(np.float32); self.nd_tab = np.concatenate([ndc, ndl], 2).astype(np.float32)
+        self.pos = init[self.sidx, :2].copy(); self.head = init[self.sidx, 2].copy()
+        self.t_switch = self.t_switch_tab[self.sidx]
+        self._ar = np.arange(self.B)
+        self.n_place = np.zeros(self.B, int); self.n_round = np.zeros(self.B, int)
+        self.home = np.zeros((self.B, Kc, 2)); self.items = np.zeros((self.B, self.K, 2))
+        self.items[:, Kc:] = lm[self.sidx]
+        self.vel = np.zeros((self.B, 2))
+        self.alive_i = np.zeros(self.B, int); self.age = np.zeros(self.B, int)
+        self.respawn = np.ones((self.B, self.K), bool)
+        self.E = np.full(self.B, E0); self.E_sum = np.zeros(self.B)
+        self.eaten = np.zeros(self.B); self.expired = np.zeros(self.B); self.dummy_hits = np.zeros(self.B)
+        self.eaten_after = np.zeros(self.B)
+        self.t = 0; self.exec_move = np.zeros(self.B, int)
+        self._new_round(np.ones(self.B, bool))
+
+    _place = GeoBodies._place
+
+    def _new_round(self, m):
+        b = np.where(m)[0]
+        if not len(b):
+            return
+        for k in range(self.Kc):
+            self._place(b, np.full(len(b), k))
+        self.home[b] = self.items[b, :self.Kc]
+        self.alive_i[b] = self.alive_tab[self.sidx[b], np.minimum(self.n_round[b], MAXR - 1)]
+        self.n_round[b] += 1
+        self.vel[b] = 0.0; self.age[b] = 0
+        self.respawn[b, :self.Kc] = True
+
+    true_rel = GeoBodies.true_rel
+    sense = GeoBodies.sense
+
+    def gain(self):
+        """Фактическое отображение команды поворота в поворот тела на текущем такте."""
+        g = np.ones(self.B)
+        if self.rot_g is not None:
+            g = np.where(self.t >= self.t_switch, self.rot_g, 1.0)
+        return g
+
+    def step(self, turn, move):
+        self.t += 1
+        self.head = self.head + turn * TURN_G * self.gain()
+        new = self.pos + (move * VMAX)[:, None] * np.stack([np.cos(self.head), np.sin(self.head)], 1)
+        inside = ((new >= 0) & (new <= 1)).all(1)
+        self.exec_move = np.where(inside, move, 0); self.pos = np.where(inside[:, None], new, self.pos)
+        self.vel = RHO * self.vel + np.sqrt(1 - RHO ** 2) * self.U * self.walk_tab[self.sidx, self.t] / np.sqrt(2)
+        ai = self.alive_i
+        p = self.items[self._ar, ai] + self.vel
+        out = (p < ARENA_LO) | (p > ARENA_HI)
+        self.vel = np.where(out, -self.vel, self.vel)
+        dum = self.home + self.U / 2 * self.jit_tab[self.sidx, self.t]                   # дрожь на месте, без сноса
+        alive_new = np.clip(p, ARENA_LO, ARENA_HI)
+        self.items[:, :self.Kc] = dum
+        self.items[self._ar, ai] = alive_new
+        self.home[self._ar, ai] = alive_new                                              # у живого «дом» не используется
+        self.age += 1
+        self.E -= DRIFT
+        dist = np.linalg.norm(self.items[:, :self.Kc] - self.pos[:, None, :], axis=-1)
+        touch = dist < EAT_R
+        ate = touch[self._ar, ai]
+        hit = touch.copy(); hit[self._ar, ai] = False; hit[ate] = False
+        bb, kk = np.where(hit)
+        if len(bb):
+            self._place(bb, kk); self.home[bb, kk] = self.items[bb, kk]; self.respawn[bb, kk] = True
+        self.dummy_hits += hit.sum(1)
+        self.E = np.clip(np.where(ate, self.E + FOOD_GAIN, self.E), 0.0, 1.0)
+        self.eaten += ate
+        if self.rot_g is not None:
+            self.eaten_after += ate & (self.t >= self.t_switch)
         exp = ~ate & (self.age >= self.L_food)
         self.expired += exp
         self._new_round(ate | exp)
