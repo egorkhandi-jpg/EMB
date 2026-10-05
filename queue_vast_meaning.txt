@@ -1,0 +1,5 @@
+# v5-meaning на 5090: 1B → 2.8B → 6.9B (каждая ждёт свою загрузку) → сводка
+python meaning_probe.py --model models/pythia-1b --bs 16
+until [ -f models/pythia-2.8b/.done ]; do sleep 30; done; python meaning_probe.py --model models/pythia-2.8b --bs 16
+until [ -f models/pythia-6.9b/.done ]; do sleep 30; done; python meaning_probe.py --model models/pythia-6.9b --bs 4
+python summarize_meaning.py results_meaning > results_meaning/summary.txt
