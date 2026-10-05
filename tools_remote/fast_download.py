@@ -4,7 +4,7 @@
 python tools_remote/fast_download.py EleutherAI/pythia-6.9b --threads 24
 """
 import argparse, concurrent.futures as cf, hashlib, os, sys, time
-import requests
+import httpx
 from huggingface_hub import HfApi
 
 CHUNK = 64 * 1024 * 1024
@@ -13,14 +13,14 @@ CHUNK = 64 * 1024 * 1024
 def fetch_range(url, path, start, end, tries=8):
     for t in range(tries):
         try:
-            r = requests.get(url, headers={'Range': f'bytes={start}-{end}'}, timeout=60, stream=True, allow_redirects=True)
-            if r.status_code not in (200, 206):
-                raise IOError(f'код {r.status_code}')
             pos = start
-            with open(path, 'r+b') as f:
-                f.seek(pos)
-                for block in r.iter_content(1 << 20):
-                    f.write(block); pos += len(block)
+            with httpx.stream('GET', url, headers={'Range': f'bytes={start}-{end}'}, timeout=60, follow_redirects=True) as r:
+                if r.status_code not in (200, 206):
+                    raise IOError(f'код {r.status_code}')
+                with open(path, 'r+b') as f:
+                    f.seek(pos)
+                    for block in r.iter_bytes(1 << 20):
+                        f.write(block); pos += len(block)
             if pos != end + 1:
                 raise IOError(f'неполная часть {pos - start} из {end - start + 1}')
             return
