@@ -479,6 +479,165 @@
    "AUC_R0": 0.5119576629307022,
    "AUC_RND": 0.500202847322206,
    "sec": 350
+  },
+  "0.002:3:4": {
+   "cfg": [
+    0.002,
+    100,
+    3,
+    4.0
+   ],
+   "sel": {
+    "R0": "R0",
+    "O": "O",
+    "FZ": "FZ k=2 per=1000000000",
+    "NOEFF": "NOEFF tev=0.01 lam=0.97 m=2.0",
+    "COMMON": "COMMON var=rigid lam=1.0 th=0.08",
+    "EFF": "EFF lam=1.0 th=0.04 gs=1.0 vs=1.0",
+    "EFFC": "EFFC lam=1.0 th=0.01 gs=0.7 vs=1.5",
+    "COMMON_med": "COMMON var=med lam=1.0 th=0.08",
+    "COMMON_rigid": "COMMON var=rigid lam=1.0 th=0.08",
+    "COMMON_robust": "COMMON var=robust lam=0.9 th=0.08",
+    "COMMON_lm": "COMMON var=lm lam=0.9 th=0.08"
+   },
+   "test": {
+    "R0": 38.245,
+    "O": 61.585,
+    "FZ": 26.97,
+    "NOEFF": 47.085,
+    "COMMON": 38.59,
+    "EFF": 41.37,
+    "EFFC": 30.765,
+    "COMMON_med": 34.815,
+    "COMMON_rigid": 38.59,
+    "COMMON_robust": 36.92,
+    "COMMON_lm": 35.435
+   },
+   "test_energy": {
+    "R0": 0.5592090799999994,
+    "O": 0.8783928100000071,
+    "FZ": 0.3124174999999992,
+    "NOEFF": 0.764703240000002,
+    "COMMON": 0.5684467399999992,
+    "EFF": 0.6323259800000001,
+    "EFFC": 0.3966269999999989,
+    "COMMON_med": 0.5011668299999988,
+    "COMMON_rigid": 0.5684467399999992,
+    "COMMON_robust": 0.536616409999999,
+    "COMMON_lm": 0.5096266299999991
+   },
+   "base": "NOEFF",
+   "D_test": -5.715000000000003,
+   "D_train": -5.265000000000001,
+   "AUC_R0": 0.5119576629307022,
+   "AUC_RND": 0.500202847322206,
+   "sec": 296
+  },
+  "0.004:0:1": {
+   "cfg": [
+    0.004,
+    100,
+    0,
+    1.0
+   ],
+   "sel": {
+    "R0": "R0",
+    "O": "O",
+    "FZ": "FZ k=2 per=1000000000",
+    "NOEFF": "NOEFF tev=0.01 lam=0.97 m=2.0",
+    "COMMON": "COMMON var=rigid lam=1.0 th=0.02",
+    "EFF": "EFF lam=1.0 th=0.04 gs=1.0 vs=1.0",
+    "EFFC": "EFFC lam=1.0 th=0.01 gs=0.7 vs=1.5",
+    "COMMON_med": "COMMON var=med lam=1.0 th=0.08",
+    "COMMON_rigid": "COMMON var=rigid lam=1.0 th=0.02",
+    "COMMON_robust": "COMMON var=robust lam=1.0 th=0.02",
+    "COMMON_lm": "COMMON var=lm lam=1.0 th=0.02"
+   },
+   "test": {
+    "R0": 39.0,
+    "O": 61.4,
+    "FZ": 26.93,
+    "NOEFF": 47.07,
+    "COMMON": 40.19,
+    "EFF": 45.02,
+    "EFFC": 30.975,
+    "COMMON_med": 32.875,
+    "COMMON_rigid": 40.19,
+    "COMMON_robust": 40.19,
+    "COMMON_lm": 40.19
+   },
+   "test_energy": {
+    "R0": 0.5762840699999994,
+    "O": 0.8780409900000072,
+    "FZ": 0.31962366999999914,
+    "NOEFF": 0.7618589800000024,
+    "COMMON": 0.6004860899999995,
+    "EFF": 0.7238131600000014,
+    "EFFC": 0.3924281499999989,
+    "COMMON_med": 0.4370155999999987,
+    "COMMON_rigid": 0.6004860899999995,
+    "COMMON_robust": 0.6004860899999995,
+    "COMMON_lm": 0.6004860899999995
+   },
+   "base": "NOEFF",
+   "D_test": -2.049999999999997,
+   "D_train": -1.6049999999999969,
+   "AUC_R0": 0.5075452079518673,
+   "AUC_RND": 0.49994400259870664,
+   "sec": 129
+  },
+  "0.004:1:1": {
+   "cfg": [
+    0.004,
+    100,
+    1,
+    1.0
+   ],
+   "sel": {
+    "R0": "R0",
+    "O": "O",
+    "FZ": "FZ k=2 per=1000000000",
+    "NOEFF": "NOEFF tev=0.01 lam=0.97 m=2.0",
+    "COMMON": "COMMON var=rigid lam=1.0 th=0.02",
+    "EFF": "EFF lam=1.0 th=0.04 gs=1.0 vs=1.0",
+    "EFFC": "EFFC lam=1.0 th=0.01 gs=0.7 vs=1.5",
+    "COMMON_med": "COMMON var=med lam=1.0 th=0.08",
+    "COMMON_rigid": "COMMON var=rigid lam=1.0 th=0.02",
+    "COMMON_robust": "COMMON var=robust lam=1.0 th=0.08",
+    "COMMON_lm": "COMMON var=lm lam=1.0 th=0.02"
+   },
+   "test": {
+    "R0": 39.0,
+    "O": 61.4,
+    "FZ": 26.93,
+    "NOEFF": 47.07,
+    "COMMON": 41.63,
+    "EFF": 45.02,
+    "EFFC": 30.975,
+    "COMMON_med": 32.805,
+    "COMMON_rigid": 41.63,
+    "COMMON_robust": 39.005,
+    "COMMON_lm": 41.63
+   },
+   "test_energy": {
+    "R0": 0.5762840699999994,
+    "O": 0.8780409900000072,
+    "FZ": 0.31962366999999914,
+    "NOEFF": 0.7618589800000024,
+    "COMMON": 0.6467725300000001,
+    "EFF": 0.7238131600000014,
+    "EFFC": 0.3924281499999989,
+    "COMMON_med": 0.4567446299999988,
+    "COMMON_rigid": 0.6467725300000001,
+    "COMMON_robust": 0.5781217199999993,
+    "COMMON_lm": 0.6467725300000001
+   },
+   "base": "NOEFF",
+   "D_test": -2.049999999999997,
+   "D_train": -1.6049999999999969,
+   "AUC_R0": 0.5075452079518673,
+   "AUC_RND": 0.49994400259870664,
+   "sec": 152
   }
  }
 }
