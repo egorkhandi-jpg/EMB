@@ -2444,6 +2444,561 @@
     ]
    },
    "sec": 180
+  },
+  "4:0.004:100": {
+   "cfg": [
+    4,
+    0.004,
+    100
+   ],
+   "sel": {
+    "R0": "R0",
+    "O": "O",
+    "FZ": "FZ k=16 per=1000000000",
+    "NOEFF": "NOEFF tev=0.01 lam=0.97 m=2.0",
+    "COMMON": "COMMON var=rigid lam=1.0 th=0.02",
+    "EFF": "EFF lam=0.97 th=0.02 gs=1.0 vs=1.0",
+    "EFFC": "EFFC lam=1.0 th=0.01 gs=0.7 vs=1.5",
+    "COMMON_med": "COMMON var=med lam=1.0 th=0.08",
+    "COMMON_rigid": "COMMON var=rigid lam=1.0 th=0.02",
+    "COMMON_robust": "COMMON var=robust lam=1.0 th=0.08"
+   },
+   "test": {
+    "R0": 25.785,
+    "O": 60.93,
+    "FZ": 19.865,
+    "NOEFF": 27.945,
+    "COMMON": 32.99,
+    "EFF": 37.12,
+    "EFFC": 18.92,
+    "COMMON_med": 16.215,
+    "COMMON_rigid": 32.99,
+    "COMMON_robust": 26.025
+   },
+   "test_energy": {
+    "R0": 0.3017623699999992,
+    "O": 0.8780725500000071,
+    "FZ": 0.1381791799999997,
+    "NOEFF": 0.3354584599999991,
+    "COMMON": 0.45322431999999907,
+    "EFF": 0.6070188899999993,
+    "EFFC": 0.1527124599999997,
+    "COMMON_med": 0.13867884999999974,
+    "COMMON_rigid": 0.45322431999999907,
+    "COMMON_robust": 0.30340971999999927
+   },
+   "base": "COMMON",
+   "c1": {
+    "O_minus_R0": 35.145,
+    "z": 92.68319343714413,
+    "pass": true
+   },
+   "c2": {
+    "EFF_minus_base": 4.13,
+    "z": 13.062471532127319,
+    "closure": 0.1478167501789549,
+    "pass": false
+   },
+   "c3": {
+    "FZ_closure": -0.16844501351543612,
+    "a_pass": true,
+    "COMMON_closure": 0.20500782472613466,
+    "b_pass": true,
+    "AUC_R0": 0.5033086445438194,
+    "AUC_RND": 0.5018076722258713,
+    "c_pass": true,
+    "pass": true
+   },
+   "c4": {
+    "EFFC_minus_base": -14.07,
+    "z": -38.516486625370526,
+    "pass": false
+   },
+   "passes": false,
+   "margin_train": 4.645000000000003,
+   "desc": {
+    "FZ": [
+     17.255,
+     66.00433301777271
+    ],
+    "NOEFF": [
+     9.175,
+     25.49897982277536
+    ],
+    "COMMON": [
+     4.13,
+     13.062471532127319
+    ],
+    "COMMON_med": [
+     20.905,
+     65.26669893604371
+    ],
+    "COMMON_rigid": [
+     4.13,
+     13.062471532127319
+    ],
+    "COMMON_robust": [
+     11.095,
+     28.956339017528347
+    ],
+    "EFFC": [
+     18.2,
+     64.65201715905737
+    ],
+    "R0": [
+     11.335,
+     32.28306234191444
+    ],
+    "O_minus_EFF": [
+     23.81,
+     72.7706704495265
+    ]
+   },
+   "sec": 136
+  },
+  "4:0.004:200": {
+   "cfg": [
+    4,
+    0.004,
+    200
+   ],
+   "sel": {
+    "R0": "R0",
+    "O": "O",
+    "FZ": "FZ k=16 per=1000000000",
+    "NOEFF": "NOEFF tev=0.01 lam=0.97 m=2.0",
+    "COMMON": "COMMON var=rigid lam=1.0 th=0.02",
+    "EFF": "EFF lam=0.97 th=0.02 gs=1.0 vs=1.0",
+    "EFFC": "EFFC lam=1.0 th=0.01 gs=0.7 vs=1.5",
+    "COMMON_med": "COMMON var=med lam=1.0 th=0.08",
+    "COMMON_rigid": "COMMON var=rigid lam=1.0 th=0.02",
+    "COMMON_robust": "COMMON var=robust lam=1.0 th=0.08"
+   },
+   "test": {
+    "R0": 25.62,
+    "O": 60.93,
+    "FZ": 20.3,
+    "NOEFF": 28.385,
+    "COMMON": 32.995,
+    "EFF": 37.155,
+    "EFFC": 19.43,
+    "COMMON_med": 17.37,
+    "COMMON_rigid": 32.995,
+    "COMMON_robust": 26.45
+   },
+   "test_energy": {
+    "R0": 0.2996990399999992,
+    "O": 0.8780725500000071,
+    "FZ": 0.1409670399999997,
+    "NOEFF": 0.34069399999999916,
+    "COMMON": 0.4531223799999991,
+    "EFF": 0.6075901999999993,
+    "EFFC": 0.15812858999999965,
+    "COMMON_med": 0.14706166999999973,
+    "COMMON_rigid": 0.4531223799999991,
+    "COMMON_robust": 0.30963339999999934
+   },
+   "base": "COMMON",
+   "c1": {
+    "O_minus_R0": 35.31,
+    "z": 85.78665984010783,
+    "pass": true
+   },
+   "c2": {
+    "EFF_minus_base": 4.16,
+    "z": 12.765120165107955,
+    "closure": 0.14891712904957938,
+    "pass": false
+   },
+   "c3": {
+    "FZ_closure": -0.15066553384310394,
+    "a_pass": true,
+    "COMMON_closure": 0.20886434437836296,
+    "b_pass": true,
+    "AUC_R0": 0.5036596752232261,
+    "AUC_RND": 0.5013821046688423,
+    "c_pass": true,
+    "pass": true
+   },
+   "c4": {
+    "EFFC_minus_base": -13.565,
+    "z": -36.987623211786726,
+    "pass": false
+   },
+   "passes": false,
+   "margin_train": 4.580000000000005,
+   "desc": {
+    "FZ": [
+     16.855,
+     65.9098481401294
+    ],
+    "NOEFF": [
+     8.77,
+     26.88393816817015
+    ],
+    "COMMON": [
+     4.16,
+     12.765120165107955
+    ],
+    "COMMON_med": [
+     19.785,
+     66.06301425601919
+    ],
+    "COMMON_rigid": [
+     4.16,
+     12.765120165107955
+    ],
+    "COMMON_robust": [
+     10.705,
+     27.90413325759713
+    ],
+    "EFFC": [
+     17.725,
+     63.8423624849392
+    ],
+    "R0": [
+     11.535,
+     28.245451783423032
+    ],
+    "O_minus_EFF": [
+     23.775,
+     72.59477150000323
+    ]
+   },
+   "sec": 218
+  },
+  "4:0.008:50": {
+   "cfg": [
+    4,
+    0.008,
+    50
+   ],
+   "sel": {
+    "R0": "R0",
+    "O": "O",
+    "FZ": "FZ k=16 per=1000000000",
+    "NOEFF": "NOEFF tev=0.01 lam=0.97 m=2.0",
+    "COMMON": "COMMON var=rigid lam=1.0 th=0.02",
+    "EFF": "EFF lam=1.0 th=0.02 gs=1.0 vs=1.0",
+    "EFFC": "EFFC lam=1.0 th=0.01 gs=0.7 vs=1.5",
+    "COMMON_med": "COMMON var=med lam=1.0 th=0.08",
+    "COMMON_rigid": "COMMON var=rigid lam=1.0 th=0.02",
+    "COMMON_robust": "COMMON var=robust lam=1.0 th=0.08"
+   },
+   "test": {
+    "R0": 24.69,
+    "O": 60.845,
+    "FZ": 21.92,
+    "NOEFF": 25.17,
+    "COMMON": 38.005,
+    "EFF": 43.675,
+    "EFFC": 15.96,
+    "COMMON_med": 13.4,
+    "COMMON_rigid": 38.005,
+    "COMMON_robust": 27.95
+   },
+   "test_energy": {
+    "R0": 0.2861601699999994,
+    "O": 0.8778449200000071,
+    "FZ": 0.16422753999999956,
+    "NOEFF": 0.2904506899999993,
+    "COMMON": 0.6068622299999995,
+    "EFF": 0.7708418600000022,
+    "EFFC": 0.13655127999999978,
+    "COMMON_med": 0.11847330999999979,
+    "COMMON_rigid": 0.6068622299999995,
+    "COMMON_robust": 0.3436451499999991
+   },
+   "base": "COMMON",
+   "c1": {
+    "O_minus_R0": 36.155,
+    "z": 81.94257944169773,
+    "pass": true
+   },
+   "c2": {
+    "EFF_minus_base": 5.67,
+    "z": 16.54158524731731,
+    "closure": 0.2482486865148862,
+    "pass": false
+   },
+   "c3": {
+    "FZ_closure": -0.076614576130549,
+    "a_pass": true,
+    "COMMON_closure": 0.36827548056976905,
+    "b_pass": true,
+    "AUC_R0": 0.4990893751757342,
+    "AUC_RND": 0.5024865352889037,
+    "c_pass": true,
+    "pass": true
+   },
+   "c4": {
+    "EFFC_minus_base": -22.045,
+    "z": -62.5567426015755,
+    "pass": false
+   },
+   "passes": false,
+   "margin_train": 6.359999999999999,
+   "desc": {
+    "FZ": [
+     21.755,
+     70.95893027905308
+    ],
+    "NOEFF": [
+     18.505,
+     47.6521840830115
+    ],
+    "COMMON": [
+     5.67,
+     16.54158524731731
+    ],
+    "COMMON_med": [
+     30.275,
+     94.58205228195675
+    ],
+    "COMMON_rigid": [
+     5.67,
+     16.54158524731731
+    ],
+    "COMMON_robust": [
+     15.725,
+     39.41203773219528
+    ],
+    "EFFC": [
+     27.715,
+     86.27938120376727
+    ],
+    "R0": [
+     18.985,
+     46.575159817421955
+    ],
+    "O_minus_EFF": [
+     17.17,
+     49.88924231228918
+    ]
+   },
+   "sec": 243
+  },
+  "4:0.008:100": {
+   "cfg": [
+    4,
+    0.008,
+    100
+   ],
+   "sel": {
+    "R0": "R0",
+    "O": "O",
+    "FZ": "FZ k=8 per=1000000000",
+    "NOEFF": "NOEFF tev=0.01 lam=1.0 m=2.0",
+    "COMMON": "COMMON var=rigid lam=0.97 th=0.02",
+    "EFF": "EFF lam=0.97 th=0.02 gs=1.0 vs=1.0",
+    "EFFC": "EFFC lam=1.0 th=0.01 gs=0.7 vs=1.5",
+    "COMMON_med": "COMMON var=med lam=1.0 th=0.08",
+    "COMMON_rigid": "COMMON var=rigid lam=0.97 th=0.02",
+    "COMMON_robust": "COMMON var=robust lam=1.0 th=0.08"
+   },
+   "test": {
+    "R0": 25.125,
+    "O": 60.845,
+    "FZ": 24.545,
+    "NOEFF": 28.75,
+    "COMMON": 38.255,
+    "EFF": 44.185,
+    "EFFC": 19.01,
+    "COMMON_med": 16.165,
+    "COMMON_rigid": 38.255,
+    "COMMON_robust": 29.46
+   },
+   "test_energy": {
+    "R0": 0.29092252999999935,
+    "O": 0.8778449200000071,
+    "FZ": 0.2236339799999994,
+    "NOEFF": 0.34248091999999886,
+    "COMMON": 0.6078253999999994,
+    "EFF": 0.7847881100000025,
+    "EFFC": 0.15442439999999966,
+    "COMMON_med": 0.14286793999999975,
+    "COMMON_rigid": 0.6078253999999994,
+    "COMMON_robust": 0.362938759999999
+   },
+   "base": "COMMON",
+   "c1": {
+    "O_minus_R0": 35.72,
+    "z": 86.79860163841882,
+    "pass": true
+   },
+   "c2": {
+    "EFF_minus_base": 5.93,
+    "z": 18.651773529178488,
+    "closure": 0.2625055334218681,
+    "pass": false
+   },
+   "c3": {
+    "FZ_closure": -0.016237402015677443,
+    "a_pass": true,
+    "COMMON_closure": 0.36758118701007847,
+    "b_pass": true,
+    "AUC_R0": 0.50037281207049,
+    "AUC_RND": 0.5036683417115773,
+    "c_pass": true,
+    "pass": true
+   },
+   "c4": {
+    "EFFC_minus_base": -19.245,
+    "z": -60.24808177701204,
+    "pass": false
+   },
+   "passes": false,
+   "margin_train": 5.974999999999994,
+   "desc": {
+    "FZ": [
+     19.64,
+     72.98439354378537
+    ],
+    "NOEFF": [
+     15.435,
+     41.58463638929243
+    ],
+    "COMMON": [
+     5.93,
+     18.651773529178488
+    ],
+    "COMMON_med": [
+     28.02,
+     86.37945876222638
+    ],
+    "COMMON_rigid": [
+     5.93,
+     18.651773529178488
+    ],
+    "COMMON_robust": [
+     14.725,
+     39.50382805633457
+    ],
+    "EFFC": [
+     25.175,
+     93.1532125381138
+    ],
+    "R0": [
+     19.06,
+     50.447695892150534
+    ],
+    "O_minus_EFF": [
+     16.66,
+     52.810550006414985
+    ]
+   },
+   "sec": 236
+  },
+  "4:0.008:200": {
+   "cfg": [
+    4,
+    0.008,
+    200
+   ],
+   "sel": {
+    "R0": "R0",
+    "O": "O",
+    "FZ": "FZ k=8 per=1000000000",
+    "NOEFF": "NOEFF tev=0.01 lam=1.0 m=2.0",
+    "COMMON": "COMMON var=rigid lam=1.0 th=0.02",
+    "EFF": "EFF lam=0.97 th=0.02 gs=1.0 vs=1.0",
+    "EFFC": "EFFC lam=1.0 th=0.01 gs=0.7 vs=1.5",
+    "COMMON_med": "COMMON var=med lam=1.0 th=0.08",
+    "COMMON_rigid": "COMMON var=rigid lam=1.0 th=0.02",
+    "COMMON_robust": "COMMON var=robust lam=1.0 th=0.08"
+   },
+   "test": {
+    "R0": 25.755,
+    "O": 60.845,
+    "FZ": 24.84,
+    "NOEFF": 28.97,
+    "COMMON": 38.41,
+    "EFF": 44.185,
+    "EFFC": 19.31,
+    "COMMON_med": 17.225,
+    "COMMON_rigid": 38.41,
+    "COMMON_robust": 29.795
+   },
+   "test_energy": {
+    "R0": 0.2988545999999993,
+    "O": 0.8778449200000071,
+    "FZ": 0.22828268999999934,
+    "NOEFF": 0.347425439999999,
+    "COMMON": 0.6249439499999994,
+    "EFF": 0.7847881100000025,
+    "EFFC": 0.15584540999999966,
+    "COMMON_med": 0.14764041999999974,
+    "COMMON_rigid": 0.6249439499999994,
+    "COMMON_robust": 0.3692346799999989
+   },
+   "base": "COMMON",
+   "c1": {
+    "O_minus_R0": 35.09,
+    "z": 85.19153956910003,
+    "pass": true
+   },
+   "c2": {
+    "EFF_minus_base": 5.775,
+    "z": 18.18719439075968,
+    "closure": 0.2574102964118565,
+    "pass": false
+   },
+   "c3": {
+    "FZ_closure": -0.02607580507267025,
+    "a_pass": true,
+    "COMMON_closure": 0.360644058136221,
+    "b_pass": true,
+    "AUC_R0": 0.4993140565283565,
+    "AUC_RND": 0.5036562285953832,
+    "c_pass": true,
+    "pass": true
+   },
+   "c4": {
+    "EFFC_minus_base": -19.1,
+    "z": -61.34706525772269,
+    "pass": false
+   },
+   "passes": false,
+   "margin_train": 6.019999999999996,
+   "desc": {
+    "FZ": [
+     19.345,
+     69.07960074362362
+    ],
+    "NOEFF": [
+     15.215,
+     44.19221816925988
+    ],
+    "COMMON": [
+     5.775,
+     18.18719439075968
+    ],
+    "COMMON_med": [
+     26.96,
+     85.58161317346332
+    ],
+    "COMMON_rigid": [
+     5.775,
+     18.18719439075968
+    ],
+    "COMMON_robust": [
+     14.39,
+     41.283645832896774
+    ],
+    "EFFC": [
+     24.875,
+     86.78387740632448
+    ],
+    "R0": [
+     18.43,
+     48.97135078606305
+    ],
+    "O_minus_EFF": [
+     16.66,
+     52.810550006414985
+    ]
+   },
+   "sec": 241
   }
  }
 }
