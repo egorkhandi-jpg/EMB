@@ -242,3 +242,64 @@ class GeoBodies2:
 
     def mean_energy(self):
         return self.E_sum / self.L
+
+
+class GeoObs:
+    """Г3 «назови живого» (2026-10-05): только восприятие, без касаний, еды и перестановок. Каждый посев — независимый раунд
+    из W кадров. Наблюдатель движется по политике RND (поворот влево / нет / вправо — 0,25 / 0,5 / 0,25, движение — 0,7),
+    слепой к тому, кто живой; шаг за стену не выполняется, и тело это знает (exec_move). Кандидаты: K (основное 2) —
+    один живой (снос с инерцией ρ, скорость с самого начала из стационарного распределения) и K − 1 пустышек, дрожащих
+    на месте с тем же покадровым распределением шага (как GeoBodies2). Ориентиры: n_lm неподвижных, шум × lm_noise.
+    Поворот связи: с кадра t_switch (из таблицы посева, равномерно в [sw_lo, sw_hi]) фактический поворот = rot_g × команда.
+    Траектория наблюдателя не зависит от метода, поэтому все методы считаются на одной записи.
+    Таблицы кандидатов, действий и их шума не зависят от n_lm (те же миры при любом числе ориентиров).
+    """
+
+    def __init__(self, seeds, U, W, n_lm=0, lm_noise=1.0, K=2, rot_g=None, sw_lo=32, sw_hi=64):
+        seeds = np.asarray(seeds); N = len(seeds)
+        self.N, self.U, self.W, self.n_lm, self.K, self.Kt = N, U, W, n_lm, K, K + n_lm
+        rs = [np.random.RandomState(int(s)) for s in seeds]
+        init = np.stack([np.r_[r.uniform(0.2, 0.8, 2), r.rand() * 2 * np.pi] for r in rs])
+        cand = np.stack([r.uniform(ARENA_LO, ARENA_HI, (3, 2)) for r in rs])[:, :K]
+        alive = np.array([r.randint(0, K) for r in rs])
+        vel0 = np.stack([r.randn(2) for r in rs]) * U / np.sqrt(2)
+        walk = np.stack([r.randn(W + 1, 2) for r in rs]); jit = np.stack([r.randn(W + 1, 3, 2) for r in rs])[:, :, :K]
+        nbc = np.stack([r.randn(W + 1, 3) for r in rs])[:, :, :K] * SIG_B; ndc = np.stack([r.randn(W + 1, 3) for r in rs])[:, :, :K] * SIG_D
+        act = np.stack([r.rand(W, 2) for r in rs])
+        t_sw = np.array([r.randint(sw_lo, sw_hi + 1) for r in rs])
+        rl = [np.random.RandomState(int(s) + 5_000_000) for s in seeds]
+        lm = np.stack([r.uniform(ARENA_LO, ARENA_HI, (3, 2)) for r in rl])[:, :n_lm]
+        nbl = np.stack([r.randn(W + 1, 3) for r in rl])[:, :, :n_lm] * SIG_B * lm_noise
+        ndl = np.stack([r.randn(W + 1, 3) for r in rl])[:, :, :n_lm] * SIG_D * lm_noise
+        self.alive_i = alive; self.t_switch = t_sw
+        cmd = np.where(act[..., 0] < 0.25, 1, np.where(act[..., 0] < 0.5, -1, 0)); move = (act[..., 1] < 0.7).astype(int)
+        ar = np.arange(N)
+        pos, head, vel = init[:, :2].copy(), init[:, 2].copy(), vel0.copy()
+        home = cand.copy(); items = np.concatenate([cand, lm], 1)
+        b_all, d_all, pos_all, head_all, items_all, mv_all, g_all = [], [], [], [], [], [], []
+        for t in range(W + 1):
+            if t > 0:
+                g = np.where(t - 1 >= t_sw, rot_g, 1.0) if rot_g is not None else np.ones(N)
+                head = head + cmd[:, t - 1] * TURN_G * g
+                new = pos + (move[:, t - 1] * VMAX)[:, None] * np.stack([np.cos(head), np.sin(head)], 1)
+                inside = ((new >= 0) & (new <= 1)).all(1)
+                mv_all.append(np.where(inside, move[:, t - 1], 0)); g_all.append(g)
+                pos = np.where(inside[:, None], new, pos)
+                vel = RHO * vel + np.sqrt(1 - RHO ** 2) * U * walk[:, t] / np.sqrt(2)
+                p = items[ar, alive] + vel
+                out = (p < ARENA_LO) | (p > ARENA_HI)
+                vel = np.where(out, -vel, vel)
+                items[:, :K] = home + U / 2 * jit[:, t]
+                items[ar, alive] = np.clip(p, ARENA_LO, ARENA_HI)
+                home[ar, alive] = items[ar, alive]
+            w = items - pos[:, None, :]
+            c, s = np.cos(head)[:, None], np.sin(head)[:, None]
+            rel = np.stack([c * w[..., 0] + s * w[..., 1], -s * w[..., 0] + c * w[..., 1]], -1)
+            nb = np.concatenate([nbc[:, t], nbl[:, t]], 1); nd = np.concatenate([ndc[:, t], ndl[:, t]], 1)
+            b_all.append(wrap(np.arctan2(rel[..., 1], rel[..., 0]) + nb))
+            d_all.append(np.maximum(np.linalg.norm(rel, axis=-1) + nd, 1e-3))
+            pos_all.append(pos.copy()); head_all.append(head.copy()); items_all.append(items.copy())
+        self.b = np.stack(b_all, 1); self.d = np.stack(d_all, 1)                       # (N, W+1, Kt)
+        self.rel = np.stack([self.d * np.cos(self.b), self.d * np.sin(self.b)], -1)     # (N, W+1, Kt, 2)
+        self.cmd = cmd; self.exec_move = np.stack(mv_all, 1); self.gain = np.stack(g_all, 1)   # (N, W)
+        self.pos = np.stack(pos_all, 1); self.head = np.stack(head_all, 1); self.items = np.stack(items_all, 1)
