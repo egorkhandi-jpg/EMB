@@ -108,5 +108,9 @@
 | 1bdfc63 | e06d81c | 2026-10-06 | Ось 1: правило остановки — записано первым |
 | 5fd4d45 | 4cfc3b7 | 2026-10-06 | Ось 1, этап 1, версия 1: пререгистрация до расчёта — |
 | aa5b0db | 29a4bef | 2026-10-06 | Ось 1, этап 1, версия 1: не прошла — 0 из 16 (критерии 4  |
+| 12d84e5 | f88242f | 2026-10-06 | COMMIT_MAP: соответствие хэшей локальной истории и оп� |
+| 0d91fdc | 87ad0b6 | 2026-10-06 | tools_remote/publish_github.sh: публикация на GitHub копии истории |
+| 0ef5bbe | 64e77e9 | 2026-10-06 | Ось 1: описательная проверка уточнения — гипотез� |
+| 7303af8 | 142a63a | 2026-10-06 | publish_github.sh: проверка сообщений через git log --grep; свер |
 
 Метки (в копии указывают на опубликованные пары): v-final-1 v-final-2 v-final-3 v0-baseline-cpu v1-gpu-fp32 v2-interface v2-probe v2-scale v3-body v3-evo v3-nlms v3-readout v3-replay v3-words v4-copies v4-icl v4-latent v4-report v4-sleep v4-sleepagent v4-slot v4-transfer v4-transfer2 v5-bind v5-meaning v5-synth v6-spectrum 
