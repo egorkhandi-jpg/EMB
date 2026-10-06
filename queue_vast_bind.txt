@@ -1,0 +1,5 @@
+# v5-bind (A26) на 5090: 1B (набор 1 уже посчитан при замере) → 2.8B → 6.9B → сводка
+python meaning_bind.py --model models/pythia-1b --bs 32
+until [ -f models/pythia-2.8b/.done ]; do sleep 30; done; python meaning_bind.py --model models/pythia-2.8b --bs 32
+until [ -f models/pythia-6.9b/.done ]; do sleep 30; done; python meaning_bind.py --model models/pythia-6.9b --bs 16
+python summarize_bind.py results_bind > results_bind/summary.txt
