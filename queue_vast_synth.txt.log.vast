@@ -1,0 +1,10 @@
+2026-10-06 07:09:09 удалённый старт очереди (tmux, 4f90df0, Python 3.12.14)
+2026-10-06 07:09:09 старт: часть ≤ 2.0 ч, перерыв 0.0 мин
+2026-10-06 07:09:09 GPU 51 °C | задача: python meaning_synth.py --model models/pythia-6.9b --ifaces s c --bs 16
+2026-10-06 07:44:06 готово за 2097 с: python meaning_synth.py --model models/pythia-6.9b --ifaces s c --bs 16
+2026-10-06 07:44:06 GPU 70 °C | задача: until [ -f models/pythia-1b/.done ]; do sleep 30; done; python meaning_synth.py --model models/pythia-1b --ifaces s --bs 32
+2026-10-06 07:48:04 готово за 238 с: until [ -f models/pythia-1b/.done ]; do sleep 30; done; python meaning_synth.py --model models/pythia-1b --ifaces s --bs 32
+2026-10-06 07:48:04 GPU 62 °C | задача: python summarize_synth.py results_synth > results_synth/summary.txt
+2026-10-06 07:48:04 готово за 0 с: python summarize_synth.py results_synth > results_synth/summary.txt
+2026-10-06 07:48:04 очередь пуста — готово
+2026-10-06 07:48:04 удалённый конец очереди (rc=0)

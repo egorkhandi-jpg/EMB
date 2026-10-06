@@ -1,0 +1,46 @@
+2026-10-06 07:09:09 старт: часть ≤ 2.0 ч, перерыв 0.0 мин
+2026-10-06 07:09:09 GPU 51 °C | задача: python meaning_synth.py --model models/pythia-6.9b --ifaces s c --bs 16
+07:11:10 6.9b pretrained набор 2 (s, c): 113 с (всего 119 с)
+07:13:04 6.9b pretrained набор 3 (s, c): 113 с (всего 232 с)
+07:14:57 6.9b pretrained набор 4 (s, c): 114 с (всего 346 с)
+07:16:51 6.9b pretrained набор 5 (s, c): 114 с (всего 459 с)
+07:18:44 6.9b pretrained набор 6 (s, c): 114 с (всего 573 с)
+07:20:38 6.9b pretrained набор 7 (s, c): 114 с (всего 686 с)
+07:22:32 6.9b pretrained набор 8 (s, c): 114 с (всего 800 с)
+07:24:25 6.9b pretrained набор 9 (s, c): 114 с (всего 914 с)
+07:26:19 6.9b pretrained набор 10 (s, c): 114 с (всего 1028 с)
+07:28:18 6.9b random набор 2 (s, c): 118 с (всего 1146 с)
+07:30:16 6.9b random набор 3 (s, c): 118 с (всего 1265 с)
+07:32:15 6.9b random набор 4 (s, c): 118 с (всего 1383 с)
+07:34:13 6.9b random набор 5 (s, c): 118 с (всего 1502 с)
+07:36:12 6.9b random набор 6 (s, c): 118 с (всего 1620 с)
+07:38:10 6.9b random набор 7 (s, c): 118 с (всего 1738 с)
+07:40:08 6.9b random набор 8 (s, c): 118 с (всего 1857 с)
+07:42:07 6.9b random набор 9 (s, c): 118 с (всего 1975 с)
+07:44:05 6.9b random набор 10 (s, c): 118 с (всего 2094 с)
+2026-10-06 07:44:06 готово за 2097 с: python meaning_synth.py --model models/pythia-6.9b --ifaces s c --bs 16
+2026-10-06 07:44:06 GPU 70 °C | задача: until [ -f models/pythia-1b/.done ]; do sleep 30; done; python meaning_synth.py --model models/pythia-1b --ifaces s --bs 32
+07:44:21 1b pretrained набор 1 (s): 12 с (всего 13 с)
+07:44:32 1b pretrained набор 2 (s): 11 с (всего 24 с)
+07:44:44 1b pretrained набор 3 (s): 11 с (всего 36 с)
+07:44:55 1b pretrained набор 4 (s): 11 с (всего 47 с)
+07:45:06 1b pretrained набор 5 (s): 11 с (всего 59 с)
+07:45:18 1b pretrained набор 6 (s): 11 с (всего 70 с)
+07:45:29 1b pretrained набор 7 (s): 11 с (всего 81 с)
+07:45:41 1b pretrained набор 8 (s): 11 с (всего 93 с)
+07:45:52 1b pretrained набор 9 (s): 11 с (всего 104 с)
+07:46:04 1b pretrained набор 10 (s): 11 с (всего 116 с)
+07:46:16 1b random набор 1 (s): 12 с (всего 128 с)
+07:46:28 1b random набор 2 (s): 12 с (всего 140 с)
+07:46:39 1b random набор 3 (s): 12 с (всего 152 с)
+07:46:51 1b random набор 4 (s): 12 с (всего 164 с)
+07:47:03 1b random набор 5 (s): 12 с (всего 176 с)
+07:47:15 1b random набор 6 (s): 12 с (всего 188 с)
+07:47:27 1b random набор 7 (s): 12 с (всего 199 с)
+07:47:39 1b random набор 8 (s): 12 с (всего 211 с)
+07:47:51 1b random набор 9 (s): 12 с (всего 223 с)
+07:48:03 1b random набор 10 (s): 12 с (всего 235 с)
+2026-10-06 07:48:04 готово за 238 с: until [ -f models/pythia-1b/.done ]; do sleep 30; done; python meaning_synth.py --model models/pythia-1b --ifaces s --bs 32
+2026-10-06 07:48:04 GPU 62 °C | задача: python summarize_synth.py results_synth > results_synth/summary.txt
+2026-10-06 07:48:04 готово за 0 с: python summarize_synth.py results_synth > results_synth/summary.txt
+2026-10-06 07:48:04 очередь пуста — готово
