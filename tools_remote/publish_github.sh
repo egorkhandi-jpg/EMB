@@ -24,6 +24,7 @@ filter() {
   rm -rf "$WORK"; mkdir -p "$WORK"
   git clone --quiet --mirror "$HERE" "$WORK/pub.git"
   cd "$WORK/pub.git"
+  SRC=$(git rev-parse master)            # что попало в копию (параллельные коммиты после клона — в следующий раз)
   # публикуется только master и метки: прочие ссылки (refs/remotes/vast/…) удаляются
   git for-each-ref --format='%(refname)' | grep -v -e '^refs/heads/master$' -e '^refs/tags/' | while read -r r; do git update-ref -d "$r"; done
   FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch -f --index-filter 'git rm --cached --ignore-unmatch -q CLAUDE.md' \
@@ -41,9 +42,9 @@ check() {
     [ -n "$line" ] || continue
     local mode=${line%%:*} pat=${line#*:} opt=""; [ "$mode" = "i" ] && opt="-i"
     if git -C "$P" grep -q $opt -F -e "$pat" $revs -- 2>/dev/null; then echo "ОШИБКА: запрещённая строка в файлах копии (шаблон $mode)"; exit 1; fi
-    if git -C "$P" log --all --format='%s%n%b' | grep -q $opt -F -e "$pat"; then echo "ОШИБКА: запрещённая строка в сообщениях коммитов (шаблон $mode)"; exit 1; fi
+    if [ -n "$(git -C "$P" log --all --format=%h -F ${opt:+--regexp-ignore-case} --grep="$pat")" ]; then echo "ОШИБКА: запрещённая строка в сообщениях коммитов (шаблон $mode)"; exit 1; fi
   done < "$PAT"
-  local a b; a=$(git -C "$HERE" rev-list --count master); b=$(git -C "$P" rev-list --count master)
+  local a b; a=$(git -C "$HERE" rev-list --count "$SRC"); b=$(git -C "$P" rev-list --count master)
   [ "$a" = "$b" ] || { echo "ОШИБКА: число коммитов разное ($a против $b)"; exit 1; }
 }
 
@@ -58,7 +59,7 @@ write_map() {
     echo
     echo "| Локальный | Опубликованный | Дата | Сообщение |"
     echo "| --- | --- | --- | --- |"
-    paste -d'|' <(git -C "$HERE" rev-list --topo-order --reverse master) <(git -C "$P" rev-list --topo-order --reverse master) |
+    paste -d'|' <(git -C "$HERE" rev-list --topo-order --reverse "$SRC") <(git -C "$P" rev-list --topo-order --reverse master) |
     while IFS='|' read -r o n; do
       so=$(git -C "$HERE" log -1 --format=%s "$o"); sn=$(git -C "$P" log -1 --format=%s "$n")
       [ "$so" = "$sn" ] || { echo "ОШИБКА: порядок коммитов не совпал ($o / $n)" >&2; exit 1; }
@@ -80,7 +81,7 @@ if ! cmp -s "$tmp" "$MAP"; then
   filter; check
 fi
 echo "копия готова: $(git -C "$WORK/pub.git" rev-list --count master) коммитов, меток $(git -C "$WORK/pub.git" tag | wc -l); CLAUDE.md и запрещённых строк в истории нет"
-echo "вершина: локально $(git -C "$HERE" rev-parse --short master) → в копии $(git -C "$WORK/pub.git" rev-parse --short master)"
+echo "вершина: локально ${SRC:0:7} → в копии $(git -C "$WORK/pub.git" rev-parse --short master)"
 if [ $DRY = 1 ]; then
   echo "--dry-run: push не выполнялся (адрес $URL)"; exit 0
 fi
