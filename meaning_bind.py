@@ -124,7 +124,8 @@ def build(tk, i, K, E, AL, good_A, wA, wB, cond):
 def load(model, weights, dev, seed=None, pre_norm=None):
     from transformers import AutoModelForCausalLM, AutoConfig
     if weights == 'pretrained':
-        m = AutoModelForCausalLM.from_pretrained(model, dtype=torch.float32).to(dev)
+        # сразу на устройство (без полной копии в ОЗУ: у экземпляров бывает 30 ГБ при 28 ГБ весов 6.9B в fp32); fp16 → fp32 точно
+        m = AutoModelForCausalLM.from_pretrained(model, dtype=torch.float32, device_map=dev)
     else:
         torch.manual_seed(seed)
         with torch.device(dev):
