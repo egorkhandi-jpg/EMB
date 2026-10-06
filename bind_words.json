@@ -1,0 +1,17 @@
+{
+  "_note": "Узкий вопрос C (2026-10-06): связывает ли модель смысл слова с опытом тела. Зафиксировано и закоммичено до расчёта. Пулы слов — из meaning_words.json (A24, однотокенные с ведущим пробелом). Вопросы после окна; ответ — следующий токен (слово вида с ведущим пробелом).",
+  "questions": {
+    "q1": " So the food here is the",
+    "q2": " The one that is safe to eat is the",
+    "q3": " Next time I will eat the"
+  },
+  "main_question": "q1",
+  "s_sentences": {
+    "eat": "I ate{w}.",
+    "up": "Energy went up.",
+    "down": "Energy went down.",
+    "same_after_eat": "Energy stayed the same.",
+    "nothing": "Nothing happened."
+  },
+  "_s_note": "Кадр интерфейса s: съел и исход — «I ate w. Energy went up/down.» (съел без изменения энергии — «Energy stayed the same.»); ничего — «Nothing happened.»; только в перемешанных окнах бывает исход без съеденного — «Energy went up/down.» и съеденное без исхода — «I ate w. Energy stayed the same.». Кадры через пробел."
+}
