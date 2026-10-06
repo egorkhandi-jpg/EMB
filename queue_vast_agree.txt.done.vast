@@ -1,2 +1,0 @@
-python body_head3.py replay --cond lm --weights pretrained --words c --params results_evo/evo_A_pretrained_c.json --name evo --out results_vast_agree
-python copies.py --seeds 1 --name check --out results_vast_agree

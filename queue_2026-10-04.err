@@ -1,232 +1,0 @@
-Loading weights:   0%|          | 0/147 [00:00<?, ?it/s]Loading weights:  86%|████████▋ | 127/147 [00:00<00:00, 1262.72it/s]Loading weights: 100%|██████████| 147/147 [00:00<00:00, 1317.69it/s]
-[transformers] [1mGPTNeoXModel LOAD REPORT[0m from: EleutherAI/pythia-160m
-Key              | Status     |  | 
------------------+------------+--+-
-embed_out.weight | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-Loading weights:   0%|          | 0/147 [00:00<?, ?it/s]Loading weights:  86%|████████▋ | 127/147 [00:00<00:00, 1260.49it/s]Loading weights: 100%|██████████| 147/147 [00:00<00:00, 1305.09it/s]
-[transformers] [1mGPTNeoXModel LOAD REPORT[0m from: EleutherAI/pythia-160m
-Key              | Status     |  | 
------------------+------------+--+-
-embed_out.weight | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-Loading weights:   0%|          | 0/147 [00:00<?, ?it/s]Loading weights:  90%|█████████ | 133/147 [00:00<00:00, 1293.85it/s]Loading weights: 100%|██████████| 147/147 [00:00<00:00, 1336.33it/s]
-[transformers] [1mGPTNeoXModel LOAD REPORT[0m from: EleutherAI/pythia-160m
-Key              | Status     |  | 
------------------+------------+--+-
-embed_out.weight | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-Loading weights:   0%|          | 0/147 [00:00<?, ?it/s]Loading weights:  87%|████████▋ | 128/147 [00:00<00:00, 1255.62it/s]Loading weights: 100%|██████████| 147/147 [00:00<00:00, 1288.19it/s]
-[transformers] [1mGPTNeoXModel LOAD REPORT[0m from: EleutherAI/pythia-160m
-Key              | Status     |  | 
------------------+------------+--+-
-embed_out.weight | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-Loading weights:   0%|          | 0/147 [00:00<?, ?it/s]Loading weights:  86%|████████▌ | 126/147 [00:00<00:00, 1251.93it/s]Loading weights: 100%|██████████| 147/147 [00:00<00:00, 1281.50it/s]
-[transformers] [1mGPTNeoXModel LOAD REPORT[0m from: EleutherAI/pythia-160m
-Key              | Status     |  | 
------------------+------------+--+-
-embed_out.weight | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-Loading weights:   0%|          | 0/147 [00:00<?, ?it/s]Loading weights:  84%|████████▍ | 124/147 [00:00<00:00, 1213.92it/s]Loading weights: 100%|██████████| 147/147 [00:00<00:00, 1288.13it/s]
-[transformers] [1mGPTNeoXModel LOAD REPORT[0m from: EleutherAI/pythia-160m
-Key              | Status     |  | 
------------------+------------+--+-
-embed_out.weight | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-Loading weights:   0%|          | 0/147 [00:00<?, ?it/s]Loading weights:  83%|████████▎ | 122/147 [00:00<00:00, 1219.74it/s]Loading weights: 100%|██████████| 147/147 [00:00<00:00, 1239.05it/s]
-[transformers] [1mGPTNeoXModel LOAD REPORT[0m from: EleutherAI/pythia-160m
-Key              | Status     |  | 
------------------+------------+--+-
-embed_out.weight | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-Loading weights:   0%|          | 0/147 [00:00<?, ?it/s]Loading weights:  86%|████████▌ | 126/147 [00:00<00:00, 1247.09it/s]Loading weights: 100%|██████████| 147/147 [00:00<00:00, 1314.97it/s]
-[transformers] [1mGPTNeoXModel LOAD REPORT[0m from: EleutherAI/pythia-160m
-Key              | Status     |  | 
------------------+------------+--+-
-embed_out.weight | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-Loading weights:   0%|          | 0/147 [00:00<?, ?it/s]Loading weights:  86%|████████▌ | 126/147 [00:00<00:00, 1246.45it/s]Loading weights: 100%|██████████| 147/147 [00:00<00:00, 1292.24it/s]
-[transformers] [1mGPTNeoXModel LOAD REPORT[0m from: EleutherAI/pythia-160m
-Key              | Status     |  | 
------------------+------------+--+-
-embed_out.weight | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-Loading weights:   0%|          | 0/147 [00:00<?, ?it/s]Loading weights:  86%|████████▋ | 127/147 [00:00<00:00, 1267.62it/s]Loading weights: 100%|██████████| 147/147 [00:00<00:00, 1311.59it/s]
-[transformers] [1mGPTNeoXModel LOAD REPORT[0m from: EleutherAI/pythia-160m
-Key              | Status     |  | 
------------------+------------+--+-
-embed_out.weight | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-Loading weights:   0%|          | 0/147 [00:00<?, ?it/s]Loading weights:  87%|████████▋ | 128/147 [00:00<00:00, 1238.89it/s]Loading weights: 100%|██████████| 147/147 [00:00<00:00, 1301.08it/s]
-[transformers] [1mGPTNeoXModel LOAD REPORT[0m from: EleutherAI/pythia-160m
-Key              | Status     |  | 
------------------+------------+--+-
-embed_out.weight | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-Loading weights:   0%|          | 0/147 [00:00<?, ?it/s]Loading weights:  86%|████████▋ | 127/147 [00:00<00:00, 1220.03it/s]Loading weights: 100%|██████████| 147/147 [00:00<00:00, 1270.64it/s]
-[transformers] [1mGPTNeoXModel LOAD REPORT[0m from: EleutherAI/pythia-160m
-Key              | Status     |  | 
------------------+------------+--+-
-embed_out.weight | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-Loading weights:   0%|          | 0/147 [00:00<?, ?it/s]Loading weights:  86%|████████▌ | 126/147 [00:00<00:00, 1246.64it/s]Loading weights: 100%|██████████| 147/147 [00:00<00:00, 1258.91it/s]
-[transformers] [1mGPTNeoXModel LOAD REPORT[0m from: EleutherAI/pythia-160m
-Key              | Status     |  | 
------------------+------------+--+-
-embed_out.weight | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-Loading weights:   0%|          | 0/147 [00:00<?, ?it/s]Loading weights:  88%|████████▊ | 129/147 [00:00<00:00, 1254.34it/s]Loading weights: 100%|██████████| 147/147 [00:00<00:00, 1287.46it/s]
-[transformers] [1mGPTNeoXModel LOAD REPORT[0m from: EleutherAI/pythia-160m
-Key              | Status     |  | 
------------------+------------+--+-
-embed_out.weight | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-Loading weights:   0%|          | 0/147 [00:00<?, ?it/s]Loading weights:  86%|████████▋ | 127/147 [00:00<00:00, 1256.57it/s]Loading weights: 100%|██████████| 147/147 [00:00<00:00, 1320.35it/s]
-[transformers] [1mGPTNeoXModel LOAD REPORT[0m from: EleutherAI/pythia-160m
-Key              | Status     |  | 
------------------+------------+--+-
-embed_out.weight | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-Loading weights:   0%|          | 0/147 [00:00<?, ?it/s]Loading weights:  66%|██████▌   | 97/147 [00:00<00:00, 954.01it/s]Loading weights: 100%|██████████| 147/147 [00:00<00:00, 998.56it/s]
-[transformers] [1mGPTNeoXModel LOAD REPORT[0m from: EleutherAI/pythia-160m
-Key              | Status     |  | 
------------------+------------+--+-
-embed_out.weight | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-Loading weights:   0%|          | 0/147 [00:00<?, ?it/s]Loading weights:  87%|████████▋ | 128/147 [00:00<00:00, 1267.24it/s]Loading weights: 100%|██████████| 147/147 [00:00<00:00, 1292.31it/s]
-[transformers] [1mGPTNeoXModel LOAD REPORT[0m from: EleutherAI/pythia-160m
-Key              | Status     |  | 
------------------+------------+--+-
-embed_out.weight | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-Loading weights:   0%|          | 0/147 [00:00<?, ?it/s]Loading weights:  84%|████████▍ | 124/147 [00:00<00:00, 1214.06it/s]Loading weights: 100%|██████████| 147/147 [00:00<00:00, 1297.26it/s]
-[transformers] [1mGPTNeoXModel LOAD REPORT[0m from: EleutherAI/pythia-160m
-Key              | Status     |  | 
------------------+------------+--+-
-embed_out.weight | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-Loading weights:   0%|          | 0/147 [00:00<?, ?it/s]Loading weights:  85%|████████▌ | 125/147 [00:00<00:00, 1239.10it/s]Loading weights: 100%|██████████| 147/147 [00:00<00:00, 1288.16it/s]
-[transformers] [1mGPTNeoXModel LOAD REPORT[0m from: EleutherAI/pythia-160m
-Key              | Status     |  | 
------------------+------------+--+-
-embed_out.weight | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-Loading weights:   0%|          | 0/147 [00:00<?, ?it/s]Loading weights:  84%|████████▍ | 124/147 [00:00<00:00, 1232.02it/s]Loading weights: 100%|██████████| 147/147 [00:00<00:00, 1284.25it/s]
-[transformers] [1mGPTNeoXModel LOAD REPORT[0m from: EleutherAI/pythia-160m
-Key              | Status     |  | 
------------------+------------+--+-
-embed_out.weight | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-Loading weights:   0%|          | 0/147 [00:00<?, ?it/s]Loading weights:  86%|████████▋ | 127/147 [00:00<00:00, 1249.21it/s]Loading weights: 100%|██████████| 147/147 [00:00<00:00, 1286.67it/s]
-[transformers] [1mGPTNeoXModel LOAD REPORT[0m from: EleutherAI/pythia-160m
-Key              | Status     |  | 
------------------+------------+--+-
-embed_out.weight | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-Loading weights:   0%|          | 0/147 [00:00<?, ?it/s]Loading weights:  81%|████████  | 119/147 [00:00<00:00, 1177.03it/s]Loading weights: 100%|██████████| 147/147 [00:00<00:00, 1211.88it/s]
-[transformers] [1mGPTNeoXModel LOAD REPORT[0m from: EleutherAI/pythia-160m
-Key              | Status     |  | 
------------------+------------+--+-
-embed_out.weight | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-Loading weights:   0%|          | 0/147 [00:00<?, ?it/s]Loading weights:  86%|████████▋ | 127/147 [00:00<00:00, 1267.23it/s]Loading weights: 100%|██████████| 147/147 [00:00<00:00, 1321.41it/s]
-[transformers] [1mGPTNeoXModel LOAD REPORT[0m from: EleutherAI/pythia-160m
-Key              | Status     |  | 
------------------+------------+--+-
-embed_out.weight | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:  24%|██▍       | 71/291 [00:00<00:00, 701.28it/s]Loading weights:  49%|████▉     | 143/291 [00:00<00:00, 696.45it/s]Loading weights:  73%|███████▎  | 213/291 [00:00<00:00, 693.02it/s]Loading weights:  97%|█████████▋| 283/291 [00:00<00:00, 687.66it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 703.84it/s]
-[transformers] [1mGPTNeoXModel LOAD REPORT[0m from: EleutherAI/pythia-410m
-Key              | Status     |  | 
------------------+------------+--+-
-embed_out.weight | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:  25%|██▌       | 74/291 [00:00<00:00, 712.81it/s]Loading weights:  50%|█████     | 146/291 [00:00<00:00, 701.06it/s]Loading weights:  75%|███████▍  | 218/291 [00:00<00:00, 699.93it/s]Loading weights:  99%|█████████▉| 288/291 [00:00<00:00, 694.30it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 703.13it/s]
-[transformers] [1mGPTNeoXModel LOAD REPORT[0m from: EleutherAI/pythia-410m
-Key              | Status     |  | 
------------------+------------+--+-
-embed_out.weight | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:  24%|██▍       | 71/291 [00:00<00:00, 690.56it/s]Loading weights:  49%|████▉     | 143/291 [00:00<00:00, 703.94it/s]Loading weights:  75%|███████▍  | 217/291 [00:00<00:00, 709.83it/s]Loading weights:  99%|█████████▉| 288/291 [00:00<00:00, 704.45it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 709.79it/s]
-[transformers] [1mGPTNeoXModel LOAD REPORT[0m from: EleutherAI/pythia-410m
-Key              | Status     |  | 
------------------+------------+--+-
-embed_out.weight | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:  25%|██▌       | 73/291 [00:00<00:00, 725.37it/s]Loading weights:  50%|█████     | 146/291 [00:00<00:00, 727.38it/s]Loading weights:  75%|███████▌  | 219/291 [00:00<00:00, 714.60it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 726.30it/s]
-[transformers] [1mGPTNeoXModel LOAD REPORT[0m from: EleutherAI/pythia-410m
-Key              | Status     |  | 
------------------+------------+--+-
-embed_out.weight | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:  25%|██▌       | 73/291 [00:00<00:00, 721.60it/s]Loading weights:  50%|█████     | 146/291 [00:00<00:00, 705.26it/s]Loading weights:  75%|███████▍  | 218/291 [00:00<00:00, 703.28it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 715.86it/s]
-[transformers] [1mGPTNeoXModel LOAD REPORT[0m from: EleutherAI/pythia-410m
-Key              | Status     |  | 
------------------+------------+--+-
-embed_out.weight | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:  24%|██▎       | 69/291 [00:00<00:00, 685.27it/s]Loading weights:  48%|████▊     | 139/291 [00:00<00:00, 687.18it/s]Loading weights:  72%|███████▏  | 210/291 [00:00<00:00, 683.42it/s]Loading weights:  98%|█████████▊| 286/291 [00:00<00:00, 712.68it/s]Loading weights: 100%|██████████| 291/291 [00:00<00:00, 711.95it/s]
-[transformers] [1mGPTNeoXModel LOAD REPORT[0m from: EleutherAI/pythia-410m
-Key              | Status     |  | 
------------------+------------+--+-
-embed_out.weight | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.

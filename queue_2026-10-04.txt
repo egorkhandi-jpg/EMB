@@ -1,9 +1,0 @@
-# v3-evo: запись опыта → эволюция (уровень A) → контур (уровень B) → устойчивость A15 (c_arb3, 410M)
-python body_head3.py record --cond lm --weights pretrained --words c --eta 1 --B 50 --K 3 --rule all --n-ep 100 --out results_evo --seeds 201 202 203 204 205 206 207 208 209 210 211 212 213 214 215 216 301 302 303 304 305 306 307 308 309 310
-python evo_replay.py
-python body_head3.py replay --cond lm --weights pretrained --words c --params results_evo/evo_A_pretrained_c.json --name evo --out results_evo
-python body_head3.py replay --cond lm --weights random --words c --params results_evo/evo_A_pretrained_c.json --name evo --out results_evo
-python body_head3.py replay --cond lm --weights pretrained --words c_arb3 --eta 1 --B 50 --K 3 --name a15 --out results_evo
-python body_head3.py replay --cond lm --weights random --words c_arb3 --eta 0.3 --B 10 --K 3 --name a15 --out results_evo
-python body_head3.py replay --cond lm --model EleutherAI/pythia-410m --weights pretrained --words c --eta 1 --B 50 --K 3 --name a15 --seeds 1 2 3 4 5 --out results_evo
-python body_head3.py replay --cond lm --model EleutherAI/pythia-410m --weights random --words c --eta 0.3 --B 10 --K 3 --name a15 --seeds 1 2 3 4 5 --out results_evo

@@ -72,7 +72,7 @@ def world(cfg, q, n, seed):
     dt[:, 0] = np.where(valid[:, 0], tt[:, 0] + 1, 0)
     w = np.where(valid, (1 - (1 - LAM) ** (T - np.maximum(tt, 0))) / (LAM * T), 0.0)
     return {'t': tt, 'y': y, 'm': mm, 'g': gg, 'valid': valid, 'flipped': flipped, 'dt': dt, 'w': w, 'n_enc': K, 'coin': coin,
-            'G': G, 'M': M, 'ENC': ENC}
+            'G': G, 'M': M, 'S': S, 'ENC': ENC}
 
 
 def score(W, choiceA):

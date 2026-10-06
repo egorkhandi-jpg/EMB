@@ -1,3 +1,0 @@
-# v4-slot: предобученная (10 посевов, все агенты) → случайная (slot_organ, noslot)
-python slot_agent.py --weights pretrained
-python slot_agent.py --weights random --agents slot_organ noslot

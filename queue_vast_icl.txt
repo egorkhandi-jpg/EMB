@@ -1,6 +1,0 @@
-# v4-icl на 5090: 160M (пред, случ) → 1B (пред, случ) → сводка
-python report_icl.py --model EleutherAI/pythia-160m --weights pretrained --chunk 128
-python report_icl.py --model EleutherAI/pythia-160m --weights random --chunk 128
-python report_icl.py --model EleutherAI/pythia-1b --weights pretrained --chunk 128
-python report_icl.py --model EleutherAI/pythia-1b --weights random --chunk 128
-python summarize_icl.py results_report > results_report/summary_icl.txt

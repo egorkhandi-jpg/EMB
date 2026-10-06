@@ -1,3 +1,0 @@
-# Vast, согласие машин (A18) и замер правила 5: 10 жизней A17 (как results_evo/replay_pretrained_c_replay_evo.json), пакет копий на посеве 1
-python body_head3.py replay --cond lm --weights pretrained --words c --params results_evo/evo_A_pretrained_c.json --name evo --out results_vast_agree
-python copies.py --seeds 1 --name check --out results_vast_agree
