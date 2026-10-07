@@ -144,5 +144,8 @@
 | 67d6ce9 | 19688cf | 2026-10-07 | COMMIT_MAP: соответствие хэшей локальной истории и оп� |
 | 0140568 | 3a34a2f | 2026-10-07 | Препринт v1.1: Code and data availability (текст Егора, метка v1.1- |
 | 544d2ff | ff4dcdf | 2026-10-07 | COMMIT_MAP: соответствие хэшей локальной истории и оп� |
+| 7de9d82 | 049139a | 2026-10-07 | COMMIT_MAP: соответствие хэшей локальной истории и оп� |
+| a72dfd7 | a45ed13 | 2026-10-07 | Проверка ссылок обоих PDF (HTTP 200, по метке v1.1-preprint); з |
+| 03a491a | 26007aa | 2026-10-07 | Препринт (en, zh): «preregistered in commits made before computation» в анн� |
 
 Метки (в копии указывают на опубликованные пары): v-final-1 v-final-2 v-final-3 v0-baseline-cpu v1-gpu-fp32 v1.0-preprint v1.1-preprint v2-interface v2-probe v2-scale v3-body v3-evo v3-nlms v3-readout v3-replay v3-words v4-copies v4-icl v4-latent v4-report v4-sleep v4-sleepagent v4-slot v4-transfer v4-transfer2 v5-bind v5-meaning v5-synth v6-spectrum v7-replication 
