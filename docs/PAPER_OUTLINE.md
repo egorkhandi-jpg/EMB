@@ -24,8 +24,8 @@ would use it, at most weakly (0.97–1.00 vs. 0.51–0.62); and (iv) when word m
 conflicts with in-context experience, a statistically reliable trace of the experience reaches the
 answer but is substantially weaker than the meaning effect (4–28% of it) and leaves the answers
 essentially unchanged. All primary analyses were preregistered with timestamped commits, use exact
-permutation or bootstrap tests with Holm correction, and include controls for confounds that produced false
-positives during the project, such as survivorship-induced frequency cues. Taken together, the
+permutation or bootstrap tests with Holm correction, and include controls for confounds that misled or
+would have misled our conclusions during the project, such as survivorship-induced frequency cues. Taken together, the
 results suggest that frozen language models in this regime represent substantially more about
 their embodied situation than they can express, and that the bottleneck lies in routing and
 expression rather than in representation.

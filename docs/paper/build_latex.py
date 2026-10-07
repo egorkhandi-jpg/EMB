@@ -12,7 +12,7 @@ HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.join(HERE, '..
 read = lambda p: open(p, encoding='utf-8').read().replace('\r\n', '\n')
 
 BIB = {   # ключ → (поля); авторы и годы — по страницам arXiv (RELATED_WORK.md; год — первой версии)
-    'Ahn 2022': ('ahn2022', 'Ahn, Michael and others', 'Do As I Can, Not As I Say: Grounding Language in Robotic Affordances', '2204.01691'),
+    'Ahn 2022': ('ahn2022', 'Ahn, Michael and others', '{Do As I Can, Not As I Say}: Grounding Language in Robotic Affordances', '2204.01691'),
     'Azaria 2023': ('azaria2023', 'Azaria, Amos and Mitchell, Tom', "The Internal State of an {LLM} Knows When It's Lying", '2304.13734'),
     'Belinkov 2021': ('belinkov2021', 'Belinkov, Yonatan', 'Probing Classifiers: Promises, Shortcomings, and Advances', '2102.12452'),
     'Burns 2022': ('burns2022', 'Burns, Collin and others', 'Discovering Latent Knowledge in Language Models Without Supervision', '2212.03827'),
@@ -44,8 +44,16 @@ def esc(t):
     return t
 
 
+FIGNAME = {'F1': 'probe', 'F2': 'words', 'F3': 'meaning', 'F4': 'synth'}
+
+
 def inline(t):
     t = re.sub(r'<!--.*?-->', '', t, flags=re.S)
+    t = re.sub(r'[ \t]+([.,;:)])', r'\1', t)                               # следы удалённых комментариев: пробел перед знаком
+    t = re.sub(r'\([ \t]+', '(', t)
+    t = re.sub(r'[ \t]{2,}', ' ', t)
+    figrefs = []
+    t = re.sub(r'Fig\. (F[1-4])', lambda m: figrefs.append(FIGNAME[m.group(1)]) or f'\x02{len(figrefs) - 1}\x02', t)
     codes = []
     t = re.sub(r'`([^`]+)`', lambda m: codes.append(m.group(1)) or f'\x00{len(codes) - 1}\x00', t)
     cites = []
@@ -67,6 +75,7 @@ def inline(t):
     t = re.sub(r'(?<![\w*])\*([^*\n]+)\*(?![\w*])', r'\\emph{\1}', t)
     t = re.sub(r'\x00(\d+)\x00', lambda m: '\\texttt{' + esc(codes[int(m.group(1))]) + '}', t)
     t = re.sub(r'\x01(\d+)\x01', lambda m: '\\citep{' + cites[int(m.group(1))] + '}', t)
+    t = re.sub(r'\x02(\d+)\x02', lambda m: 'Figure~\\ref{fig:' + figrefs[int(m.group(1))] + '}', t)
     return t
 
 
@@ -141,7 +150,7 @@ def main():
         title, text, path = caps[fid]
         shutil.copy(os.path.join(ROOT, path), os.path.join(OUT, 'figures', os.path.basename(path)))
         figs[sec] = ('\\begin{figure}[t]\\centering\\includegraphics[width=\\linewidth]{figures/%s}\n\\caption{\\textbf{%s.} %s}\\label{fig:%s}\\end{figure}'
-                     % (os.path.basename(path), inline(title), inline(text), fid))
+                     % (os.path.basename(path), inline(title.rstrip('.')), inline(text), FIGNAME[fid]))
     outline = read(os.path.join(ROOT, 'docs', 'PAPER_OUTLINE.md'))
     abstract = outline.split('## 1. Аннотация\n', 1)[1].split('\n### Сверка', 1)[0].strip().split('\n\n', 1)[1]
     disclosure = outline.split('## 4. Раскрытие\n', 1)[1].split('\n## ', 1)[0].strip()
@@ -166,7 +175,7 @@ def main():
 \setcitestyle{authoryear,round,semicolon}
 % Название — выбор автора; второй вариант: Represented but Not Reported: Probing Frozen Language Models as Embodied Readers
 \title{Knowing More Than It Can Say: Frozen Language Models in Minimal Bodies}
-\author{AUTHOR NAME (Latin script)\\ AFFILIATION\\ \texttt{EMAIL}\\ ORCID: 0000-0000-0000-0000}
+\author{Egor Grigorev\\ ORCID: \href{https://orcid.org/0009-0000-2725-5466}{0009-0000-2725-5466}}
 \date{Preprint, October 2026}
 \begin{document}
 \maketitle

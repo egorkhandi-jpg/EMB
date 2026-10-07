@@ -25,8 +25,8 @@ would use it, at most weakly (0.97–1.00 vs. 0.51–0.62); and (iv) when word m
 conflicts with in-context experience, a statistically reliable trace of the experience reaches the
 answer but is substantially weaker than the meaning effect (4–28% of it) and leaves the answers
 essentially unchanged. All primary analyses were preregistered with timestamped commits, use exact
-permutation or bootstrap tests with Holm correction, and include controls for confounds that produced false
-positives during the project, such as survivorship-induced frequency cues. Taken together, the
+permutation or bootstrap tests with Holm correction, and include controls for confounds that misled or
+would have misled our conclusions during the project, such as survivorship-induced frequency cues. Taken together, the
 results suggest that frozen language models in this regime represent substantially more about
 their embodied situation than they can express, and that the bottleneck lies in routing and
 expression rather than in representation.
@@ -199,7 +199,7 @@ We conclude that the binding of a word to its outcome in context leaves a statis
 
 <!-- Черновик 2026-10-07. Источники после чисел будут удалены в итоговом тексте. -->
 
-Several results during the project looked like findings and were not. For each we give what happened, the false result it produced, and the control that caught it.
+Several results and design choices during the project misled or would have misled our conclusions. For each we give what happened, how it misled or would have, and the control that caught it.
 
 **Readout artifact in the original interface.** In the first interface, body states entered through a continuous projector, and the readout used the raw final hidden state. With that readout the pretrained Pythia lagged its random-weight twin, suggesting that pretraining hurts. Its hidden states were nearly collinear (cosine 0.986 between states) <!-- FINAL_REPORT п. 6; п. 1 -->, consistent with a few very large activations dominating the representation [Sun 2024]. With a fixed standardization of hidden states the difference disappeared: fitness (fraction of the episode survived plus half the final energy) 1.455 vs. 1.453 (3 seeds) and 1.453 vs. 1.457 in a ten-seed repeat (p = 0.20) <!-- п. 1, п. 2 -->. Standardized readouts have been the default since.
 

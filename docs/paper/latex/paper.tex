@@ -9,12 +9,12 @@
 \setcitestyle{authoryear,round,semicolon}
 % Название — выбор автора; второй вариант: Represented but Not Reported: Probing Frozen Language Models as Embodied Readers
 \title{Knowing More Than It Can Say: Frozen Language Models in Minimal Bodies}
-\author{AUTHOR NAME (Latin script)\\ AFFILIATION\\ \texttt{EMAIL}\\ ORCID: 0000-0000-0000-0000}
+\author{Egor Grigorev\\ ORCID: \href{https://orcid.org/0009-0000-2725-5466}{0009-0000-2725-5466}}
 \date{Preprint, October 2026}
 \begin{document}
 \maketitle
 \begin{abstract}
-Frozen pretrained language models are increasingly used as components of embodied agents, yet it is unclear what pretraining contributes in such settings and how much of what the model internally represents is available through its output. We study this in a minimal two-dimensional foraging environment where an agent's body events are presented to a frozen language model as a short sequence of discrete tokens, and compare each pretrained model against the same architecture with random weights and matched embedding norms. Across three model families (Pythia, Qwen2.5, OLMo-2; 1--1.5B parameters, with Pythia up to 6.9B for some analyses), we find that: (i) the advantage of pretraining comes from sequence-processing machinery rather than word meaning --- arbitrary event words work as well as or better than meaningful ones; (ii) a latent episode variable that is never stated explicitly in the context is linearly decodable from hidden states with AUC 0.93--0.99, but the model's own answer to a direct question recovers it only at AUC 0.61--0.64, and in Pythia, in-context examples from other episodes do not close this gap; (iii) the meaning of a word (food vs. harmful) is fully present at that word's position but reaches the final position, where an episode-level readout would use it, at most weakly (0.97--1.00 vs. 0.51--0.62); and (iv) when word meaning conflicts with in-context experience, a statistically reliable trace of the experience reaches the answer but is substantially weaker than the meaning effect (4--28\% of it) and leaves the answers essentially unchanged. All primary analyses were preregistered with timestamped commits, use exact permutation or bootstrap tests with Holm correction, and include controls for confounds that produced false positives during the project, such as survivorship-induced frequency cues. Taken together, the results suggest that frozen language models in this regime represent substantially more about their embodied situation than they can express, and that the bottleneck lies in routing and expression rather than in representation.
+Frozen pretrained language models are increasingly used as components of embodied agents, yet it is unclear what pretraining contributes in such settings and how much of what the model internally represents is available through its output. We study this in a minimal two-dimensional foraging environment where an agent's body events are presented to a frozen language model as a short sequence of discrete tokens, and compare each pretrained model against the same architecture with random weights and matched embedding norms. Across three model families (Pythia, Qwen2.5, OLMo-2; 1--1.5B parameters, with Pythia up to 6.9B for some analyses), we find that: (i) the advantage of pretraining comes from sequence-processing machinery rather than word meaning --- arbitrary event words work as well as or better than meaningful ones; (ii) a latent episode variable that is never stated explicitly in the context is linearly decodable from hidden states with AUC 0.93--0.99, but the model's own answer to a direct question recovers it only at AUC 0.61--0.64, and in Pythia, in-context examples from other episodes do not close this gap; (iii) the meaning of a word (food vs. harmful) is fully present at that word's position but reaches the final position, where an episode-level readout would use it, at most weakly (0.97--1.00 vs. 0.51--0.62); and (iv) when word meaning conflicts with in-context experience, a statistically reliable trace of the experience reaches the answer but is substantially weaker than the meaning effect (4--28\% of it) and leaves the answers essentially unchanged. All primary analyses were preregistered with timestamped commits, use exact permutation or bootstrap tests with Holm correction, and include controls for confounds that misled or would have misled our conclusions during the project, such as survivorship-induced frequency cues. Taken together, the results suggest that frozen language models in this regime represent substantially more about their embodied situation than they can express, and that the bottleneck lies in routing and expression rather than in representation.
 \end{abstract}
 
 \section{Introduction}\label{sec:intro}
@@ -41,131 +41,131 @@ We make no claim that these findings transfer directly to deployed monitoring sy
 
 \subsection{Environment}
 
-All analyses use a minimal two-dimensional foraging world, \emph{flip-2} . An episode lasts 100 steps  in the unit square, with two items of each of two kinds, A and B . In every episode one kind is food (+0.35 energy) and the other is poison ($-$0.20) . Which kind is food --- the \emph{episode sign} --- is drawn by a coin at the start, flips once at a random step between 30 and 69 , and is never observed directly. The body reports only events: which kind, if any, was eaten on this step, and whether energy went up, down, or stayed the same. Energy drifts down without food, so the body has its own time. For the analyses reported here, trajectories are generated by a \emph{blind} policy, a reflex that steers to the nearest item of either kind. The model therefore reads experience that it did not shape, and closed-loop shortcuts through behavior are excluded .
+All analyses use a minimal two-dimensional foraging world, \emph{flip-2}. An episode lasts 100 steps in the unit square, with two items of each of two kinds, A and B. In every episode one kind is food (+0.35 energy) and the other is poison ($-$0.20). Which kind is food --- the \emph{episode sign} --- is drawn by a coin at the start, flips once at a random step between 30 and 69, and is never observed directly. The body reports only events: which kind, if any, was eaten on this step, and whether energy went up, down, or stayed the same. Energy drifts down without food, so the body has its own time. For the analyses reported here, trajectories are generated by a \emph{blind} policy, a reflex that steers to the nearest item of either kind. The model therefore reads experience that it did not shape, and closed-loop shortcuts through behavior are excluded.
 
 \subsection{Interfaces}
 
-\textbf{Event words.} Each step is written as two tokens: the kind eaten (`` A'', `` B'', or `` none'') and the outcome (`` up'', `` down'', or `` same''). The window is preceded by a start token and covers the last 32 steps . The episode sign is not stated anywhere in the window. It can only be inferred by binding a kind to the outcomes that follow it. In an earlier interface, a fixed random projection of continuous sensor features into embedding space, pretrained models did not outperform random ones (Section 3.1). For the arbitrary-word control (Section 3.2), the six event words are replaced by unrelated single-token words (e.g. `` cat'', `` table'', `` stone'' / `` river'', `` chair'', `` door'') .
+\textbf{Event words.} Each step is written as two tokens: the kind eaten (`` A'', `` B'', or `` none'') and the outcome (`` up'', `` down'', or `` same''). The window is preceded by a start token and covers the last 32 steps. The episode sign is not stated anywhere in the window. It can only be inferred by binding a kind to the outcomes that follow it. In an earlier interface, a fixed random projection of continuous sensor features into embedding space, pretrained models did not outperform random ones (Section 3.1). For the arbitrary-word control (Section 3.2), the six event words are replaced by unrelated single-token words (e.g. `` cat'', `` table'', `` stone'' / `` river'', `` chair'', `` door'').
 
-\textbf{Questions.} To read the model's \emph{answer}, a question is appended to the window (`` Food:'', `` Safe to eat:'', `` Good kind:''), and the answer is the logit difference between `` A'' and `` B'' at the last position .
+\textbf{Questions.} To read the model's \emph{answer}, a question is appended to the window (`` Food:'', `` Safe to eat:'', `` Good kind:''), and the answer is the logit difference between `` A'' and `` B'' at the last position.
 
-\textbf{Kind words with meaning.} To test meaning (Section 3.4), the two kind symbols are replaced by words whose meaning is food (e.g. apple, bread) or harmful (e.g. mold, glass). These come from pools of 30 single-token words each, and words that name edibility directly are excluded .
+\textbf{Kind words with meaning.} To test meaning (Section 3.4), the two kind symbols are replaced by words whose meaning is food (e.g. apple, bread) or harmful (e.g. mold, glass). These come from pools of 30 single-token words each, and words that name edibility directly are excluded.
 
 \textbf{Synthetic windows.} To separate meaning from experience without any frequency cue (Section 3.5), we construct windows of short sentences (``I ate w. Energy went up.'' / ``\ldots{} went down.'' / ``Nothing happened.'').
 \begin{itemize}
-\item Each window contains n $\in$ \{2, 4, 6\} events, with exactly n/2 per kind. The kinds of the first and last events, and the reference kind used for scoring, are balanced within every cell .
-\item A frequency reference, a last-mentioned reference and a first-mentioned reference all score exactly 0.5 on these windows. A Bayesian reader of the kind--outcome binding scores 1.0 .
-\item The control keeps words, positions and order, and permutes outcomes across events so that the binding is uninformative .
-\item Ten sets of 648 windows are used .
+\item Each window contains n $\in$ \{2, 4, 6\} events, with exactly n/2 per kind. The kinds of the first and last events, and the reference kind used for scoring, are balanced within every cell.
+\item A frequency reference, a last-mentioned reference and a first-mentioned reference all score exactly 0.5 on these windows. A Bayesian reader of the kind--outcome binding scores 1.0.
+\item The control keeps words, positions and order, and permutes outcomes across events so that the binding is uninformative.
+\item Ten sets of 648 windows are used.
 \end{itemize}
 
 \subsection{Models and controls}
 
 \begin{itemize}
-\item \textbf{Models:} Pythia 160M--6.9B, Qwen2.5-1.5B and OLMo-2-1B, all frozen and run in fp32 with TF32 disabled .
-\item \textbf{Random-weight control.} Every pretrained model is compared with the same architecture with random weights; its input embeddings are rescaled to the mean row norm of the pretrained embeddings . The random network is reseeded for every set, except in the meaning probe (Section 3.4), which uses one random network per model .
-\item \textbf{Tokenizer transfer.} For the cross-family replication, every protocol was transferred without other changes :
+\item \textbf{Models:} Pythia 160M--6.9B, Qwen2.5-1.5B and OLMo-2-1B, all frozen and run in fp32 with TF32 disabled.
+\item \textbf{Random-weight control.} Every pretrained model is compared with the same architecture with random weights; its input embeddings are rescaled to the mean row norm of the pretrained embeddings. The random network is reseeded for every set, except in the meaning probe (Section 3.4), which uses one random network per model.
+\item \textbf{Tokenizer transfer.} For the cross-family replication, every protocol was transferred without other changes:
 \begin{itemize}
-\item the start token is each model's end-of-document token, ``<|endoftext|>''. It is the BOS token in Pythia and OLMo-2; Qwen2.5 has no BOS by default ;
-\item every word is a single token with a leading space in all three tokenizers, so no substitutions were needed ;
+\item the start token is each model's end-of-document token, ``<|endoftext|>''. It is the BOS token in Pythia and OLMo-2; Qwen2.5 has no BOS by default;
+\item every word is a single token with a leading space in all three tokenizers, so no substitutions were needed;
 \item all inputs were verified by decoding;
-\item Pythia-1B run through the transferred code reproduced the original numbers (e.g. 0.983 / 0.526 / 1.000 for the meaning probe) .
+\item Pythia-1B run through the transferred code reproduced the original numbers (e.g. 0.983 / 0.526 / 1.000 for the meaning probe).
 \end{itemize}
 \end{itemize}
 
 \subsection{Measures}
 
-\textbf{Probes.} Probes are L2-regularized logistic regressions on the final-layer hidden state. Features are standardized on the training part of each fold, and the regularization strength is chosen by inner validation . Folds are grouped by episode when the probe is tested on new episodes with the same symbols (Sections 3.1--3.3). When the probe must generalize to new words, folds are grouped by word, so test words are never seen in training (Section 3.4) . The sign probe reports balanced accuracy ; the other probes report AUC.
+\textbf{Probes.} Probes are L2-regularized logistic regressions on the final-layer hidden state. Features are standardized on the training part of each fold, and the regularization strength is chosen by inner validation. Folds are grouped by episode when the probe is tested on new episodes with the same symbols (Sections 3.1--3.3). When the probe must generalize to new words, folds are grouped by word, so test words are never seen in training (Section 3.4). The sign probe reports balanced accuracy; the other probes report AUC.
 
-\textbf{Answers.} Answers are logit differences between the two answer tokens after a question, scored by AUC against the true sign , or as mean logit shifts (Section 3.5) . Reading logits rather than sampled text follows the argument that prompted judgments can understate what a model encodes \citep{hu2023}.
+\textbf{Answers.} Answers are logit differences between the two answer tokens after a question, scored by AUC against the true sign, or as mean logit shifts (Section 3.5). Reading logits rather than sampled text follows the argument that prompted judgments can understate what a model encodes \citep{hu2023}.
 
 \subsection{Statistics and preregistration}
 
 \begin{itemize}
-\item \textbf{Main test.} Exact paired sign-flip permutation tests over 10 sets (1,024 permutations), one-sided where the direction was preregistered  and two-sided in the earliest analyses .
-\item \textbf{Meaning probe.} It used a one-sided bootstrap (10,000 resamples) .
-\item \textbf{Intervals.} Where a probe generalizes to new words, intervals are cluster bootstraps over words, not over episodes . Other intervals are 95\% t-intervals over sets.
+\item \textbf{Main test.} Exact paired sign-flip permutation tests over 10 sets (1,024 permutations), one-sided where the direction was preregistered and two-sided in the earliest analyses.
+\item \textbf{Meaning probe.} It used a one-sided bootstrap (10,000 resamples).
+\item \textbf{Intervals.} Where a probe generalizes to new words, intervals are cluster bootstraps over words, not over episodes. Other intervals are 95\% t-intervals over sets.
 \item \textbf{Multiplicity.} Holm correction within each preregistered family.
-\item \textbf{Preregistration.} Every primary analysis was preregistered in a commit made before any data were computed, with all outcomes and their interpretation written down in advance. Every attempt, including abandoned environment variants, is listed in a registry . Analyses added after seeing data are labeled post hoc.
+\item \textbf{Preregistration.} Every primary analysis was preregistered in a commit made before any data were computed, with all outcomes and their interpretation written down in advance. Every attempt, including abandoned environment variants, is listed in a registry. Analyses added after seeing data are labeled post hoc.
 \end{itemize}
 
 \section{Results}
 
 \subsection{The interface decides whether pretraining helps}
 \begin{figure}[t]\centering\includegraphics[width=\linewidth]{figures/F2_words_vs_random.pdf}
-\caption{\textbf{Meaningful vs. arbitrary event words..} Balanced accuracy of a linear probe for the episode sign at the final window position, with meaningful event words (A, B, none / up, down, same; blue) or arbitrary single-token words (mean of two word sets; orange); filled: pretrained, hollow: random weights. 10 sets $\times$ 200 episodes per model; mean and 95\% t-interval over sets. Data: A28 (protocols of A3 and A4).}\label{fig:F2}\end{figure}
+\caption{\textbf{Meaningful vs. arbitrary event words.} Balanced accuracy of a linear probe for the episode sign at the final window position, with meaningful event words (A, B, none / up, down, same; blue) or arbitrary single-token words (mean of two word sets; orange); filled: pretrained, hollow: random weights. 10 sets $\times$ 200 episodes per model; mean and 95\% t-interval over sets. Data: A28 (protocols of A3 and A4).}\label{fig:words}\end{figure}
 
-\textbf{Continuous projector.} Pretrained Pythia was no better than random weights when body states entered through the continuous projector: at 160M it was significantly worse ($-$0.053, Holm p = 0.012) .
+\textbf{Continuous projector.} Pretrained Pythia was no better than random weights when body states entered through the continuous projector: at 160M it was significantly worse ($-$0.053, Holm p = 0.012).
 
-\textbf{Start token and event words.} Adding a start token removed most of the gap: at 160M the pretrained--random difference went from $-$0.054 to $-$0.008, an improvement of +0.047 (Holm p = 0.004) . Writing events as words gave pretrained models their first advantage: relative to the projector interface, the pretrained--random gap improved by +0.191 (Holm p = 0.004), giving sign-probe balanced accuracy 0.950 vs. 0.813 at 160M , and, descriptively, 0.951 vs. 0.856 at 410M .
+\textbf{Start token and event words.} Adding a start token removed most of the gap: at 160M the pretrained--random difference went from $-$0.054 to $-$0.008, an improvement of +0.047 (Holm p = 0.004). Writing events as words gave pretrained models their first advantage: relative to the projector interface, the pretrained--random gap improved by +0.191 (Holm p = 0.004), giving sign-probe balanced accuracy 0.950 vs. 0.813 at 160M, and, descriptively, 0.951 vs. 0.856 at 410M.
 
-\textbf{Replication.} The advantage replicates on OLMo-2-1B (0.963 vs. 0.938, Holm p = 0.006)  and, descriptively, on Pythia-1B (0.976 vs. 0.906) . It does \textbf{not} replicate on Qwen2.5-1.5B with these event words: 0.906 vs. 0.921, with the pretrained model lower in 9 of 10 sets . With arbitrary event words, pretrained Qwen2.5 is again clearly ahead (0.983 vs. 0.920)  (Fig. F2). We did not investigate why the letter-like symbols disadvantage Qwen2.5. The claim that event words let pretraining help therefore holds with a caveat about model family and symbol set.
+\textbf{Replication.} The advantage replicates on OLMo-2-1B (0.963 vs. 0.938, Holm p = 0.006) and, descriptively, on Pythia-1B (0.976 vs. 0.906). It does \textbf{not} replicate on Qwen2.5-1.5B with these event words: 0.906 vs. 0.921, with the pretrained model lower in 9 of 10 sets. With arbitrary event words, pretrained Qwen2.5 is again clearly ahead (0.983 vs. 0.920) (Figure~\ref{fig:words}). We did not investigate why the letter-like symbols disadvantage Qwen2.5. The claim that event words let pretraining help therefore holds with a caveat about model family and symbol set.
 
 \subsection{Machinery, not meaning}
 
-\textbf{Pythia-160M.} If the advantage came from the meaning of the event words, unrelated words should remove it. They do not. At 160M, arbitrary words were \emph{better} than meaningful ones by 0.016 (Holm p = 0.004), and pretrained models on arbitrary words beat random weights by 0.156 (Holm p = 0.004) . Replacing the six event embeddings of the pretrained model with random vectors of the same norm still gave, descriptively, 0.984 . An apparent preference for one arbitrary word set was later traced to token luck, so we state the result as ``not worse'' rather than ``better'' .
+\textbf{Pythia-160M.} If the advantage came from the meaning of the event words, unrelated words should remove it. They do not. At 160M, arbitrary words were \emph{better} than meaningful ones by 0.016 (Holm p = 0.004), and pretrained models on arbitrary words beat random weights by 0.156 (Holm p = 0.004). Replacing the six event embeddings of the pretrained model with random vectors of the same norm still gave, descriptively, 0.984. An apparent preference for one arbitrary word set was later traced to token luck, so we state the result as ``not worse'' rather than ``better''.
 
-\textbf{Replication.} Across the three families, arbitrary words are non-inferior to meaningful ones and above random weights (Holm p = 0.006 in Qwen2.5 and OLMo-2 for the preregistered test requiring both; Pythia-1B descriptively) . The differences against meaningful words are +0.016 for Pythia-1B, +0.078 for Qwen2.5 and +0.024 for OLMo-2  (Fig. F2).
+\textbf{Replication.} Across the three families, arbitrary words are non-inferior to meaningful ones and above random weights (Holm p = 0.006 in Qwen2.5 and OLMo-2 for the preregistered test requiring both; Pythia-1B descriptively). The differences against meaningful words are +0.016 for Pythia-1B, +0.078 for Qwen2.5 and +0.024 for OLMo-2 (Figure~\ref{fig:words}).
 
 What pretraining contributes here is sequence-processing machinery over discrete symbols, not the meaning of the symbols. This parallels findings that language-model initialization helps decision making whether or not inputs are natural language \citep{li2022}, and that random transformers already have some algorithmic capabilities \citep{zhong2024}.
 
 \subsection{Represented but not reported}
 \begin{figure}[t]\centering\includegraphics[width=\linewidth]{figures/F1_probe_vs_answer.pdf}
-\caption{\textbf{Probe vs. answer for the latent episode sign..} AUC against the episode sign of a linear probe at the question position (blue) and of the model's answer, the logit difference `` A'' $-$ `` B'' (orange), for three zero-shot questions. Filled markers: pretrained; hollow: the same architecture with random weights and matched embedding norms. flip-2, 32-step event-word window; 10 sets $\times$ 100 episodes per model; mean and 95\% t-interval over sets. Data: A28 (protocol of A22).}\label{fig:F1}\end{figure}
+\caption{\textbf{Probe vs. answer for the latent episode sign.} AUC against the episode sign of a linear probe at the question position (blue) and of the model's answer, the logit difference `` A'' $-$ `` B'' (orange), for three zero-shot questions. Filled markers: pretrained; hollow: the same architecture with random weights and matched embedding norms. flip-2, 32-step event-word window; 10 sets $\times$ 100 episodes per model; mean and 95\% t-interval over sets. Data: A28 (protocol of A22).}\label{fig:probe}\end{figure}
 
-\textbf{Representation.} The episode sign is never stated in the window, yet a linear probe at the question position decodes it with AUC 0.993, 0.932 and 0.975 (Pythia-1B, Qwen2.5, OLMo-2; first question) .
+\textbf{Representation.} The episode sign is never stated in the window, yet a linear probe at the question position decodes it with AUC 0.993, 0.932 and 0.975 (Pythia-1B, Qwen2.5, OLMo-2; first question).
 
-\textbf{Answer.} Asked directly, the same models answer far worse: AUC 0.607--0.612, 0.623--0.637 and 0.615--0.627 across the three questions . This repeats the original Pythia result (zero-shot AUC 0.61 against a probe at 0.98--0.99) .
+\textbf{Answer.} Asked directly, the same models answer far worse: AUC 0.607--0.612, 0.623--0.637 and 0.615--0.627 across the three questions. This repeats the original Pythia result (zero-shot AUC 0.61 against a probe at 0.98--0.99).
 
-\textbf{Preregistered criterion.} The answer's excess over chance is at most half of the probe's, (AUC\_answer $-$ 0.5) $\le$ 0.5 $\cdot$ (AUC\_probe $-$ 0.5). It holds for all three questions in all three families  (Fig. F1). The probe is trained on the hidden state at the same position from which the answer is read; it is thus a trained linear bridge from that state. The gap between the probe and the answer therefore points to the mapping from this state to the answer tokens, rather than to an absence of the information at this position.
+\textbf{Preregistered criterion.} The answer's excess over chance is at most half of the probe's, (AUC\_answer $-$ 0.5) $\le$ 0.5 $\cdot$ (AUC\_probe $-$ 0.5). It holds for all three questions in all three families (Figure~\ref{fig:probe}). The probe is trained on the hidden state at the same position from which the answer is read; it is thus a trained linear bridge from that state. The gap between the probe and the answer therefore points to the mapping from this state to the answer tokens, rather than to an absence of the information at this position.
 
 \textbf{Two observations qualify this picture.}
 \begin{itemize}
-\item Random-weight networks also support high probes (0.892--0.937), while their answers stay at chance (0.50--0.53) . Descriptively, pretraining adds more to the answer channel (+0.09 to +0.13 AUC) than to the probe (+0.04 to +0.06) . We did not test this difference.
-\item In Pythia only, in-context examples did not close the gap. Examples from the same episode were simply copied: few-shot AUC 0.974 matched a ``repeat the last example's answer'' control at 0.975 . Examples from other episodes gave chance (AUC 0.505 at 160M, 0.469 at 1B), not above random weights or the copy control (Holm p $\ge$ 0.6) . A23 was run on Pythia only.
+\item Random-weight networks also support high probes (0.892--0.937), while their answers stay at chance (0.50--0.53). Descriptively, pretraining adds more to the answer channel (+0.09 to +0.13 AUC) than to the probe (+0.04 to +0.06). We did not test this difference.
+\item In Pythia only, in-context examples did not close the gap. Examples from the same episode were simply copied: few-shot AUC 0.974 matched a ``repeat the last example's answer'' control at 0.975. Examples from other episodes gave chance (AUC 0.505 at 160M, 0.469 at 1B), not above random weights or the copy control (Holm p $\ge$ 0.6). A23 was run on Pythia only.
 \end{itemize}
 
 The pattern --- internal states that encode more than the model's output reveals --- has been reported for factual knowledge and truthfulness \citep{orgad2024,gekhman2025,azaria2023}; here it concerns a variable that exists only in the agent's recent bodily experience.
 
 \subsection{Meaning stays local}
 \begin{figure}[t]\centering\includegraphics[width=\linewidth]{figures/F3_meaning_by_position.pdf}
-\caption{\textbf{Word meaning by position..} AUC of a linear probe for ``the kind word denotes food'', tested on words never seen in training, read at the kind word's own position (blue) and at the final window position (orange); filled: pretrained, hollow: random weights. Pythia 1B / 2.8B / 6.9B from A24 and Qwen2.5-1.5B / OLMo-2-1B from A28 were computed on different RTX 5090 instances; the comparison across these groups is descriptive. 200 episodes, $\approx$56 distinct test words; 95\% cluster-bootstrap intervals over words. Random weights: one network per model; across independent random networks the AUC spreads over $\approx$0.36--0.63 (simulation). Dashed line: preregistered threshold 0.8.}\label{fig:F3}\end{figure}
+\caption{\textbf{Word meaning by position.} AUC of a linear probe for ``the kind word denotes food'', tested on words never seen in training, read at the kind word's own position (blue) and at the final window position (orange); filled: pretrained, hollow: random weights. Pythia 1B / 2.8B / 6.9B from A24 and Qwen2.5-1.5B / OLMo-2-1B from A28 were computed on different RTX 5090 instances; the comparison across these groups is descriptive. 200 episodes, $\approx$56 distinct test words; 95\% cluster-bootstrap intervals over words. Random weights: one network per model; across independent random networks the AUC spreads over $\approx$0.36--0.63 (simulation). Dashed line: preregistered threshold 0.8.}\label{fig:meaning}\end{figure}
 
-\textbf{Meaning in language.} The models know which words denote food. A probe on the word's hidden state in a neutral sentence (``The apple.''), tested on held-out words, separates food from harmful words with AUC 1.000, 1.000 and 0.999 for Pythia 1B, 2.8B and 6.9B , and 1.000 for Qwen2.5 and OLMo-2 . Direct words (edible vs. poison) serve as a positive control for the method (1.000 / 0.967 / 0.967; 0.900; 0.967) .
+\textbf{Meaning in language.} The models know which words denote food. A probe on the word's hidden state in a neutral sentence (``The apple.''), tested on held-out words, separates food from harmful words with AUC 1.000, 1.000 and 0.999 for Pythia 1B, 2.8B and 6.9B, and 1.000 for Qwen2.5 and OLMo-2. Direct words (edible vs. poison) serve as a positive control for the method (1.000 / 0.967 / 0.967; 0.900; 0.967).
 
-\textbf{Meaning in the event window.} When the same words appear as kind symbols, the probe --- tested on words never seen in training --- reads their meaning at the kind word's own position: 0.983--0.999 for Pythia , 0.972 for Qwen2.5 and 0.996 for OLMo-2 . At the final position, where an episode-level readout would look, it reaches at most 0.53--0.62: 0.526 / 0.586 / 0.620 for Pythia 1B / 2.8B / 6.9B , 0.595 for Qwen2.5 and 0.514 for OLMo-2  (Fig. F3).
+\textbf{Meaning in the event window.} When the same words appear as kind symbols, the probe --- tested on words never seen in training --- reads their meaning at the kind word's own position: 0.983--0.999 for Pythia, 0.972 for Qwen2.5 and 0.996 for OLMo-2. At the final position, where an episode-level readout would look, it reaches at most 0.53--0.62: 0.526 / 0.586 / 0.620 for Pythia 1B / 2.8B / 6.9B, 0.595 for Qwen2.5 and 0.514 for OLMo-2 (Figure~\ref{fig:meaning}).
 
-\textbf{Intervals.} Because the probe generalizes to new words, intervals are cluster bootstraps over the $\sim$56 test words. For Pythia-6.9B at the final position, this gives 0.620 [0.51, 0.73] against 0.447 [0.33, 0.56] for random weights . We therefore do not claim that 6.9B carries more meaning to the final position than a random network. We claim only that no model reaches the preregistered threshold of 0.8 .
+\textbf{Intervals.} Because the probe generalizes to new words, intervals are cluster bootstraps over the $\sim$56 test words. For Pythia-6.9B at the final position, this gives 0.620 [0.51, 0.73] against 0.447 [0.33, 0.56] for random weights. We therefore do not claim that 6.9B carries more meaning to the final position than a random network. We claim only that no model reaches the preregistered threshold of 0.8.
 
-\textbf{Random-weight values below 0.5.} These (e.g. 0.315 for Pythia-2.8B) are not an artifact of the word-grouped split. A simulation of the same procedure on random word vectors gives a mean of 0.495, with independent random networks spread over 0.36--0.63 .
+\textbf{Random-weight values below 0.5.} These (e.g. 0.315 for Pythia-2.8B) are not an artifact of the word-grouped split. A simulation of the same procedure on random word vectors gives a mean of 0.495, with independent random networks spread over 0.36--0.63.
 
 The meaning of a word is thus present where the word is, but is not routed to the position that summarizes the episode. This is consistent with work on how models bind attributes to entities in context \citep{feng2023}.
 
 \subsection{Meaning against experience: a weak trace that does not change answers}
 \begin{figure}[t]\centering\includegraphics[width=\linewidth]{figures/F4_synthetic_binding.pdf}
-\caption{\textbf{Meaning against experience in synthetic windows..} (a) On conflict windows (kind words whose meaning contradicts the outcomes): the meaning effect, |d| on the same windows with outcomes permuted (blue); the shift toward experience, d(outcomes) $-$ d(permuted) (orange); the same shift for random weights (grey); d is the logit difference between the true-food word and the poison word. (b) Share of conflict windows answered toward experience, with outcomes (orange) and with outcomes permuted (hatched). Sentence interface, 2--6 events per window, 10 sets $\times$ 648 windows; mean and 95\% t-interval over sets. Pythia-1B, Qwen2.5-1.5B, OLMo-2-1B: A28 (one instance); Pythia-6.9B: A27 (a different instance).}\label{fig:F4}\end{figure}
+\caption{\textbf{Meaning against experience in synthetic windows.} (a) On conflict windows (kind words whose meaning contradicts the outcomes): the meaning effect, |d| on the same windows with outcomes permuted (blue); the shift toward experience, d(outcomes) $-$ d(permuted) (orange); the same shift for random weights (grey); d is the logit difference between the true-food word and the poison word. (b) Share of conflict windows answered toward experience, with outcomes (orange) and with outcomes permuted (hatched). Sentence interface, 2--6 events per window, 10 sets $\times$ 648 windows; mean and 95\% t-interval over sets. Pythia-1B, Qwen2.5-1.5B, OLMo-2-1B: A28 (one instance); Pythia-6.9B: A27 (a different instance).}\label{fig:synth}\end{figure}
 
-\textbf{Why synthetic windows (post hoc, Pythia).} A first test used simulated bodies (Pythia 1B--6.9B) .
+\textbf{Why synthetic windows (post hoc, Pythia).} A first test used simulated bodies (Pythia 1B--6.9B).
 \begin{itemize}
 \item Kind words were truthful, lying (a food word naming the poisonous kind) or neutral.
-\item The preregistered shift toward experience was formally positive in all six cells. But it persisted when kind and outcome slots were shuffled .
-\item Post hoc, we traced it to survivorship: queries came only from living bodies, so the food kind had been eaten more often (frequency reference 0.62 instead of the assumed 0.5) . The answer followed the more frequently mentioned word, at +1.1 to +1.9 logits per mention .
-\item With equal mentions, the shift vanished in 5 of 6 cells .
+\item The preregistered shift toward experience was formally positive in all six cells. But it persisted when kind and outcome slots were shuffled.
+\item Post hoc, we traced it to survivorship: queries came only from living bodies, so the food kind had been eaten more often (frequency reference 0.62 instead of the assumed 0.5). The answer followed the more frequently mentioned word, at +1.1 to +1.9 logits per mention.
+\item With equal mentions, the shift vanished in 5 of 6 cells.
 \end{itemize}
 
 This frequency channel is what the synthetic windows remove.
 
-\textbf{Synthetic windows.} We compare windows where the kind words lie, against the same windows with outcomes permuted (Fig. F4).
+\textbf{Synthetic windows.} We compare windows where the kind words lie, against the same windows with outcomes permuted (Figure~\ref{fig:synth}).
 \begin{itemize}
-\item In Pythia-6.9B, experience moves the answer toward the true food by +0.020 logits relative to permuted outcomes, more than it does in random weights (Holm p = 0.002 for the preregistered test requiring both comparisons). This is small against a meaning effect of $-$0.51 .
-\item The shift replicates in Qwen2.5 and OLMo-2 (Holm p = 0.006; Pythia-1B descriptively), with random weights near zero : +0.022 (Pythia-1B), +0.098 (Qwen2.5), +0.044 (OLMo-2) logits.
-\item Relative to the meaning effect, the shift is 3.8\% (Pythia-6.9B), 7.7\% (Pythia-1B), 6.3\% (OLMo-2) and 27.6\% (Qwen2.5) .
-\item Descriptively, it does not grow from 1B to 6.9B in Pythia .
-\item The answers themselves barely change. The share of conflict windows answered toward experience is 0.450 vs. 0.444 with and without the binding for Pythia-1B, 0.464 vs. 0.453 for Qwen2.5, 0.392 vs. 0.372 for OLMo-2 , and 0.36 vs. 0.36 for Pythia-6.9B .
-\item The preregistered companion test --- that experience alone, with neutral kind words, is answered above random weights --- was not met: AUC 0.509 exceeded the permuted control (p = 0.001) but not random weights (0.489 $\pm$ 0.034, p = 0.105) .
+\item In Pythia-6.9B, experience moves the answer toward the true food by +0.020 logits relative to permuted outcomes, more than it does in random weights (Holm p = 0.002 for the preregistered test requiring both comparisons). This is small against a meaning effect of $-$0.51.
+\item The shift replicates in Qwen2.5 and OLMo-2 (Holm p = 0.006; Pythia-1B descriptively), with random weights near zero: +0.022 (Pythia-1B), +0.098 (Qwen2.5), +0.044 (OLMo-2) logits.
+\item Relative to the meaning effect, the shift is 3.8\% (Pythia-6.9B), 7.7\% (Pythia-1B), 6.3\% (OLMo-2) and 27.6\% (Qwen2.5).
+\item Descriptively, it does not grow from 1B to 6.9B in Pythia.
+\item The answers themselves barely change. The share of conflict windows answered toward experience is 0.450 vs. 0.444 with and without the binding for Pythia-1B, 0.464 vs. 0.453 for Qwen2.5, 0.392 vs. 0.372 for OLMo-2, and 0.36 vs. 0.36 for Pythia-6.9B.
+\item The preregistered companion test --- that experience alone, with neutral kind words, is answered above random weights --- was not met: AUC 0.509 exceeded the permuted control (p = 0.001) but not random weights (0.489 $\pm$ 0.034, p = 0.105).
 \end{itemize}
 
-A hint from the first test (Pythia-6.9B with sentences, +0.43 logits under equal mentions) did not survive the clean construction (+0.02) .
+A hint from the first test (Pythia-6.9B with sentences, +0.43 logits under equal mentions) did not survive the clean construction (+0.02).
 
 We conclude that the binding of a word to its outcome in context leaves a statistically reliable but small trace in the answer, and that when meaning and experience conflict, meaning decides.
 
@@ -174,25 +174,25 @@ We conclude that the binding of a word to its outcome in context leaves a statis
 
 
 
-Several results during the project looked like findings and were not. For each we give what happened, the false result it produced, and the control that caught it.
+Several results and design choices during the project misled or would have misled our conclusions. For each we give what happened, how it misled or would have, and the control that caught it.
 
-\textbf{Readout artifact in the original interface.} In the first interface, body states entered through a continuous projector, and the readout used the raw final hidden state. With that readout the pretrained Pythia lagged its random-weight twin, suggesting that pretraining hurts. Its hidden states were nearly collinear (cosine 0.986 between states) , consistent with a few very large activations dominating the representation \citep{sun2024}. With a fixed standardization of hidden states the difference disappeared: fitness (fraction of the episode survived plus half the final energy) 1.455 vs. 1.453 (3 seeds) and 1.453 vs. 1.457 in a ten-seed repeat (p = 0.20) . Standardized readouts have been the default since.
+\textbf{Readout artifact in the original interface.} In the first interface, body states entered through a continuous projector, and the readout used the raw final hidden state. With that readout the pretrained Pythia lagged its random-weight twin, suggesting that pretraining hurts. Its hidden states were nearly collinear (cosine 0.986 between states), consistent with a few very large activations dominating the representation \citep{sun2024}. With a fixed standardization of hidden states the difference disappeared: fitness (fraction of the episode survived plus half the final energy) 1.455 vs. 1.453 (3 seeds) and 1.453 vs. 1.457 in a ten-seed repeat (p = 0.20). Standardized readouts have been the default since.
 
-\textbf{Shortcuts through closed-loop behavior.} When a readout learns while the agent acts, the agent's own behavior becomes part of its input. In one series, a random-weight model appeared to read the episode sign better than the pretrained one, and a raw event window solved the task without a memory model . Out-of-loop evaluation on trajectories of a blind policy removed both effects.
+\textbf{Shortcuts through closed-loop behavior.} When a readout learns while the agent acts, the agent's own behavior becomes part of its input. In one series, a random-weight model appeared to read the episode sign better than the pretrained one, and a raw event window solved the task without a memory model. Out-of-loop evaluation on trajectories of a blind policy removed both effects.
 \begin{itemize}
-\item The raw window fell from 0.759 to 0.570: it had used a ``lost, so switch'' rule, not a memory of the sign .
-\item The random-weight head fell from 0.670 to 0.513 .
+\item The raw window fell from 0.759 to 0.570: it had used a ``lost, so switch'' rule, not a memory of the sign.
+\item The random-weight head fell from 0.670 to 0.513.
 \end{itemize}
 
 All analyses in this paper use trajectories the model did not shape.
 
-\textbf{A frequency cue created by survivorship.} In the first test of meaning against experience, queries came only from living bodies . Bodies that ate more poison were more often dead, so among the living the food kind had been eaten more often. A frequency reference that the preregistration assumed would score 0.5 by construction scored 0.62 . The preregistered shift toward experience was formally positive in all six cells but persisted when kind and outcome slots were shuffled. Post hoc, the answer followed the more frequently mentioned word, at +1.1 to +1.9 logits per mention; with equal mentions the shift vanished in 5 of 6 cells . We now check every ``0.5 by construction'' reference on the actual inputs before preregistering. The synthetic windows of Section 3.5 pass this check exactly .
+\textbf{A frequency cue created by survivorship.} In the first test of meaning against experience, queries came only from living bodies. Bodies that ate more poison were more often dead, so among the living the food kind had been eaten more often. A frequency reference that the preregistration assumed would score 0.5 by construction scored 0.62. The preregistered shift toward experience was formally positive in all six cells but persisted when kind and outcome slots were shuffled. Post hoc, the answer followed the more frequently mentioned word, at +1.1 to +1.9 logits per mention; with equal mentions the shift vanished in 5 of 6 cells. We now check every ``0.5 by construction'' reference on the actual inputs before preregistering. The synthetic windows of Section 3.5 pass this check exactly.
 
-\textbf{Information lost by a symbolic interface.} In a separate line of the project, input was quantized into event symbols. Before running any language model we computed what a simple rule could extract from them: 0.62, against 0.985 from the continuous sensors . The model then scored 0.48--0.52 . We recorded this null result with that caveat, not as a statement about language models.
+\textbf{Information lost by a symbolic interface.} In a separate line of the project, input was quantized into event symbols. Before running any language model we computed what a simple rule could extract from them: 0.62, against 0.985 from the continuous sensors. The model then scored 0.48--0.52. We recorded this null result with that caveat, not as a statement about language models.
 
-\textbf{A condition against random weights that silently required a sign.} In the final meaning-versus-experience test, the preregistered condition required the pretrained answer on conflict windows to exceed that of random weights. By symmetry, random weights answer near zero there, so the condition demanded that experience \emph{outweigh} meaning, not merely shift the answer. We noticed this before computing any data. In a separate commit, the condition was replaced by a comparison of shifts relative to permuted outcomes; the original condition is reported descriptively .
+\textbf{A condition against random weights that silently required a sign.} In the final meaning-versus-experience test, the preregistered condition required the pretrained answer on conflict windows to exceed that of random weights. By symmetry, random weights answer near zero there, so the condition demanded that experience \emph{outweigh} meaning, not merely shift the answer. We noticed this before computing any data. In a separate commit, the condition was replaced by a comparison of shifts relative to permuted outcomes; the original condition is reported descriptively.
 
-\textbf{Intervals over observations instead of units of generalization.} The meaning probe of Section 3.4 is tested on unseen words, but its intervals and test resampled episodes . With about 56 distinct test words, this understates uncertainty: in a simulation of the same procedure, independent random networks spread over AUC 0.36--0.63 . Cluster bootstraps over words widened the intervals roughly 1.5--2$\times$. A preregistered claim that Pythia-6.9B carries more meaning to the final position than random weights can no longer be supported; the threshold verdict (below 0.8 for every model) is unchanged . Where a probe generalizes to new units, intervals and tests are now computed over those units.
+\textbf{Intervals over observations instead of units of generalization.} The meaning probe of Section 3.4 is tested on unseen words, but its intervals and test resampled episodes. With about 56 distinct test words, this understates uncertainty: in a simulation of the same procedure, independent random networks spread over AUC 0.36--0.63. Cluster bootstraps over words widened the intervals roughly 1.5--2$\times$. A preregistered claim that Pythia-6.9B carries more meaning to the final position than random weights can no longer be supported; the threshold verdict (below 0.8 for every model) is unchanged. Where a probe generalizes to new units, intervals and tests are now computed over those units.
 
 
 \section{Discussion}

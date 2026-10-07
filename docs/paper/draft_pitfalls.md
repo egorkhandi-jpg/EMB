@@ -2,7 +2,7 @@
 
 <!-- Черновик 2026-10-07. Источники после чисел будут удалены в итоговом тексте. -->
 
-Several results during the project looked like findings and were not. For each we give what happened, the false result it produced, and the control that caught it.
+Several results and design choices during the project misled or would have misled our conclusions. For each we give what happened, how it misled or would have, and the control that caught it.
 
 **Readout artifact in the original interface.** In the first interface, body states entered through a continuous projector, and the readout used the raw final hidden state. With that readout the pretrained Pythia lagged its random-weight twin, suggesting that pretraining hurts. Its hidden states were nearly collinear (cosine 0.986 between states) <!-- FINAL_REPORT п. 6; п. 1 -->, consistent with a few very large activations dominating the representation [Sun 2024]. With a fixed standardization of hidden states the difference disappeared: fitness (fraction of the episode survived plus half the final energy) 1.455 vs. 1.453 (3 seeds) and 1.453 vs. 1.457 in a ten-seed repeat (p = 0.20) <!-- п. 1, п. 2 -->. Standardized readouts have been the default since.
 
