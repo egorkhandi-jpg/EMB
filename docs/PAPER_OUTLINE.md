@@ -1,6 +1,6 @@
 # План статьи — фокус 1: «модель знает больше, чем может сказать»
 
-> **Статус 2026-10-07.** Разделы 1, 2 и 4 — текст Егора, вставлен дословно (язык работы — английский). Сверка чисел — под аннотацией; расхождения отмечены, текст не правился.
+> **Статус 2026-10-07.** Разделы 1, 2 и 4 — текст Егора, вставлен дословно (язык работы — английский). Сверка чисел — под аннотацией; правки по сверке внесены решением Егора (отмечено в сверке).
 
 ## 1. Аннотация
 Title options:
@@ -19,18 +19,19 @@ words work as well as or better than meaningful ones; (ii) a latent episode vari
 stated explicitly in the context is linearly decodable from hidden states with AUC 0.93–0.99, but
 the model's own answer to a direct question recovers it only at AUC 0.61–0.64, and in Pythia,
 in-context examples from other episodes do not close this gap; (iii) the meaning of a word (food
-vs. harmful) is fully present at that word's position but does not reach the final position where
-an episode-level readout would use it (0.97–1.00 vs. 0.51–0.62); and (iv) when word meaning
+vs. harmful) is fully present at that word's position but reaches the final position, where an episode-level readout
+would use it, at most weakly (0.97–1.00 vs. 0.51–0.62); and (iv) when word meaning
 conflicts with in-context experience, a statistically reliable trace of the experience reaches the
-answer but is substantially weaker than the meaning effect (4–27% of it) and leaves the answers
-essentially unchanged. All analyses were preregistered with timestamped commits, use exact
-permutation tests with Holm correction, and include controls for confounds that produced false
+answer but is substantially weaker than the meaning effect (4–28% of it) and leaves the answers
+essentially unchanged. All primary analyses were preregistered with timestamped commits, use exact
+permutation or bootstrap tests with Holm correction, and include controls for confounds that produced false
 positives during the project, such as survivorship-induced frequency cues. Taken together, the
 results suggest that frozen language models in this regime represent substantially more about
 their embodied situation than they can express, and that the bottleneck lies in routing and
 expression rather than in representation.
 
-### Сверка чисел аннотации и плана с разделом 5 (2026-10-07; текст выше не правился)
+### Сверка чисел аннотации и плана с разделом 5 (2026-10-07)
+**Правки по сверке внесены 2026-10-07 решением Егора** (дословно по его тексту): (iii) «reaches the final position … at most weakly»; (iv) «4–28%»; «All primary analyses … exact permutation or bootstrap tests»; план п. 2 — «feature standardization fitted on training folds»; п. 3.1 — без «massive activations»; п. 4 — «massive activations as a readout artifact in an earlier interface (v0) and readout standardization». Таблица ниже — в исходном виде, на момент сверки.
 | Место в тексте | В тексте | По отчётам | Итог |
 | --- | --- | --- | --- |
 | Аннотация: модели | Pythia, Qwen2.5, OLMo-2; 1–1.5B, Pythia до 6.9B | A24, A26, A27 — Pythia 1B–6.9B; A28 — Qwen2.5-1.5B, OLMo-2-1B, Pythia-1B | совпадает |
@@ -54,11 +55,11 @@ expression rather than in representation.
    internal state is accessible through output. Contributions: three-layer finding (representation,
    routing, expression); cross-family replication; preregistered methodology with documented pitfalls.
 2. Setup. Environment (flip-2); interfaces (continuous projector vs. event words with a start token;
-   synthetic windows); models and controls (random weights with matched embedding norms; fixed
-   standardization; fp32); measures (probes with episode-grouped CV, logit-based answers);
+   synthetic windows); models and controls (random weights with matched embedding norms; feature
+   standardization fitted on training folds; fp32); measures (probes with episode-grouped CV, logit-based answers);
    exact permutation tests, Holm; preregistration and attempt registry.
 3. Results.
-   3.1 Interface determines whether pretraining helps (A3; massive activations; R1 — replicates on
+   3.1 Interface determines whether pretraining helps (A3; R1 — replicates on
        OLMo-2, symbol-set-dependent on Qwen2.5).
    3.2 Machinery, not meaning (A4, R2 — all three families).
    3.3 Represented but not reported (A22, R3; A23 — no in-context learning from other episodes,
@@ -67,8 +68,8 @@ expression rather than in representation.
    3.4 Meaning stays local (A24, R4).
    3.5 Meaning vs. experience: a weak trace that does not change answers (A27, R5).
 4. Pitfalls and controls. Survivorship-induced frequency cue (A26); symmetric conditions against
-   random-weight baselines; information loss in symbolic interfaces; massive activations and readout
-   standardization.
+   random-weight baselines; information loss in symbolic interfaces; massive activations as a readout artifact in an earlier
+   interface (v0) and readout standardization.
 5. Discussion. Three layers: representation, routing, expression. Relation to probing-vs-accessibility
    and symbol-binding work (RELATED_WORK.md). Limitations: model sizes, toy environment, frozen models
    only, no trained report channel.
@@ -115,3 +116,18 @@ and interpretation are the author's. All code, preregistration commits, and resu
 | Ответ при конфликте не меняется | доля лживых окон с ответом к опыту: 6.9B 0,36 и 0,36; Pythia-1B 0,450 / 0,444; Qwen2.5 0,464 / 0,453; OLMo-2 0,392 / 0,372 (с исходами / без связки) | A27; A28 |
 | Доля сдвига к опыту от эффекта смысла (лживые окна, q1, s) | 3,8 % (Pythia-6.9B, A27); 7,7 % (Pythia-1B), 6,3 % (OLMo-2), 27,6 % (Qwen2.5) (A28) | A27; A28 (`results_replication/*/synth_*`, `results_synth/synth_6.9b.json`) |
 | Рост с размером | связка: нет (1B → 6.9B); смысл на последней позиции: 0,53 → 0,59 → 0,62 (ниже 0,8; значимость разницы со случайной у 6.9B после уточнения интервалов не установлена) | A27; A24 (уточнение 2026-10-07) |
+
+## 6. Аудит: где зонд или голова обобщают на новые слова или символы, а интервалы и тесты считались по наблюдениям (2026-10-07; ничего не пересчитано)
+Правило (CLAUDE.md, п. 14): если зонд обобщает на новые единицы (слова, символы), интервалы и тесты считаются бутстрепом по этим единицам, а не по наблюдениям.
+
+| Опыт | Что обобщается | Как считались интервалы / тесты | Затронуто ли |
+| --- | --- | --- | --- |
+| **A24, проверка 2 (K2)** | зонд «слово вида — еда» на новые слова (части по группам слов; ≈ 56 слов в тесте) | односторонний бутстреп **по эпизодам**, Холм по шести | **да**: интервалы занижены; «6.9B значимо выше случайной» не установлено (уточнение в `RESULTS_2026-10-05_meaning.md`); вердикт K2 (< 0,8) не меняется |
+| A24, проверка 1 (K1) | зонд по словам, исключение слова | бутстреп **по словам** со стратификацией по классу | нет — единица верная |
+| **A28, R4** | та же проверка 2 на Qwen2.5 и OLMo-2 | только пороги (≥ 0,9 / < 0,8), интервалов в отчёте не было | **частично**: пороги по точечным значениям; с интервалами по словам Qwen2.5 на последней позиции 0,595 [0,46; 0,72] и OLMo-2 0,514 [0,39; 0,66] — порог < 0,8 выполнен и по верхним границам; позиция вида 0,972 [0,94; 0,99] и 0,996 [0,99; 1,00] — ≥ 0,9 и по нижним (`results_meaning/f3_check.txt`) |
+| **F3** | то же | был бутстреп по эпизодам | исправлено 2026-10-07 — кластерный бутстреп по словам |
+| **A20** | замороженная голова на новые символы видов | тест вне контура по 10 посевам жизней; новые символы **одни и те же** во всех посевах (Y1 ' candle' / ' tunnel'; Y2 ' basket' / ' mirror' — описательно) | **да, по смыслу**: разброс по символам не оценён; вывод «линейного переноса нет» опирается на одну основную пару символов (и одну описательную). Порог переноса — по средним, интервалов по символам нет |
+| **A21** | линейная голова и MLP на новые наборы символов (k обучающих из 5) | точные перестановки по 10 повторам; три тестовые пары **фиксированы** (candle / tunnel, basket / mirror, jacket / bridge), обучающий пул из 5 фиксирован | **да, по смыслу**: тест обобщает по повторам (жизни, выбор k наборов), но не по символам; «переноса нет ни при одном k (T ≤ 0,17)» и «MLP − лин −0,056 (Холм 0,03)» — для этих трёх пар |
+| Линия сна, настоящий агент (п. 21) | считывание при жизни на своих символах | тест по 200 жизням, у каждой жизни своя перестановка пула 24 слов | нет — жизни пересэмплируют слова |
+| A26, A27, A28 R5 | ответ модели на словах пулов (не зонд) | перестановки по 10 наборам; слова выбираются заново в каждом наборе и эпизоде | нет — наборы пересэмплируют слова |
+| A3 / A4, A28 R1 / R2; A22 / R3; v3-replay (c_arb2, c_arb3) | зонд или голова на тех же символах, на которых обучены (CV по эпизодам) | перестановки по посевам / наборам | нет — обобщения на новые символы нет; наборы слов c_arb — фиксированный выбор, и это оговорено (удача токенов c_arb1) |
