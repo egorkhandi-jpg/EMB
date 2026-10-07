@@ -52,15 +52,15 @@ All analyses use a minimal two-dimensional foraging world, *flip-2* <!-- env_fli
 
 **Continuous projector.** Pretrained Pythia was no better than random weights when body states entered through the continuous projector: at 160M it was significantly worse (−0.053, Holm p = 0.012) <!-- A2 -->.
 
-**Start token and event words.** Adding a start token removed most of the gap. Writing events as words gave pretrained models their first advantage: sign-probe balanced accuracy 0.950 vs. 0.813 for random weights at 160M (Holm p = 0.004), and, descriptively, 0.951 vs. 0.856 at 410M <!-- A3; 410M — описательно -->.
+**Start token and event words.** Adding a start token removed most of the gap: at 160M the pretrained–random difference went from −0.054 to −0.008, an improvement of +0.047 (Holm p = 0.004) <!-- A3, b − a -->. Writing events as words gave pretrained models their first advantage: relative to the projector interface, the pretrained–random gap improved by +0.191 (Holm p = 0.004), giving sign-probe balanced accuracy 0.950 vs. 0.813 at 160M <!-- A3, c − a -->, and, descriptively, 0.951 vs. 0.856 at 410M <!-- A3; 410M — описательно -->.
 
-**Replication.** The advantage replicates on Pythia-1B (0.976 vs. 0.906) <!-- A28 R1 --> and OLMo-2-1B (0.963 vs. 0.938, Holm p = 0.006) <!-- A28 R1 -->. It does **not** replicate on Qwen2.5-1.5B with these event words: 0.906 vs. 0.921, with the pretrained model lower in 9 of 10 sets <!-- A28 R1 -->. With arbitrary event words, pretrained Qwen2.5 is again clearly ahead (0.983 vs. 0.920) <!-- A28 R1, R2 --> (Fig. F2). We did not investigate why the letter-like symbols disadvantage Qwen2.5. The claim that event words let pretraining help therefore holds with a caveat about model family and symbol set.
+**Replication.** The advantage replicates on Pythia-1B (0.976 vs. 0.906) <!-- A28 R1 --> and OLMo-2-1B (0.963 vs. 0.938, Holm p = 0.006; Pythia-1B descriptively) <!-- A28 R1 -->. It does **not** replicate on Qwen2.5-1.5B with these event words: 0.906 vs. 0.921, with the pretrained model lower in 9 of 10 sets <!-- A28 R1 -->. With arbitrary event words, pretrained Qwen2.5 is again clearly ahead (0.983 vs. 0.920) <!-- A28 R1, R2 --> (Fig. F2). We did not investigate why the letter-like symbols disadvantage Qwen2.5. The claim that event words let pretraining help therefore holds with a caveat about model family and symbol set.
 
 ### 3.2 Machinery, not meaning
 
-**Pythia-160M.** If the advantage came from the meaning of the event words, unrelated words should remove it. They do not. At 160M, arbitrary words were *better* than meaningful ones by 0.016 (Holm p = 0.004), and pretrained models on arbitrary words beat random weights by 0.156 (Holm p = 0.004) <!-- A4 -->. Replacing the six event embeddings of the pretrained model with random vectors of the same norm still gave 0.984 <!-- A4 -->. An apparent preference for one arbitrary word set was later traced to token luck, so we state the result as "not worse" rather than "better" <!-- v3-replay -->.
+**Pythia-160M.** If the advantage came from the meaning of the event words, unrelated words should remove it. They do not. At 160M, arbitrary words were *better* than meaningful ones by 0.016 (Holm p = 0.004), and pretrained models on arbitrary words beat random weights by 0.156 (Holm p = 0.004) <!-- A4 -->. Replacing the six event embeddings of the pretrained model with random vectors of the same norm still gave, descriptively, 0.984 <!-- A4, e1 -->. An apparent preference for one arbitrary word set was later traced to token luck, so we state the result as "not worse" rather than "better" <!-- v3-replay -->.
 
-**Replication.** Across the three families, arbitrary words are non-inferior to meaningful ones and above random weights (Holm p = 0.006 for both new families) <!-- A28 R2 -->. The differences against meaningful words are +0.016 for Pythia-1B, +0.078 for Qwen2.5 and +0.024 for OLMo-2 <!-- A28 R2 --> (Fig. F2).
+**Replication.** Across the three families, arbitrary words are non-inferior to meaningful ones and above random weights (Holm p = 0.006 in Qwen2.5 and OLMo-2 for the preregistered test requiring both; Pythia-1B descriptively) <!-- A28 R2 -->. The differences against meaningful words are +0.016 for Pythia-1B, +0.078 for Qwen2.5 and +0.024 for OLMo-2 <!-- A28 R2 --> (Fig. F2).
 
 What pretraining contributes here is sequence-processing machinery over discrete symbols, not the meaning of the symbols. This parallels findings that language-model initialization helps decision making whether or not inputs are natural language [Li 2022], and that random transformers already have some algorithmic capabilities [Zhong 2024].
 
@@ -74,7 +74,7 @@ What pretraining contributes here is sequence-processing machinery over discrete
 
 **Two observations qualify this picture.**
 - Random-weight networks also support high probes (0.892–0.937), while their answers stay at chance (0.50–0.53) <!-- A28 R3 -->. Descriptively, pretraining adds more to the answer channel (+0.09 to +0.13 AUC) than to the probe (+0.04 to +0.06) <!-- A28 R3; PAPER_OUTLINE сверка -->. We did not test this difference.
-- In Pythia only, in-context examples did not close the gap. Examples from the same episode were simply copied: few-shot AUC 0.974 matched a "repeat the last example's answer" control at 0.975 <!-- A22 -->. Examples from other episodes gave chance (AUC 0.505 at 160M, 0.469 at 1B; Holm p ≥ 0.6) <!-- A23 -->. A23 was run on Pythia only.
+- In Pythia only, in-context examples did not close the gap. Examples from the same episode were simply copied: few-shot AUC 0.974 matched a "repeat the last example's answer" control at 0.975 <!-- A22 -->. Examples from other episodes gave chance (AUC 0.505 at 160M, 0.469 at 1B), not above random weights or the copy control (Holm p ≥ 0.6) <!-- A23 -->. A23 was run on Pythia only.
 
 The pattern — internal states that encode more than the model's output reveals — has been reported for factual knowledge and truthfulness [Orgad 2024; Gekhman 2025; Azaria 2023]; here it concerns a variable that exists only in the agent's recent bodily experience.
 
@@ -101,12 +101,12 @@ The meaning of a word is thus present where the word is, but is not routed to th
 This frequency channel is what the synthetic windows remove.
 
 **Synthetic windows.** We compare windows where the kind words lie, against the same windows with outcomes permuted (Fig. F4).
-- In Pythia-6.9B, experience moves the answer toward the true food: +0.020 logits (Holm p = 0.002). This is small against a meaning effect of −0.51 <!-- A27 -->.
-- The shift replicates across families (Holm p = 0.006), with random weights near zero <!-- A28 R5 -->: +0.022 (Pythia-1B), +0.098 (Qwen2.5), +0.044 (OLMo-2) logits.
+- In Pythia-6.9B, experience moves the answer toward the true food by +0.020 logits relative to permuted outcomes, more than it does in random weights (Holm p = 0.002 for the preregistered test requiring both comparisons). This is small against a meaning effect of −0.51 <!-- A27, H2 -->.
+- The shift replicates in Qwen2.5 and OLMo-2 (Holm p = 0.006; Pythia-1B descriptively), with random weights near zero <!-- A28 R5 -->: +0.022 (Pythia-1B), +0.098 (Qwen2.5), +0.044 (OLMo-2) logits.
 - Relative to the meaning effect, the shift is 3.8% (Pythia-6.9B), 7.7% (Pythia-1B), 6.3% (OLMo-2) and 27.6% (Qwen2.5) <!-- PAPER_OUTLINE раздел 5 -->.
-- It does not grow from 1B to 6.9B in Pythia <!-- A27 -->.
+- Descriptively, it does not grow from 1B to 6.9B in Pythia <!-- A27 -->.
 - The answers themselves barely change. The share of conflict windows answered toward experience is 0.450 vs. 0.444 with and without the binding for Pythia-1B, 0.464 vs. 0.453 for Qwen2.5, 0.392 vs. 0.372 for OLMo-2 <!-- A28 R5 -->, and 0.36 vs. 0.36 for Pythia-6.9B <!-- A27 -->.
-- The preregistered companion test — that experience alone, with neutral kind words, is answered above random weights — was not met (AUC 0.509) <!-- A27 H1 -->.
+- The preregistered companion test — that experience alone, with neutral kind words, is answered above random weights — was not met: AUC 0.509 exceeded the permuted control (p = 0.001) but not random weights (0.489 ± 0.034, p = 0.105) <!-- A27 H1 -->.
 
 A hint from the first test (Pythia-6.9B with sentences, +0.43 logits under equal mentions) did not survive the clean construction (+0.02) <!-- A27; A26 -->.
 
