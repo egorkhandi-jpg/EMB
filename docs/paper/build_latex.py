@@ -54,6 +54,8 @@ def inline(t):
     t = re.sub(r'[ \t]{2,}', ' ', t)
     figrefs = []
     t = re.sub(r'Fig\. (F[1-4])', lambda m: figrefs.append(FIGNAME[m.group(1)]) or f'\x02{len(figrefs) - 1}\x02', t)
+    urls = []                                                               # адреса — \url{}, без экранирования
+    t = re.sub(r'https?://[^\s,;)]*[^\s,;).]', lambda m: urls.append(m.group(0)) or f'\x03{len(urls) - 1}\x03', t)
     codes = []
     t = re.sub(r'`([^`]+)`', lambda m: codes.append(m.group(1)) or f'\x00{len(codes) - 1}\x00', t)
     cites = []
@@ -76,6 +78,7 @@ def inline(t):
     t = re.sub(r'\x00(\d+)\x00', lambda m: '\\texttt{' + esc(codes[int(m.group(1))]) + '}', t)
     t = re.sub(r'\x01(\d+)\x01', lambda m: '\\citep{' + cites[int(m.group(1))] + '}', t)
     t = re.sub(r'\x02(\d+)\x02', lambda m: 'Figure~\\ref{fig:' + figrefs[int(m.group(1))] + '}', t)
+    t = re.sub(r'\x03(\d+)\x03', lambda m: '\\url{' + urls[int(m.group(1))] + '}', t)
     return t
 
 
@@ -158,6 +161,7 @@ def main():
     parts[1] = parts[1].split('## 2 Setup', 1)[1]; parts[1] = '## 2 Setup' + parts[1]
     body = '\n\n'.join(parts)
     appendix = read(os.path.join(HERE, 'draft_appendix.md'))
+    availability = re.sub(r'<!--.*?-->', '', read(os.path.join(HERE, 'draft_availability.md')), flags=re.S).strip()
     used = []
     for grp in re.findall(r'\[([A-Z][^\]]*?\d{4}[^\]]*)\]', body):
         for k in grp.split(';'):
@@ -170,7 +174,9 @@ def main():
 \ifXeTeX\usepackage{fontspec}\else\usepackage[T1]{fontenc}\usepackage[utf8]{inputenc}\usepackage{lmodern}\fi
 \usepackage{amsmath,amssymb,graphicx,booktabs,array}
 \usepackage[authoryear,round]{natbib}
+\usepackage{url}
 \usepackage[hidelinks]{hyperref}
+\def\UrlBreaks{\do\/\do-\do.}
 \bibliographystyle{plainnat}
 \setcitestyle{authoryear,round,semicolon}
 % Название — выбор автора; второй вариант: Represented but Not Reported: Probing Frozen Language Models as Embodied Readers
@@ -187,6 +193,9 @@ def main():
 
 \section*{Disclosure}
 ''' + inline(' '.join(disclosure.split())) + r'''
+
+\section*{Code and data availability}
+''' + inline(' '.join(availability.split())) + r'''
 
 \bibliography{refs}
 

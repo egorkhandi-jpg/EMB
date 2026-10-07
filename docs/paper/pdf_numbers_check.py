@@ -98,7 +98,7 @@ for n, body in sorted(objs.items()):
 
 text = '\n'.join(pages_text)
 open(os.path.join(HERE, 'latex', 'paper_extracted.txt'), 'w', encoding='utf-8').write(text)
-body = text.split('Appendix', 1)[0] if 'Appendix' in text else text
+body = re.split(r'Appendix(?! B refer)', text, maxsplit=1)[0]                  # «Appendix B refer…» — ссылка в Code and data availability
 body = re.split(r'\bA\s+Replication and tokenizer transfer', body)[0]
 full = re.sub(r'<!--.*?-->', '', open(os.path.join(HERE, 'draft_full.md'), encoding='utf-8').read(), flags=re.S)
 full = full.split('## Abstract', 1)[1].split('## References', 1)[0] + full.split('## Figure captions', 1)[1]

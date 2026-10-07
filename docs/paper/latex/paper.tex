@@ -4,7 +4,9 @@
 \ifXeTeX\usepackage{fontspec}\else\usepackage[T1]{fontenc}\usepackage[utf8]{inputenc}\usepackage{lmodern}\fi
 \usepackage{amsmath,amssymb,graphicx,booktabs,array}
 \usepackage[authoryear,round]{natbib}
+\usepackage{url}
 \usepackage[hidelinks]{hyperref}
+\def\UrlBreaks{\do\/\do-\do.}
 \bibliographystyle{plainnat}
 \setcitestyle{authoryear,round,semicolon}
 % Название — выбор автора; второй вариант: Represented but Not Reported: Probing Frozen Language Models as Embodied Readers
@@ -215,6 +217,9 @@ High probe accuracy alone does not show that a model uses the information \citep
 \section*{Disclosure}
 Code implementation and experiment execution were performed with an AI coding assistant (Claude Code) under the author's direction; hypotheses, preregistrations, decisions to stop or continue each line, and interpretation are the author's. All code, preregistration commits, and results are released.
 
+\section*{Code and data availability}
+Code, stored results, figure scripts, and the preregistrations of all experiments in this paper are available at \url{https://github.com/egorkhandi-jpg/EMB}, release tag \texttt{v1.0-preprint} (archived copy: DOI pending). The preregistrations are part of the project's reports (in Russian), each committed before the corresponding computation; the commit hashes in Appendix B refer to this repository. Code is released under the Apache License 2.0; the paper text and figures under CC BY 4.0.
+
 \bibliography{refs}
 
 \appendix
@@ -280,24 +285,24 @@ Zero-shot answer AUC / probe AUC & 0.61 / 0.99 & 0.61 / 0.98--0.99 \\
 
 
 
-Every experiment below was preregistered in the repository before computation, with all outcomes and their interpretation written in advance. The tag marks the code version used; dates are commit dates.
+Every experiment below was preregistered in the repository before computation, with all outcomes and their interpretation written in advance. The tag marks the code version used; commit hashes refer to the public repository (see Code and data availability); dates are commit dates.
 
 \begin{center}\small\begin{tabular}{p{0.18\linewidth} p{0.18\linewidth} p{0.18\linewidth} p{0.18\linewidth} p{0.18\linewidth}}\hline
 \textbf{Id} & \textbf{Question} & \textbf{Section} & \textbf{Code tag (commit, date)} & \textbf{Outcome} \\ \hline
-A2 & Pretrained vs. random, continuous projector, Pythia 70M--1B & 3.1 & \texttt{v2-scale} (6d88ad3, 2026-10-01) & pretrained $\le$ random; 160M significantly lower \\
-A3 & Interface control: start token, event words & 3.1 & \texttt{v2-interface} (0509fbd, 2026-10-02) & supported (b $-$ a, c $-$ a) \\
-A4 & Meaning of event words: arbitrary words, embedding swaps & 3.2 & \texttt{v3-words} (e127abd, 2026-10-02) & machinery, not meaning \\
-A13 & Out-of-loop evaluation of closed-loop readouts & 4 & \texttt{v3-replay} (29f0283, 2026-10-03) & closed-loop advantages vanish out of the loop \\
-A22 & Report without examples; probe vs. answer & 3.3 & \texttt{v4-report} (58a33df, 2026-10-04) & expression gap; few-shot = copying \\
-A23 & In-context examples from other episodes (Pythia only) & 3.3 & \texttt{v4-icl} (69f878c, 2026-10-04) & no in-context learning \\
-A24 & Word meaning in language and at positions in the event window & 3.4 & \texttt{v5-meaning} (3f19f2a, 2026-10-05) & K1 without K2; intervals refined 2026-10-07 \\
-A25 & Self/world separation through an event alphabet (Pythia-160M) & 4 & c24df74 (2026-10-05) & null; alphabet loses information \\
-A26 & Meaning vs. experience on simulated bodies (Pythia 1B--6.9B) & 3.5, 4 & \texttt{v5-bind} (004e627, 2026-10-06) & formal B > 0, explained post hoc by frequency \\
-A27 & Meaning vs. experience on synthetic windows & 3.5, 4 & stop rule dfc2460; preregistration a5439b4; amendment before computation ed5c167 (\texttt{v5-synth}); runs 4f90df0 (2026-10-06) & H2 without H1 \\
-A28 & Replication on Qwen2.5 and OLMo-2 & all & \texttt{v7-replication} (c1667af, 2026-10-06) & R2--R5 on both; R1 on OLMo-2 \\
+A2 & Pretrained vs. random, continuous projector, Pythia 70M--1B & 3.1 & \texttt{v2-scale} (6af7ab7, 2026-10-01) & pretrained $\le$ random; 160M significantly lower \\
+A3 & Interface control: start token, event words & 3.1 & \texttt{v2-interface} (5476edf, 2026-10-02) & supported (b $-$ a, c $-$ a) \\
+A4 & Meaning of event words: arbitrary words, embedding swaps & 3.2 & \texttt{v3-words} (ebab915, 2026-10-02) & machinery, not meaning \\
+A13 & Out-of-loop evaluation of closed-loop readouts & 4 & \texttt{v3-replay} (bcffc98, 2026-10-03) & closed-loop advantages vanish out of the loop \\
+A22 & Report without examples; probe vs. answer & 3.3 & \texttt{v4-report} (1f2be62, 2026-10-04) & expression gap; few-shot = copying \\
+A23 & In-context examples from other episodes (Pythia only) & 3.3 & \texttt{v4-icl} (9cc7aea, 2026-10-04) & no in-context learning \\
+A24 & Word meaning in language and at positions in the event window & 3.4 & \texttt{v5-meaning} (bfb0c62, 2026-10-05) & K1 without K2; intervals refined 2026-10-07 \\
+A25 & Self/world separation through an event alphabet (Pythia-160M) & 4 & f114250 (2026-10-05) & null; alphabet loses information \\
+A26 & Meaning vs. experience on simulated bodies (Pythia 1B--6.9B) & 3.5, 4 & \texttt{v5-bind} (ac18bce, 2026-10-06) & formal B > 0, explained post hoc by frequency \\
+A27 & Meaning vs. experience on synthetic windows & 3.5, 4 & stop rule 1719022; preregistration 6462459; amendment before computation d0e7b01 (\texttt{v5-synth}); runs efedb20 (2026-10-06) & H2 without H1 \\
+A28 & Replication on Qwen2.5 and OLMo-2 & all & \texttt{v7-replication} (ec88b6f, 2026-10-06) & R2--R5 on both; R1 on OLMo-2 \\
 \hline\end{tabular}\end{center}
 
-The full registry of the project, with 57 entries, also lists environment variants that were abandoned, lines closed by stopping rules, and analyses outside the scope of this paper (\texttt{docs/ATTEMPTS.md}).
+The full registry of the project, with 57 entries, also lists environment variants that were abandoned, lines closed by stopping rules, and analyses outside the scope of this paper. It is available, in Russian, at the release tag: \url{https://github.com/egorkhandi-jpg/EMB/blob/v1.0-preprint/docs/ATTEMPTS.md}
 
 \section{Compute and costs}
 

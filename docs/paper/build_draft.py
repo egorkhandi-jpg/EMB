@@ -58,6 +58,7 @@ def main():
     setup, results = '## 2 Setup' + setup.rstrip(), '## 3 Results' + results.rstrip()
     pitfalls = read(P('docs', 'paper', 'draft_pitfalls.md')).strip()
     discussion = read(P('docs', 'paper', 'draft_discussion.md')).strip()
+    availability = read(P('docs', 'paper', 'draft_availability.md')).strip()
     body = '\n\n'.join([intro, setup, results, pitfalls, discussion])
     keys = []
     for grp in re.findall(r'\[([A-Z][^\]]*?\d{4}[^\]]*)\]', body + abstract):
@@ -70,11 +71,11 @@ def main():
     refs = '\n'.join(f'- {REFS[k]}' for k in sorted(keys))
     doc = ('# Knowing More Than It Can Say — full draft (focus 1)\n\n'
            '<!-- Собрано build_draft.py 2026-10-07 из docs/PAPER_OUTLINE.md и docs/paper/draft_*.md. Комментарии-источники сохранены; в итоговом тексте будут удалены. -->\n\n'
-           '## Abstract\n\n' + abstract + '\n\n' + body + '\n\n## Disclosure\n\n' + disclosure +
+           '## Abstract\n\n' + abstract + '\n\n' + body + '\n\n## Disclosure\n\n' + disclosure + '\n\n## Code and data availability\n\n' + availability +
            '\n\n## References\n\n' + refs + '\n\n## Figure captions\n\n' + CAPTIONS)
     open(P('docs', 'paper', 'draft_full.md'), 'w', encoding='utf-8', newline='\n').write(doc)
     parts = [('Abstract', abstract.split('\n\n', 1)[1] if abstract.startswith('Title') else abstract), ('1 Introduction', intro), ('2 Setup', setup), ('3 Results', results),
-             ('4 Pitfalls and controls', pitfalls), ('5 Discussion', discussion), ('Disclosure', disclosure), ('Figure captions', CAPTIONS)]
+             ('4 Pitfalls and controls', pitfalls), ('5 Discussion', discussion), ('Disclosure', disclosure), ('Code and data availability', availability),('Figure captions', CAPTIONS)]
     total = 0
     for nm, t in parts:
         n = words(t); total += n; print(f'{nm:26s} {n:5d}')

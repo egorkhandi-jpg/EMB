@@ -290,6 +290,12 @@ Code implementation and experiment execution were performed with an AI coding as
 under the author's direction; hypotheses, preregistrations, decisions to stop or continue each line,
 and interpretation are the author's. All code, preregistration commits, and results are released.
 
+## Code and data availability
+
+<!-- Раздел «Code and data availability» (2026-10-07, п. 3 программы Егора). Хэши в приложении B — открытого репозитория (docs/COMMIT_MAP.md). -->
+
+Code, stored results, figure scripts, and the preregistrations of all experiments in this paper are available at https://github.com/egorkhandi-jpg/EMB, release tag `v1.0-preprint` (archived copy: DOI pending). The preregistrations are part of the project's reports (in Russian), each committed before the corresponding computation; the commit hashes in Appendix B refer to this repository. Code is released under the Apache License 2.0; the paper text and figures under CC BY 4.0.
+
 ## References
 
 - Ahn, M., et al. (2022). Do As I Can, Not As I Say: Grounding Language in Robotic Affordances. arXiv:2204.01691.

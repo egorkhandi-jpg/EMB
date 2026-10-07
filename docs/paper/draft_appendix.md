@@ -45,25 +45,25 @@
 
 ## Appendix B Registry of experiments used in this paper
 
-<!-- Источник: docs/ATTEMPTS.md; метки и даты — git. -->
+<!-- Источник: docs/ATTEMPTS.md; метки и даты — git. Хэши — открытого репозитория github.com/egorkhandi-jpg/EMB (локальные → опубликованные: docs/COMMIT_MAP.md; A28 — по фильтру публикации, 2026-10-07). -->
 
-Every experiment below was preregistered in the repository before computation, with all outcomes and their interpretation written in advance. The tag marks the code version used; dates are commit dates.
+Every experiment below was preregistered in the repository before computation, with all outcomes and their interpretation written in advance. The tag marks the code version used; commit hashes refer to the public repository (see Code and data availability); dates are commit dates.
 
 | Id | Question | Section | Code tag (commit, date) | Outcome |
 | --- | --- | --- | --- | --- |
-| A2 | Pretrained vs. random, continuous projector, Pythia 70M–1B | 3.1 | `v2-scale` (6d88ad3, 2026-10-01) | pretrained ≤ random; 160M significantly lower |
-| A3 | Interface control: start token, event words | 3.1 | `v2-interface` (0509fbd, 2026-10-02) | supported (b − a, c − a) |
-| A4 | Meaning of event words: arbitrary words, embedding swaps | 3.2 | `v3-words` (e127abd, 2026-10-02) | machinery, not meaning |
-| A13 | Out-of-loop evaluation of closed-loop readouts | 4 | `v3-replay` (29f0283, 2026-10-03) | closed-loop advantages vanish out of the loop |
-| A22 | Report without examples; probe vs. answer | 3.3 | `v4-report` (58a33df, 2026-10-04) | expression gap; few-shot = copying |
-| A23 | In-context examples from other episodes (Pythia only) | 3.3 | `v4-icl` (69f878c, 2026-10-04) | no in-context learning |
-| A24 | Word meaning in language and at positions in the event window | 3.4 | `v5-meaning` (3f19f2a, 2026-10-05) | K1 without K2; intervals refined 2026-10-07 |
-| A25 | Self/world separation through an event alphabet (Pythia-160M) | 4 | c24df74 (2026-10-05) | null; alphabet loses information |
-| A26 | Meaning vs. experience on simulated bodies (Pythia 1B–6.9B) | 3.5, 4 | `v5-bind` (004e627, 2026-10-06) | formal B > 0, explained post hoc by frequency |
-| A27 | Meaning vs. experience on synthetic windows | 3.5, 4 | stop rule dfc2460; preregistration a5439b4; amendment before computation ed5c167 (`v5-synth`); runs 4f90df0 (2026-10-06) | H2 without H1 |
-| A28 | Replication on Qwen2.5 and OLMo-2 | all | `v7-replication` (c1667af, 2026-10-06) | R2–R5 on both; R1 on OLMo-2 |
+| A2 | Pretrained vs. random, continuous projector, Pythia 70M–1B | 3.1 | `v2-scale` (6af7ab7, 2026-10-01) | pretrained ≤ random; 160M significantly lower |
+| A3 | Interface control: start token, event words | 3.1 | `v2-interface` (5476edf, 2026-10-02) | supported (b − a, c − a) |
+| A4 | Meaning of event words: arbitrary words, embedding swaps | 3.2 | `v3-words` (ebab915, 2026-10-02) | machinery, not meaning |
+| A13 | Out-of-loop evaluation of closed-loop readouts | 4 | `v3-replay` (bcffc98, 2026-10-03) | closed-loop advantages vanish out of the loop |
+| A22 | Report without examples; probe vs. answer | 3.3 | `v4-report` (1f2be62, 2026-10-04) | expression gap; few-shot = copying |
+| A23 | In-context examples from other episodes (Pythia only) | 3.3 | `v4-icl` (9cc7aea, 2026-10-04) | no in-context learning |
+| A24 | Word meaning in language and at positions in the event window | 3.4 | `v5-meaning` (bfb0c62, 2026-10-05) | K1 without K2; intervals refined 2026-10-07 |
+| A25 | Self/world separation through an event alphabet (Pythia-160M) | 4 | f114250 (2026-10-05) | null; alphabet loses information |
+| A26 | Meaning vs. experience on simulated bodies (Pythia 1B–6.9B) | 3.5, 4 | `v5-bind` (ac18bce, 2026-10-06) | formal B > 0, explained post hoc by frequency |
+| A27 | Meaning vs. experience on synthetic windows | 3.5, 4 | stop rule 1719022; preregistration 6462459; amendment before computation d0e7b01 (`v5-synth`); runs efedb20 (2026-10-06) | H2 without H1 |
+| A28 | Replication on Qwen2.5 and OLMo-2 | all | `v7-replication` (ec88b6f, 2026-10-06) | R2–R5 on both; R1 on OLMo-2 |
 
-The full registry of the project, with 57 entries, also lists environment variants that were abandoned, lines closed by stopping rules, and analyses outside the scope of this paper (`docs/ATTEMPTS.md`).
+The full registry of the project, with 57 entries, also lists environment variants that were abandoned, lines closed by stopping rules, and analyses outside the scope of this paper. It is available, in Russian, at the release tag: https://github.com/egorkhandi-jpg/EMB/blob/v1.0-preprint/docs/ATTEMPTS.md
 
 ## Appendix C Compute and costs
 
