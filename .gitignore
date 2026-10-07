@@ -16,3 +16,7 @@ models/
 
 tools_remote/.publish_patterns
 release/
+docs/paper/latex/*.log
+docs/paper/latex/*.aux
+docs/paper/latex/*.blg
+docs/paper/latex/paper_extracted.txt

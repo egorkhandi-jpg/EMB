@@ -56,7 +56,9 @@ def inline(t):
         return m.group(0)
     t = re.sub(r'\[([A-Z][A-Za-z\-]+ \d{4}(?:; [A-Z][A-Za-z\-]+ \d{4})*)\]', cite, t)
     t = esc(t)
-    t = re.sub(r'(\d(?:\.\d+)?)·10⁻(\d)', lambda m: f'${m.group(1)}\\cdot 10^{{-{m.group(2)}}}$', t)
+    sup = dict(zip('⁰¹²³⁴⁵⁶⁷⁸⁹', '0123456789'))
+    t = re.sub(r'(\d(?:\.\d+)?)·10⁻([⁰¹²³⁴⁵⁶⁷⁸⁹]+)', lambda m: '$' + m.group(1) + '\\cdot 10^{-' + ''.join(sup[c] for c in m.group(2)) + '}$', t)
+    t = t.replace('∈', '$\\in$')
     t = t.replace('·', '$\\cdot$')
     for a, b in UNI:
         t = t.replace(a, b)
@@ -155,10 +157,10 @@ def main():
                 used.append(k)
     tex = r'''\documentclass[11pt]{article}
 \usepackage[a4paper,margin=2.5cm]{geometry}
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage{lmodern,amsmath,amssymb,graphicx,booktabs,array}
-\usepackage[numbers=false]{natbib}
+\usepackage{iftex}
+\ifXeTeX\usepackage{fontspec}\else\usepackage[T1]{fontenc}\usepackage[utf8]{inputenc}\usepackage{lmodern}\fi
+\usepackage{amsmath,amssymb,graphicx,booktabs,array}
+\usepackage[authoryear,round]{natbib}
 \usepackage[hidelinks]{hyperref}
 \bibliographystyle{plainnat}
 \setcitestyle{authoryear,round,semicolon}

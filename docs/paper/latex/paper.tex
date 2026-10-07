@@ -1,9 +1,9 @@
 \documentclass[11pt]{article}
 \usepackage[a4paper,margin=2.5cm]{geometry}
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage{lmodern,amsmath,amssymb,graphicx,booktabs,array}
-\usepackage[numbers=false]{natbib}
+\usepackage{iftex}
+\ifXeTeX\usepackage{fontspec}\else\usepackage[T1]{fontenc}\usepackage[utf8]{inputenc}\usepackage{lmodern}\fi
+\usepackage{amsmath,amssymb,graphicx,booktabs,array}
+\usepackage[authoryear,round]{natbib}
 \usepackage[hidelinks]{hyperref}
 \bibliographystyle{plainnat}
 \setcitestyle{authoryear,round,semicolon}
@@ -53,7 +53,7 @@ All analyses use a minimal two-dimensional foraging world, \emph{flip-2} . An ep
 
 \textbf{Synthetic windows.} To separate meaning from experience without any frequency cue (Section 3.5), we construct windows of short sentences (``I ate w. Energy went up.'' / ``\ldots{} went down.'' / ``Nothing happened.'').
 \begin{itemize}
-\item Each window contains n ∈ \{2, 4, 6\} events, with exactly n/2 per kind. The kinds of the first and last events, and the reference kind used for scoring, are balanced within every cell .
+\item Each window contains n $\in$ \{2, 4, 6\} events, with exactly n/2 per kind. The kinds of the first and last events, and the reference kind used for scoring, are balanced within every cell .
 \item A frequency reference, a last-mentioned reference and a first-mentioned reference all score exactly 0.5 on these windows. A Bayesian reader of the kind--outcome binding scores 1.0 .
 \item The control keeps words, positions and order, and permutes outcomes across events so that the binding is uninformative .
 \item Ten sets of 648 windows are used .
@@ -307,7 +307,7 @@ The full registry of the project, with 57 entries, also lists environment varian
 \begin{itemize}
 \item \textbf{Laptop:} an RTX 5050 Laptop GPU (8 GB) ran the experiments up to 410M and A22 at 1B.
 \item \textbf{Rented RTX 5090 (32 GB):} experiments with Pythia-1B and long contexts or larger models, at \$0.475 per hour.
-\item \textbf{One machine per family:} all conditions of one preregistered family were computed on one machine. Agreement between machines was checked before each new instance on fixed inputs: Pythia-160M hidden states differed by at most 2.1$\cdot$10⁻³, within the laptop's own CPU--GPU spread.
+\item \textbf{One machine per family:} all conditions of one preregistered family were computed on one machine. Agreement between machines was checked before each new instance on fixed inputs: Pythia-160M hidden states differed by at most $2.1\cdot 10^{-3}$, within the laptop's own CPU--GPU spread.
 \end{itemize}
 
 \textbf{Rented GPU time for the experiments in this paper} (billed time includes model downloads and setup):
