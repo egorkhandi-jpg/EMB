@@ -14,9 +14,9 @@ represents is available through its output. We study this in a minimal two-dimen
 environment where an agent's body events are presented to a frozen language model as a short
 sequence of discrete tokens, and compare each pretrained model against the same architecture with
 random weights and matched embedding norms. Across three model families (Pythia, Qwen2.5, OLMo-2;
-1–1.5B parameters, with Pythia up to 6.9B for some analyses), we find that: (i) the advantage of
-pretraining comes from sequence-processing machinery rather than word meaning — arbitrary event
-words work as well as or better than meaningful ones; (ii) a latent episode variable that is never
+1–1.5B parameters, with Pythia up to 6.9B for some analyses), we find that: (i) where pretraining helps, the advantage comes from sequence-processing machinery rather than word
+meaning — arbitrary event words work as well as or better than meaningful ones, and in one family
+(Qwen2.5) the advantage appears only with arbitrary words; (ii) a latent episode variable that is never
 stated explicitly in the context is linearly decodable from hidden states with AUC 0.93–0.99, but
 the model's own answer to a direct question recovers it only at AUC 0.61–0.64, and in Pythia,
 in-context examples from other episodes do not close this gap; (iii) the meaning of a word (food
@@ -63,8 +63,9 @@ latent variable is linearly decodable from hidden states almost perfectly, while
 recovers it only weakly; the meaning of a word is fully present at that word's position but barely
 reaches the position where an episode-level readout would use it; and when word meaning conflicts with
 in-context experience, the experience leaves a measurable but small trace in the answer and essentially
-does not change it. Pretraining contributes sequence-processing machinery that works equally well on
-arbitrary symbols, rather than the meaning of the words. Probing studies on factual knowledge have
+does not change it. Where pretraining helps, it contributes
+sequence-processing machinery that works on arbitrary symbols at least as well as on meaningful ones,
+rather than the meaning of the words; in Qwen2.5 the advantage appears only with arbitrary symbols. Probing studies on factual knowledge have
 reported related gaps between what models encode and what they express [Orgad 2024; Gekhman 2025;
 Burns 2022; Azaria 2023]. Unlike prior studies of hidden factual knowledge, our target variable is
 not stored in pretrained parameters: it is constructed online from the agent's current experience.
@@ -75,10 +76,10 @@ Our contributions are:
 2. measurements of the gap between representation and report — for a latent episode variable, for word
    meaning and for meaning against experience — replicated across Pythia, Qwen2.5 and OLMo-2, which we
    interpret as a three-layer picture of representation, routing and expression;
-3. a preregistered methodology with timestamped commits and a registry of all attempts, including a
-   documented set of confounds that misled or would have misled our conclusions during the project — survivorship-induced
-   frequency cues, shortcuts through the agent's own closed-loop behavior, information loss in symbolic
-   interfaces, and readout artifacts — together with the controls that caught them.
+3. a preregistered methodology with timestamped commits and a registry of all attempts, including a documented set of confounds that misled or would
+   have misled our conclusions during the project — among them survivorship-induced frequency cues and
+   shortcuts through the agent's own closed-loop behavior — together with the controls that caught them
+   (Section 4).
 
 We make no claim that these findings transfer directly to deployed monitoring systems, which use larger
 models, richer inputs and often trained output channels. The practical implication we draw is narrower:
@@ -209,7 +210,7 @@ Several results and design choices during the project misled or would have misle
 
 All analyses in this paper use trajectories the model did not shape.
 
-**A frequency cue created by survivorship.** In the first test of meaning against experience, queries came only from living bodies <!-- A26 -->. Bodies that ate more poison were more often dead, so among the living the food kind had been eaten more often. A frequency reference that the preregistration assumed would score 0.5 by construction scored 0.62 <!-- A26 -->. The preregistered shift toward experience was formally positive in all six cells but persisted when kind and outcome slots were shuffled. Post hoc, the answer followed the more frequently mentioned word, at +1.1 to +1.9 logits per mention; with equal mentions the shift vanished in 5 of 6 cells <!-- A26, анализ после расчёта -->. We now check every "0.5 by construction" reference on the actual inputs before preregistering. The synthetic windows of Section 3.5 pass this check exactly <!-- A27 -->.
+**A frequency cue created by survivorship.** In the first test of meaning against experience (Pythia 1B–6.9B), queries came only from living bodies <!-- A26 -->. Bodies that ate more poison were more often dead, so among the living the food kind had been eaten more often. A frequency reference that the preregistration assumed would score 0.5 by construction scored 0.62 <!-- A26 -->. The preregistered shift toward experience was formally positive in all six cells but persisted when kind and outcome slots were shuffled. Post hoc, the answer followed the more frequently mentioned word, at +1.1 to +1.9 logits per mention; with equal mentions the shift vanished in 5 of 6 cells <!-- A26, анализ после расчёта -->. We now check every "0.5 by construction" reference on the actual inputs before preregistering. The synthetic windows of Section 3.5 pass this check exactly <!-- A27 -->.
 
 **Information lost by a symbolic interface.** In a separate line of the project, input was quantized into event symbols. Before running any language model we computed what a simple rule could extract from them: 0.62, against 0.985 from the continuous sensors <!-- Г3; A25 -->. The model then scored 0.48–0.52 <!-- A25 -->. We recorded this null result with that caveat, not as a statement about language models.
 
@@ -261,11 +262,13 @@ In a monitoring setting, labels of components, alarms or states could likewise p
 what the label suggests rather than what the evidence shows — a failure mode worth testing explicitly
 before a model's explanations are put in front of operators.
 
-**Methodological lessons.** Several early results were misleading, and each was caught by a specific
-control: two false positives (shortcuts through the agent's own closed-loop behavior, and a frequency cue
-created by survivorship), one false negative (a readout artifact consistent with massive activations
-[Sun 2024]), one null result that reflected information lost by a symbolic interface, and a condition
-against random weights that silently required a sign, caught before any data were computed. We list these not as
+**Methodological lessons.** Several early results were misleading, and each
+was caught by a specific control (Section 4): two false positives (shortcuts through the agent's own
+closed-loop behavior, and a frequency cue created by survivorship), one overstated significance
+(intervals computed over episodes rather than over the words a probe generalizes to), one false
+negative (a readout artifact consistent with massive activations [Sun 2024]), one null result
+that reflected information lost by a symbolic interface, and a condition against random weights that
+silently required a sign, caught before any data were computed. We list these not as
 contributions in themselves but as risks that apply to any evaluation of language models embedded in
 agents, where the data a model sees are shaped by the agent that produces them.
 

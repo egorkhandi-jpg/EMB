@@ -13,9 +13,9 @@ represents is available through its output. We study this in a minimal two-dimen
 environment where an agent's body events are presented to a frozen language model as a short
 sequence of discrete tokens, and compare each pretrained model against the same architecture with
 random weights and matched embedding norms. Across three model families (Pythia, Qwen2.5, OLMo-2;
-1–1.5B parameters, with Pythia up to 6.9B for some analyses), we find that: (i) the advantage of
-pretraining comes from sequence-processing machinery rather than word meaning — arbitrary event
-words work as well as or better than meaningful ones; (ii) a latent episode variable that is never
+1–1.5B parameters, with Pythia up to 6.9B for some analyses), we find that: (i) where pretraining helps, the advantage comes from sequence-processing machinery rather than word
+meaning — arbitrary event words work as well as or better than meaningful ones, and in one family
+(Qwen2.5) the advantage appears only with arbitrary words; (ii) a latent episode variable that is never
 stated explicitly in the context is linearly decodable from hidden states with AUC 0.93–0.99, but
 the model's own answer to a direct question recovers it only at AUC 0.61–0.64, and in Pythia,
 in-context examples from other episodes do not close this gap; (iii) the meaning of a word (food

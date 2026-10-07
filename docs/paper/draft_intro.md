@@ -30,8 +30,9 @@ latent variable is linearly decodable from hidden states almost perfectly, while
 recovers it only weakly; the meaning of a word is fully present at that word's position but barely
 reaches the position where an episode-level readout would use it; and when word meaning conflicts with
 in-context experience, the experience leaves a measurable but small trace in the answer and essentially
-does not change it. Pretraining contributes sequence-processing machinery that works equally well on
-arbitrary symbols, rather than the meaning of the words. Probing studies on factual knowledge have
+does not change it. Where pretraining helps, it contributes
+sequence-processing machinery that works on arbitrary symbols at least as well as on meaningful ones,
+rather than the meaning of the words; in Qwen2.5 the advantage appears only with arbitrary symbols. Probing studies on factual knowledge have
 reported related gaps between what models encode and what they express [Orgad 2024; Gekhman 2025;
 Burns 2022; Azaria 2023]. Unlike prior studies of hidden factual knowledge, our target variable is
 not stored in pretrained parameters: it is constructed online from the agent's current experience.
@@ -42,10 +43,10 @@ Our contributions are:
 2. measurements of the gap between representation and report — for a latent episode variable, for word
    meaning and for meaning against experience — replicated across Pythia, Qwen2.5 and OLMo-2, which we
    interpret as a three-layer picture of representation, routing and expression;
-3. a preregistered methodology with timestamped commits and a registry of all attempts, including a
-   documented set of confounds that misled or would have misled our conclusions during the project — survivorship-induced
-   frequency cues, shortcuts through the agent's own closed-loop behavior, information loss in symbolic
-   interfaces, and readout artifacts — together with the controls that caught them.
+3. a preregistered methodology with timestamped commits and a registry of all attempts, including a documented set of confounds that misled or would
+   have misled our conclusions during the project — among them survivorship-induced frequency cues and
+   shortcuts through the agent's own closed-loop behavior — together with the controls that caught them
+   (Section 4).
 
 We make no claim that these findings transfer directly to deployed monitoring systems, which use larger
 models, richer inputs and often trained output channels. The practical implication we draw is narrower:

@@ -42,11 +42,13 @@ In a monitoring setting, labels of components, alarms or states could likewise p
 what the label suggests rather than what the evidence shows — a failure mode worth testing explicitly
 before a model's explanations are put in front of operators.
 
-**Methodological lessons.** Several early results were misleading, and each was caught by a specific
-control: two false positives (shortcuts through the agent's own closed-loop behavior, and a frequency cue
-created by survivorship), one false negative (a readout artifact consistent with massive activations
-[Sun 2024]), one null result that reflected information lost by a symbolic interface, and a condition
-against random weights that silently required a sign, caught before any data were computed. We list these not as
+**Methodological lessons.** Several early results were misleading, and each
+was caught by a specific control (Section 4): two false positives (shortcuts through the agent's own
+closed-loop behavior, and a frequency cue created by survivorship), one overstated significance
+(intervals computed over episodes rather than over the words a probe generalizes to), one false
+negative (a readout artifact consistent with massive activations [Sun 2024]), one null result
+that reflected information lost by a symbolic interface, and a condition against random weights that
+silently required a sign, caught before any data were computed. We list these not as
 contributions in themselves but as risks that apply to any evaluation of language models embedded in
 agents, where the data a model sees are shaped by the agent that produces them.
 
