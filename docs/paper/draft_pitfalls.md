@@ -1,0 +1,21 @@
+## 4 Pitfalls and controls
+
+<!-- Черновик 2026-10-07. Источники после чисел будут удалены в итоговом тексте. -->
+
+Several results during the project looked like findings and were not. For each we give what happened, the false result it produced, and the control that caught it.
+
+**Readout artifact in the original interface.** In the first interface, body states entered through a continuous projector, and the readout used the raw final hidden state. With that readout the pretrained Pythia lagged its random-weight twin, suggesting that pretraining hurts. Its hidden states were nearly collinear (cosine 0.986 between states) <!-- FINAL_REPORT п. 6; п. 1 -->, consistent with a few very large activations dominating the representation [Sun 2024]. With a fixed standardization of hidden states the difference disappeared: homeostasis fitness 1.455 vs. 1.453 (3 seeds) and 1.453 vs. 1.457 in a ten-seed repeat (p = 0.20) <!-- п. 1, п. 2 -->. Standardized readouts have been the default since.
+
+**Shortcuts through closed-loop behavior.** When a readout learns while the agent acts, the agent's own behavior becomes part of its input. In one series, a random-weight model appeared to read the episode sign better than the pretrained one, and a raw event window solved the task without a memory model <!-- A11; A13 -->. Out-of-loop evaluation on trajectories of a blind policy removed both effects.
+- The raw window fell from 0.759 to 0.570: it had used a "lost, so switch" rule, not a memory of the sign <!-- A13 -->.
+- The random-weight head fell from 0.670 to 0.513 <!-- A13 -->.
+
+All analyses in this paper use trajectories the model did not shape.
+
+**A frequency cue created by survivorship.** In the first test of meaning against experience, queries came only from living bodies <!-- A26 -->. Bodies that ate more poison were more often dead, so among the living the food kind had been eaten more often. A frequency reference that the preregistration assumed would score 0.5 by construction scored 0.62 <!-- A26 -->. The preregistered shift toward experience was formally positive in all six cells but persisted when kind and outcome slots were shuffled. Post hoc, the answer followed the more frequently mentioned word, at +1.1 to +1.9 logits per mention; with equal mentions the shift vanished in 5 of 6 cells <!-- A26, анализ после расчёта -->. We now check every "0.5 by construction" reference on the actual inputs before preregistering. The synthetic windows of Section 3.5 pass this check exactly <!-- A27 -->.
+
+**Information lost by a symbolic interface.** In a separate line of the project, input was quantized into event symbols. Before running any language model we computed what a simple rule could extract from them: 0.62, against 0.985 from the continuous sensors <!-- Г3; A25 -->. The model then scored 0.48–0.52 <!-- A25 -->. We recorded this null result with that caveat, not as a statement about language models.
+
+**A condition against random weights that silently required a sign.** In the final meaning-versus-experience test, the preregistered condition required the pretrained answer on conflict windows to exceed that of random weights. By symmetry, random weights answer near zero there, so the condition demanded that experience *outweigh* meaning, not merely shift the answer. We noticed this before computing any data. In a separate commit, the condition was replaced by a comparison of shifts relative to permuted outcomes; the original condition is reported descriptively <!-- A27, дополнение до расчёта -->.
+
+**Intervals over observations instead of units of generalization.** The meaning probe of Section 3.4 is tested on unseen words, but its intervals and test resampled episodes <!-- A24 -->. With about 56 distinct test words, this understates uncertainty: in a simulation of the same procedure, independent random networks spread over AUC 0.36–0.63 <!-- уточнение 2026-10-07, f3_check.txt -->. Cluster bootstraps over words widened the intervals roughly 1.5–2×. A preregistered claim that Pythia-6.9B carries more meaning to the final position than random weights can no longer be supported; the threshold verdict (below 0.8 for every model) is unchanged <!-- уточнение 2026-10-07 -->. Where a probe generalizes to new units, intervals and tests are now computed over those units.
