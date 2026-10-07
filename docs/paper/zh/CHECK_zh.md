@@ -22,3 +22,15 @@
 | Figure 4 (caption) | 13 | 13 | да | — |
 
 Разделов с расхождениями: 0 из 16.
+
+## Ссылки в обоих PDF (после отправки метки v1.1-preprint, 2026-10-07)
+Аннотации ссылок (/URI) в `paper_en.pdf` и `paper_zh.pdf` одинаковы: ORCID, репозиторий, `ATTEMPTS.md` по метке.
+
+| Код | Адрес |
+| --- | --- |
+| 200 | https://orcid.org/0009-0000-2725-5466 |
+| 200 | https://github.com/egorkhandi-jpg/EMB |
+| 200 | https://github.com/egorkhandi-jpg/EMB/blob/v1.1-preprint/docs/ATTEMPTS.md |
+| 200 | https://github.com/egorkhandi-jpg/EMB/blob/v1.1-preprint/docs/paper/paper_en.pdf |
+| 200 | https://github.com/egorkhandi-jpg/EMB/blob/v1.1-preprint/docs/paper/paper_zh.pdf |
+| 200 | https://github.com/egorkhandi-jpg/EMB/tree/v1.1-preprint |
