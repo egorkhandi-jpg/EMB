@@ -30,6 +30,16 @@ def captions():
     return caps
 
 
+def nobreak(t):
+    """Без переноса внутри названий и чисел с дефисом / тире (OLMo-2-1B, 2026-10-02, 0.93--0.99, 1B--6.9B): \\mbox{…}.
+    Аргументы \\url, \\href, \\includegraphics, \\label, \\ref, \\citep не трогаются."""
+    prot = []
+    t = re.sub(r'\\(?:url|href|includegraphics(?:\[[^\]]*\])?|label|ref|citep|bibliography)\{[^}]*\}',
+               lambda m: prot.append(m.group(0)) or f'\x10{len(prot) - 1}\x10', t)
+    t = re.sub(r'(?<![\\A-Za-z0-9{/.\-])([A-Za-z0-9][A-Za-z0-9.]*(?:-{1,2}[A-Za-z0-9][A-Za-z0-9.%]*)+)', r'\\mbox{\1}', t)
+    return re.sub(r'\x10(\d+)\x10', lambda m: prot[int(m.group(1))], t)
+
+
 def main():
     for f in FONTS:
         assert os.path.exists(os.path.join(HERE, 'fonts', f)), f'нет шрифта fonts/{f}'
@@ -56,6 +66,7 @@ def main():
 \setcitestyle{authoryear,round,semicolon}
 \ctexset{section/format=\Large\bfseries\raggedright}
 \pagestyle{plain}
+\hyphenpenalty=10000 \exhyphenpenalty=10000 \emergencystretch=3em
 \title{''' + TITLE_ZH + r'''\\[0.5em]\large ''' + TITLE_EN + r'''\\[0.8em]\normalsize ''' + NOTE + r'''}
 \author{Egor Grigorev\\ ORCID: \href{https://orcid.org/0009-0000-2725-5466}{0009-0000-2725-5466}}
 \date{预印本，2026 年 10 月}
@@ -81,6 +92,8 @@ def main():
 \end{document}
 '''
     tex = tex.replace('Figure~\\ref{', '图~\\ref{')
+    pre, doc = tex.split('\\begin{document}', 1)
+    tex = pre + '\\begin{document}' + nobreak(doc)
     open(os.path.join(HERE, 'main_zh.tex'), 'w', encoding='utf-8', newline='\n').write(tex)
     shutil.copy(os.path.join(PAPER, 'latex', 'refs.bib'), os.path.join(HERE, 'refs.bib'))
     print('main_zh.tex:', len(tex), 'знаков')

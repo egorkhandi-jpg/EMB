@@ -23,7 +23,7 @@ vs. harmful) is fully present at that word's position but reaches the final posi
 would use it, at most weakly (0.97–1.00 vs. 0.51–0.62); and (iv) when word meaning
 conflicts with in-context experience, a statistically reliable trace of the experience reaches the
 answer but is substantially weaker than the meaning effect (4–28% of it) and leaves the answers
-essentially unchanged. All primary analyses were preregistered with timestamped commits, use exact
+essentially unchanged. All primary analyses were preregistered in commits made before computation, use exact
 permutation or bootstrap tests with Holm correction, and include controls for confounds that misled or
 would have misled our conclusions during the project, such as survivorship-induced frequency cues. Taken together, the
 results suggest that frozen language models in this regime represent substantially more about
@@ -75,7 +75,7 @@ Our contributions are:
 2. measurements of the gap between representation and report — for a latent episode variable, for word
    meaning and for meaning against experience — replicated across Pythia, Qwen2.5 and OLMo-2, which we
    interpret as a three-layer picture of representation, routing and expression;
-3. a preregistered methodology with timestamped commits and a registry of all attempts, including a documented set of confounds that misled or would
+3. a methodology preregistered in commits made before computation and a registry of all attempts, including a documented set of confounds that misled or would
    have misled our conclusions during the project — among them survivorship-induced frequency cues and
    shortcuts through the agent's own closed-loop behavior — together with the controls that caught them
    (Section 4).
@@ -293,7 +293,7 @@ and interpretation are the author's. All code, preregistration commits, and resu
 
 <!-- Раздел «Code and data availability» — текст Егора дословно (2026-10-07, программа «ссылка на репозиторий и китайская версия», п. 1a); метка релиза v1.1-preprint — решение Егора. Хэши в приложении B — открытого репозитория (docs/COMMIT_MAP.md). -->
 
-Code, preregistration commits, results and the registry of all attempts are available at https://github.com/egorkhandi-jpg/EMB (release v1.1-preprint; archived at Zenodo, DOI <pending>).
+Code, preregistration commits, results and the registry of all attempts are available at https://github.com/egorkhandi-jpg/EMB (release v1.1-preprint; archived at Zenodo, DOI <pending>). The public history was cleaned of unrelated internal files before release, preserving commit order and dates; git dates are self-reported, so the evidence for preregistration is the ordering of preregistration and result commits.
 
 ## References
 

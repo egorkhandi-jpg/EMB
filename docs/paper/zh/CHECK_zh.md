@@ -23,14 +23,22 @@
 
 Разделов с расхождениями: 0 из 16.
 
-## Ссылки в обоих PDF (после отправки метки v1.1-preprint, 2026-10-07)
-Аннотации ссылок (/URI) в `paper_en.pdf` и `paper_zh.pdf` одинаковы: ORCID, репозиторий, `ATTEMPTS.md` по метке.
+## Приложение B: en и zh построчно, rev-parse в свежем клоне EMB (правки после чистки, 2026-10-07)
 
-| Код | Адрес |
-| --- | --- |
-| 200 | https://orcid.org/0009-0000-2725-5466 |
-| 200 | https://github.com/egorkhandi-jpg/EMB |
-| 200 | https://github.com/egorkhandi-jpg/EMB/blob/v1.1-preprint/docs/ATTEMPTS.md |
-| 200 | https://github.com/egorkhandi-jpg/EMB/blob/v1.1-preprint/docs/paper/paper_en.pdf |
-| 200 | https://github.com/egorkhandi-jpg/EMB/blob/v1.1-preprint/docs/paper/paper_zh.pdf |
-| 200 | https://github.com/egorkhandi-jpg/EMB/tree/v1.1-preprint |
+| Id | раздел en/zh | метки | коммиты | даты | rev-parse в EMB |
+| --- | --- | --- | --- | --- | --- |
+| A2 | 3.1 / 3.1 | = v2-scale | = 6af7ab7 | = 2026-10-01 | v2-scale→6af7ab7; 6af7ab7:6af7ab7 ✓ |
+| A3 | 3.1 / 3.1 | = v2-interface | = 5476edf | = 2026-10-02 | v2-interface→5476edf; 5476edf:5476edf ✓ |
+| A4 | 3.2 / 3.2 | = v3-words | = ebab915 | = 2026-10-02 | v3-words→ebab915; ebab915:ebab915 ✓ |
+| A13 | 4 / 4 | = v3-replay | = bcffc98 | = 2026-10-03 | v3-replay→bcffc98; bcffc98:bcffc98 ✓ |
+| A22 | 3.3 / 3.3 | = v4-report | = 1f2be62 | = 2026-10-04 | v4-report→1f2be62; 1f2be62:1f2be62 ✓ |
+| A23 | 3.3 / 3.3 | = v4-icl | = 9cc7aea | = 2026-10-04 | v4-icl→9cc7aea; 9cc7aea:9cc7aea ✓ |
+| A24 | 3.4 / 3.4 | = v5-meaning | = bfb0c62 | = 2026-10-05 | v5-meaning→bfb0c62; bfb0c62:bfb0c62 ✓ |
+| A25 | 4 / 4 | = — | = f114250 | = 2026-10-05 | f114250:f114250 ✓ |
+| A26 | 3.5, 4 / 3.5, 4 | = v5-bind | = ac18bce | = 2026-10-06 | v5-bind→ac18bce; ac18bce:ac18bce ✓ |
+| A27 | 3.5, 4 / 3.5, 4 | = v5-synth | = 1719022, 6462459, d0e7b01, efedb20 | = 2026-10-06 | v5-synth→d0e7b01; 1719022:1719022; 6462459:6462459; d0e7b01:d0e7b01; efedb20:efedb20 ✓ |
+| A28 | all / 全部 | = v7-replication | = ec88b6f | = 2026-10-06 | v7-replication→ec88b6f; ec88b6f:ec88b6f ✓ |
+
+строк en 11, zh 11; с расхождениями: 0
+
+Ссылки в обоих PDF после пересборки: ORCID, репозиторий, ATTEMPTS.md по метке v1.1-preprint — все 200. Переносов с дефисом и тире в китайском PDF нет: названия с дефисом, даты и диапазоны собраны в \mbox; автоматические переносы латинских слов отключены (\hyphenpenalty=10000 xhyphenpenalty=10000, mergencystretch=3em).

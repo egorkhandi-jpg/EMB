@@ -43,7 +43,7 @@ Our contributions are:
 2. measurements of the gap between representation and report — for a latent episode variable, for word
    meaning and for meaning against experience — replicated across Pythia, Qwen2.5 and OLMo-2, which we
    interpret as a three-layer picture of representation, routing and expression;
-3. a preregistered methodology with timestamped commits and a registry of all attempts, including a documented set of confounds that misled or would
+3. a methodology preregistered in commits made before computation and a registry of all attempts, including a documented set of confounds that misled or would
    have misled our conclusions during the project — among them survivorship-induced frequency cues and
    shortcuts through the agent's own closed-loop behavior — together with the controls that caught them
    (Section 4).

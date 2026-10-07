@@ -1,1 +1,1 @@
-代码、预注册提交、结果以及所有尝试的登记表可在 https://github.com/egorkhandi-jpg/EMB 获取（发布版本 v1.1-preprint；已在 Zenodo 存档，DOI <pending>）。
+代码、预注册提交、结果以及所有尝试的登记表可在 https://github.com/egorkhandi-jpg/EMB 获取（发布版本 v1.1-preprint；已在 Zenodo 存档，DOI <pending>）。公开历史在发布前清除了无关的内部文件，并保留了提交顺序和日期；git 日期由提交者自行记录，因此预注册（preregistration）的证据在于预注册提交与结果提交之间的先后顺序。
