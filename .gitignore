@@ -20,3 +20,10 @@ docs/paper/latex/*.log
 docs/paper/latex/*.aux
 docs/paper/latex/*.blg
 docs/paper/latex/paper_extracted.txt
+
+# шрифты Noto CJK для китайской версии (скачаны 2026-10-07, OFL), не в git
+docs/paper/zh/fonts/
+docs/paper/zh/*.log
+docs/paper/zh/*.aux
+docs/paper/zh/*.blg
+tools_remote/.publish_patterns.bak*

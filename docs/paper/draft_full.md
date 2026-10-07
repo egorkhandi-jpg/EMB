@@ -13,8 +13,7 @@ is unclear what pretraining contributes in such settings and how much of what th
 represents is available through its output. We study this in a minimal two-dimensional foraging
 environment where an agent's body events are presented to a frozen language model as a short
 sequence of discrete tokens, and compare each pretrained model against the same architecture with
-random weights and matched embedding norms. Across three model families (Pythia, Qwen2.5, OLMo-2;
-1–1.5B parameters, with Pythia up to 6.9B for some analyses), we find that: (i) where pretraining helps, the advantage comes from sequence-processing machinery rather than word
+random weights and matched embedding norms. Across three model families (Pythia 160M–6.9B, Qwen2.5-1.5B, OLMo-2-1B), we find that: (i) where pretraining helps, the advantage comes from sequence-processing machinery rather than word
 meaning — arbitrary event words work as well as or better than meaningful ones, and in one family
 (Qwen2.5) the advantage appears only with arbitrary words; (ii) a latent episode variable that is never
 stated explicitly in the context is linearly decodable from hidden states with AUC 0.93–0.99, but
@@ -292,9 +291,9 @@ and interpretation are the author's. All code, preregistration commits, and resu
 
 ## Code and data availability
 
-<!-- Раздел «Code and data availability» (2026-10-07, п. 3 программы Егора). Хэши в приложении B — открытого репозитория (docs/COMMIT_MAP.md). -->
+<!-- Раздел «Code and data availability» — текст Егора дословно (2026-10-07, программа «ссылка на репозиторий и китайская версия», п. 1a); метка релиза v1.1-preprint — решение Егора. Хэши в приложении B — открытого репозитория (docs/COMMIT_MAP.md). -->
 
-Code, stored results, figure scripts, and the preregistrations of all experiments in this paper are available at https://github.com/egorkhandi-jpg/EMB, release tag `v1.0-preprint` (archived copy: DOI pending). The preregistrations are part of the project's reports (in Russian), each committed before the corresponding computation; the commit hashes in Appendix B refer to this repository. Code is released under the Apache License 2.0; the paper text and figures under CC BY 4.0.
+Code, preregistration commits, results and the registry of all attempts are available at https://github.com/egorkhandi-jpg/EMB (release v1.1-preprint; archived at Zenodo, DOI <pending>).
 
 ## References
 

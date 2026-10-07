@@ -1,3 +1,3 @@
-<!-- Раздел «Code and data availability» (2026-10-07, п. 3 программы Егора). Хэши в приложении B — открытого репозитория (docs/COMMIT_MAP.md). -->
+<!-- Раздел «Code and data availability» — текст Егора дословно (2026-10-07, программа «ссылка на репозиторий и китайская версия», п. 1a); метка релиза v1.1-preprint — решение Егора. Хэши в приложении B — открытого репозитория (docs/COMMIT_MAP.md). -->
 
-Code, stored results, figure scripts, and the preregistrations of all experiments in this paper are available at https://github.com/egorkhandi-jpg/EMB, release tag `v1.0-preprint` (archived copy: DOI pending). The preregistrations are part of the project's reports (in Russian), each committed before the corresponding computation; the commit hashes in Appendix B refer to this repository. Code is released under the Apache License 2.0; the paper text and figures under CC BY 4.0.
+Code, preregistration commits, results and the registry of all attempts are available at https://github.com/egorkhandi-jpg/EMB (release v1.1-preprint; archived at Zenodo, DOI <pending>).

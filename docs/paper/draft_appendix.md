@@ -63,7 +63,7 @@ Every experiment below was preregistered in the repository before computation, w
 | A27 | Meaning vs. experience on synthetic windows | 3.5, 4 | stop rule 1719022; preregistration 6462459; amendment before computation d0e7b01 (`v5-synth`); runs efedb20 (2026-10-06) | H2 without H1 |
 | A28 | Replication on Qwen2.5 and OLMo-2 | all | `v7-replication` (ec88b6f, 2026-10-06) | R2–R5 on both; R1 on OLMo-2 |
 
-The full registry of the project, with 57 entries, also lists environment variants that were abandoned, lines closed by stopping rules, and analyses outside the scope of this paper. It is available, in Russian, at the release tag: https://github.com/egorkhandi-jpg/EMB/blob/v1.0-preprint/docs/ATTEMPTS.md
+The full registry of the project, with 57 entries, also lists environment variants that were abandoned, lines closed by stopping rules, and analyses outside the scope of this paper (https://github.com/egorkhandi-jpg/EMB/blob/v1.1-preprint/docs/ATTEMPTS.md).
 
 ## Appendix C Compute and costs
 

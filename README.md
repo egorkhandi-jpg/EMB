@@ -7,11 +7,11 @@ Code, stored results and preregistrations for the preprint
 
 - **Preprint:** URL pending
 - **DOI:** pending
-- **Release:** [`v1.0-preprint`](https://github.com/egorkhandi-jpg/EMB/tree/v1.0-preprint) — the state of the repository the preprint refers to. The PDF and LaTeX source are in [`docs/paper/latex/`](docs/paper/latex/).
+- **Release:** [`v1.1-preprint`](https://github.com/egorkhandi-jpg/EMB/tree/v1.1-preprint) — the state of the repository the preprint refers to. PDFs: [`docs/paper/paper_en.pdf`](docs/paper/paper_en.pdf) (English) and [`docs/paper/paper_zh.pdf`](docs/paper/paper_zh.pdf) (Chinese translation, AI-assisted; the English text is authoritative). LaTeX sources: [`docs/paper/latex/`](docs/paper/latex/) and [`docs/paper/zh/`](docs/paper/zh/).
 
 ## Abstract
 
-Frozen pretrained language models are increasingly used as components of embodied agents, yet it is unclear what pretraining contributes in such settings and how much of what the model internally represents is available through its output. We study this in a minimal two-dimensional foraging environment where an agent's body events are presented to a frozen language model as a short sequence of discrete tokens, and compare each pretrained model against the same architecture with random weights and matched embedding norms. Across three model families (Pythia, Qwen2.5, OLMo-2; 1–1.5B parameters, with Pythia up to 6.9B for some analyses), we find that: (i) where pretraining helps, the advantage comes from sequence-processing machinery rather than word meaning — arbitrary event words work as well as or better than meaningful ones, and in one family (Qwen2.5) the advantage appears only with arbitrary words; (ii) a latent episode variable that is never stated explicitly in the context is linearly decodable from hidden states with AUC 0.93–0.99, but the model's own answer to a direct question recovers it only at AUC 0.61–0.64, and in Pythia, in-context examples from other episodes do not close this gap; (iii) the meaning of a word (food vs. harmful) is fully present at that word's position but reaches the final position, where an episode-level readout would use it, at most weakly (0.97–1.00 vs. 0.51–0.62); and (iv) when word meaning conflicts with in-context experience, a statistically reliable trace of the experience reaches the answer but is substantially weaker than the meaning effect (4–28% of it) and leaves the answers essentially unchanged. All primary analyses were preregistered with timestamped commits, use exact permutation or bootstrap tests with Holm correction, and include controls for confounds that misled or would have misled our conclusions during the project, such as survivorship-induced frequency cues. Taken together, the results suggest that frozen language models in this regime represent substantially more about their embodied situation than they can express, and that the bottleneck lies in routing and expression rather than in representation.
+Frozen pretrained language models are increasingly used as components of embodied agents, yet it is unclear what pretraining contributes in such settings and how much of what the model internally represents is available through its output. We study this in a minimal two-dimensional foraging environment where an agent's body events are presented to a frozen language model as a short sequence of discrete tokens, and compare each pretrained model against the same architecture with random weights and matched embedding norms. Across three model families (Pythia 160M–6.9B, Qwen2.5-1.5B, OLMo-2-1B), we find that: (i) where pretraining helps, the advantage comes from sequence-processing machinery rather than word meaning — arbitrary event words work as well as or better than meaningful ones, and in one family (Qwen2.5) the advantage appears only with arbitrary words; (ii) a latent episode variable that is never stated explicitly in the context is linearly decodable from hidden states with AUC 0.93–0.99, but the model's own answer to a direct question recovers it only at AUC 0.61–0.64, and in Pythia, in-context examples from other episodes do not close this gap; (iii) the meaning of a word (food vs. harmful) is fully present at that word's position but reaches the final position, where an episode-level readout would use it, at most weakly (0.97–1.00 vs. 0.51–0.62); and (iv) when word meaning conflicts with in-context experience, a statistically reliable trace of the experience reaches the answer but is substantially weaker than the meaning effect (4–28% of it) and leaves the answers essentially unchanged. All primary analyses were preregistered with timestamped commits, use exact permutation or bootstrap tests with Holm correction, and include controls for confounds that misled or would have misled our conclusions during the project, such as survivorship-induced frequency cues. Taken together, the results suggest that frozen language models in this regime represent substantially more about their embodied situation than they can express, and that the bottleneck lies in routing and expression rather than in representation.
 
 ## Experiments in the paper
 
@@ -42,6 +42,7 @@ No GPU and no model downloads are needed:
 ```bash
 python make_figures.py --lang en    # figures/en/F1–F4 (.pdf, .png)
 python make_figures.py --lang ru    # figures/F1–F4, Russian labels
+python make_figures.py --lang zh    # figures/zh/F1–F4, Chinese labels (needs NotoSansCJKsc-Regular.otf in docs/paper/zh/fonts/, not in the repository)
 python f3_check.py                  # F3: cluster bootstrap over words, spread of random networks
 ```
 
@@ -110,7 +111,7 @@ python summarize_synth.py results_synth > results_synth/summary.txt
 | --- | --- |
 | `*.py`, `*.sh` | environments, stand, analysis and summary scripts |
 | `results_*/` | stored results: JSON, summaries, and raw logits where analyses need them |
-| `figures/`, `figures/en/` | figures F1–F4, produced by `make_figures.py` |
+| `figures/`, `figures/en/`, `figures/zh/` | figures F1–F4 (Russian, English, Chinese labels), produced by `make_figures.py` |
 | `docs/RESULTS_*.md` | reports with preregistrations, in Russian |
 | `docs/ATTEMPTS.md` | registry of all attempts, in Russian |
 | `docs/paper/` | paper drafts (Markdown), LaTeX build (`build_latex.py`), `latex/paper.tex`, `latex/paper.pdf` |
@@ -127,7 +128,7 @@ Internal working documents and remote-machine tooling were removed from the tree
 
 ```
 Egor Grigorev (2026). Knowing More Than It Can Say: Frozen Language Models in Minimal Bodies.
-Preprint. Code: https://github.com/egorkhandi-jpg/EMB, release v1.0-preprint. DOI: pending.
+Preprint. Code: https://github.com/egorkhandi-jpg/EMB, release v1.1-preprint. DOI: pending.
 ```
 
 ## Disclosure

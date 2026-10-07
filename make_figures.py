@@ -11,6 +11,7 @@ F4 синтетические окна (протокол A27): сдвиг к о�
 
 python make_figures.py --lang ru
 python make_figures.py --lang en
+python make_figures.py --lang zh   # figures/zh/, китайские подписи; шрифт docs/paper/zh/fonts/NotoSansCJKsc-Regular.otf
 """
 import argparse, json, os
 import numpy as np
@@ -73,7 +74,31 @@ TX = {
                 '(sentence interface, 2–6 events; 95% CI over sets)',
         'f4_note': '* Pythia-6.9B — A27, a different RTX 5090 instance; others — A28, one instance.',
     },
+    'zh': {   # перевод en по словарю Егора (2026-10-07); числа, модели, токены, формулы d(…) — как в en
+        'sets': '组', 'n10': 'n = 10',
+        'f1_probe_p': '问题位置的探针 — 预训练', 'f1_probe_r': '探针 — 随机权重',
+        'f1_ans_p': '回答（logit 差值 "A" − "B"）— 预训练', 'f1_ans_r': '回答 — 随机权重',
+        'f1_q': ['Food:', 'Safe to\neat:', 'Good\nkind:'], 'f1_y': '针对回合符号的 AUC',
+        'f1_t': '身体状态被表征，但很少被报告（flip-2，32 步窗口，零样本问题；按组计算的 95% 置信区间）',
+        'f2_s': ['预训练 — 有意义的词（A, B, none / up, down, same）', '随机权重 — 有意义的词',
+                 '预训练 — 任意词（两组词的平均）', '随机权重 — 任意词'],
+        'f2_y': '符号探针的平衡准确率',
+        'f2_t': '任意事件词与有意义的事件词效果相当\n（flip-2，32 步窗口，最终位置的探针；按组计算的 95% 置信区间）',
+        'f3_s': ['预训练 — 种类词位置', '随机权重 — 种类词位置',
+                 '预训练 — 窗口最终位置', '随机权重 — 窗口最终位置'],
+        'f3_y': '探针“种类词为食物”的 AUC',
+        'f3_t': '词义存在于该词的位置，而不在最终位置\n（200 个回合，≈56 个词；95% 置信区间 — 按词的聚类自助法）',
+        'f3_note': '随机权重：每个模型一个网络；独立随机网络之间的 AUC 分布约为 0.36–0.63（模拟，f3_check.py）。',
+        'f4_a': ['词义效应：无绑定时的 |d|', '向经验的偏移：d(outcomes) − d(no binding)', '向经验的偏移，随机权重'],
+        'f4_b': ['有结果（存在绑定）', '结果被置换（无绑定）'],
+        'f4_ya': 'logit（真实食物词 − 毒物词）', 'f4_ta': 'a) 冲突窗口：词义与经验',
+        'f4_yb': '回答偏向经验的冲突窗口比例','f4_tb': 'b) 回答几乎不变',
+        'f4_t': '无频率线索的合成窗口：词–结果痕迹存在，但很小且不改变回答\n'
+                '（句子接口，2–6 个事件；按组计算的 95% 置信区间）',
+        'f4_note': '* Pythia-6.9B — A27，另一台 RTX 5090 实例；其余 — A28，同一实例。',
+    },
 }
+ZH_FONT = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'docs', 'paper', 'zh', 'fonts', 'NotoSansCJKsc-Regular.otf')
 
 
 def ci(x):
@@ -210,7 +235,12 @@ def f4(L, out):
 
 
 if __name__ == '__main__':
-    ap = argparse.ArgumentParser(); ap.add_argument('--lang', choices=['ru', 'en'], default='ru'); a = ap.parse_args()
-    out = 'figures' if a.lang == 'ru' else os.path.join('figures', 'en')
+    ap = argparse.ArgumentParser(); ap.add_argument('--lang', choices=['ru', 'en', 'zh'], default='ru'); a = ap.parse_args()
+    out = 'figures' if a.lang == 'ru' else os.path.join('figures', a.lang)
+    if a.lang == 'zh':   # шрифт Noto Sans CJK SC (docs/paper/zh/fonts, вне git); недостающие знаки — из DejaVu Sans
+        from matplotlib import font_manager
+        assert os.path.exists(ZH_FONT), f'нет шрифта {ZH_FONT}'
+        font_manager.fontManager.addfont(ZH_FONT)
+        plt.rcParams.update({'font.family': [font_manager.FontProperties(fname=ZH_FONT).get_name(), 'DejaVu Sans']})
     L = TX[a.lang]
     f1(L, out); f2(L, out); f3(L, out); f4(L, out); print('готово:', out, sorted(x for x in os.listdir(out) if '.' in x))

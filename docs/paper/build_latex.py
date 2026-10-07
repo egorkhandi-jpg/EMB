@@ -55,7 +55,7 @@ def inline(t):
     figrefs = []
     t = re.sub(r'Fig\. (F[1-4])', lambda m: figrefs.append(FIGNAME[m.group(1)]) or f'\x02{len(figrefs) - 1}\x02', t)
     urls = []                                                               # адреса — \url{}, без экранирования
-    t = re.sub(r'https?://[^\s,;)]*[^\s,;).]', lambda m: urls.append(m.group(0)) or f'\x03{len(urls) - 1}\x03', t)
+    t = re.sub(r'https?://[A-Za-z0-9/._~:%#?=&+-]*[A-Za-z0-9/_~%#=&+-]',lambda m: urls.append(m.group(0)) or f'\x03{len(urls) - 1}\x03', t)
     codes = []
     t = re.sub(r'`([^`]+)`', lambda m: codes.append(m.group(1)) or f'\x00{len(codes) - 1}\x00', t)
     cites = []
@@ -78,6 +78,7 @@ def inline(t):
     t = re.sub(r'\x00(\d+)\x00', lambda m: '\\texttt{' + esc(codes[int(m.group(1))]) + '}', t)
     t = re.sub(r'\x01(\d+)\x01', lambda m: '\\citep{' + cites[int(m.group(1))] + '}', t)
     t = re.sub(r'\x02(\d+)\x02', lambda m: 'Figure~\\ref{fig:' + figrefs[int(m.group(1))] + '}', t)
+    t = t.replace('<pending>', '\\mbox{<pending>}')                         # не переносить
     t = re.sub(r'\x03(\d+)\x03', lambda m: '\\url{' + urls[int(m.group(1))] + '}', t)
     return t
 
