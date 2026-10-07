@@ -141,5 +141,7 @@
 | 1e054b7 | 7f67c03 | 2026-10-07 | Открытый репозиторий статьи (п. 3, локально): README (а |
 | acd5552 | 34c050f | 2026-10-07 | publish_github.sh: шаблон с исключением по путям (i@пути:ша |
 | b21606c | 9506667 | 2026-10-07 | COMMIT_MAP: соответствие хэшей локальной истории и оп� |
+| 67d6ce9 | 19688cf | 2026-10-07 | COMMIT_MAP: соответствие хэшей локальной истории и оп� |
+| 0140568 | 3a34a2f | 2026-10-07 | Препринт v1.1: Code and data availability (текст Егора, метка v1.1- |
 
 Метки (в копии указывают на опубликованные пары): v-final-1 v-final-2 v-final-3 v0-baseline-cpu v1-gpu-fp32 v1.0-preprint v2-interface v2-probe v2-scale v3-body v3-evo v3-nlms v3-readout v3-replay v3-words v4-copies v4-icl v4-latent v4-report v4-sleep v4-sleepagent v4-slot v4-transfer v4-transfer2 v5-bind v5-meaning v5-synth v6-spectrum v7-replication 
