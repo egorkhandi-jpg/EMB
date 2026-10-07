@@ -10,8 +10,8 @@ answer follows the word. On this reading, the bottleneck of a frozen model readi
 lies not in what it registers but in what reaches its output.
 
 High probe accuracy alone does not show that a model uses the information [Hewitt 2019; Belinkov 2021;
-Elazar 2021], and our random-weight controls make this point concrete: random networks also support
-probes at 0.89–0.94 while answering at chance. What distinguishes pretrained models in our data is
+Elazar 2020], and our random-weight controls make this point concrete: random networks also support
+probes at 0.89–0.94 while answering at chance. Descriptively, what distinguishes pretrained models in our data is
 mainly the answer channel. We therefore treat the answer as the measure of use, and the probe as an
 upper bound on what could be used — in line with the observation that prompted judgments can
 understate what a model encodes [Hu 2023], and with reports that models encode more about facts than
@@ -22,25 +22,28 @@ answer channel is shaped by the statistics of pretraining text: it maps contexts
 associations learned before the episode began. Word meaning is such an association, and it dominated
 the answers in every model we tested (Section 3.5); in Pythia, a post hoc analysis suggests that mention
 frequency acted the same way (Section 3.5). The episode sign is not such an association: it is a binding
-of a kind to its outcomes that exists only in the current context. Work on entity tracking and binding
-[Kim 2023; Feng 2023] suggests that such in-context bindings are fragile in models pretrained only on
-text; our results add that the bound variable can be well represented and still fail to reach the output.
+of a kind to its outcomes that exists only in the current context. Work on entity tracking [Kim 2023] finds
+that models pretrained only on text track the state of entities poorly, while work on binding mechanisms
+[Feng 2023] shows that sufficiently large models represent in-context bindings through specific internal
+mechanisms; our results add that a bound variable can be well represented and still fail to reach the output.
 
 **Implications for monitoring critical systems.** The setting is minimal, and we do not claim direct
 transfer to deployed systems. Three practical implications nonetheless follow for any role in which a
 language model's output is taken as evidence about a physical process. First, the correspondence between
 output and internal state should be measured, not assumed: a fluent explanation may express less than
 the model has registered, or something other than it. Second, where ground truth is available, reading
-internal states with calibrated probes may be more faithful than reading the model's answer. Third, names
+internal states with calibrated probes may be more faithful than reading the model's answer — a suggestion we
+have not tested in a monitoring setting. Third, names
 carry priors: in our data the meaning of a word outweighed in-context evidence about the thing it named.
 In a monitoring setting, labels of components, alarms or states could likewise pull an answer toward
 what the label suggests rather than what the evidence shows — a failure mode worth testing explicitly
 before a model's explanations are put in front of operators.
 
-**Methodological lessons.** Several of our early positive results were false, and each was caught by a
-specific control: a readout artifact from massive activations [Sun 2024], shortcuts through the agent's
-own closed-loop behavior, a frequency cue created by survivorship, information lost by a symbolic
-interface, and a condition against random weights that silently required a sign. We list these not as
+**Methodological lessons.** Several early results were misleading, and each was caught by a specific
+control: two false positives (shortcuts through the agent's own closed-loop behavior, and a frequency cue
+created by survivorship), one false negative (a readout artifact consistent with massive activations
+[Sun 2024]), one null result that reflected information lost by a symbolic interface, and a condition
+against random weights that silently required a sign, caught before any data were computed. We list these not as
 contributions in themselves but as risks that apply to any evaluation of language models embedded in
 agents, where the data a model sees are shaped by the agent that produces them.
 
