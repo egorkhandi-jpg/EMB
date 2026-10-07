@@ -1,0 +1,26 @@
+# Paths excluded from the public tree (github.com/egorkhandi-jpg/EMB) from the first commit after
+# the last one published before 2026-10-07 onward. Earlier history is published unchanged.
+# Applied by the publication filter (git pathspecs, one per line).
+# Composition: decision of the author, 2026-10-07 (docs/paper/AUDIT_EMB.md, section 4).
+HANDOFF.md
+tools_remote
+tools_scratch
+.claude
+queue_*
+download_fast.log.vast
+setup_wsl.sh
+docs/PLAN.md
+docs/THESES.md
+docs/NEXT_OPTIONS.md
+docs/FINAL_REPORT.md
+# internal working documents of the paper (release checks, status, review, audit)
+docs/paper/AUDIT_EMB.md
+docs/paper/RELEASE_CHECK.md
+docs/paper/RELEASE_HISTORY_OPTIONS.md
+docs/paper/STATUS.md
+docs/paper/draft_checklist.md
+docs/paper/review_chatgpt.md
+docs/paper/make_release.py
+docs/paper/README_release.md
+docs/paper/release_LICENSE
+docs/paper/release_LICENSE-text.md
