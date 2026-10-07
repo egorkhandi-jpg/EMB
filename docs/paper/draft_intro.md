@@ -33,8 +33,8 @@ in-context experience, the experience leaves a measurable but small trace in the
 does not change it. Pretraining contributes sequence-processing machinery that works equally well on
 arbitrary symbols, rather than the meaning of the words. Probing studies on factual knowledge have
 reported related gaps between what models encode and what they express [Orgad 2024; Gekhman 2025;
-Burns 2022; Azaria 2023]; unlike these studies, we measure the gap for information that is not stored
-in the weights at all, but is acquired within the context from the agent's own experience.
+Burns 2022; Azaria 2023]. Unlike prior studies of hidden factual knowledge, our target variable is
+not stored in pretrained parameters: it is constructed online from the agent's current experience.
 
 Our contributions are:
 1. a controlled setting in which a latent situation variable must be inferred from in-context body

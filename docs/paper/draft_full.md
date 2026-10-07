@@ -66,8 +66,8 @@ in-context experience, the experience leaves a measurable but small trace in the
 does not change it. Pretraining contributes sequence-processing machinery that works equally well on
 arbitrary symbols, rather than the meaning of the words. Probing studies on factual knowledge have
 reported related gaps between what models encode and what they express [Orgad 2024; Gekhman 2025;
-Burns 2022; Azaria 2023]; unlike these studies, we measure the gap for information that is not stored
-in the weights at all, but is acquired within the context from the agent's own experience.
+Burns 2022; Azaria 2023]. Unlike prior studies of hidden factual knowledge, our target variable is
+not stored in pretrained parameters: it is constructed online from the agent's current experience.
 
 Our contributions are:
 1. a controlled setting in which a latent situation variable must be inferred from in-context body
@@ -153,7 +153,7 @@ What pretraining contributes here is sequence-processing machinery over discrete
 
 **Answer.** Asked directly, the same models answer far worse: AUC 0.607–0.612, 0.623–0.637 and 0.615–0.627 across the three questions <!-- A28 R3 -->. This repeats the original Pythia result (zero-shot AUC 0.61 against a probe at 0.98–0.99) <!-- A22 -->.
 
-**Preregistered criterion.** The answer's excess over chance is at most half of the probe's, (AUC_answer − 0.5) ≤ 0.5 · (AUC_probe − 0.5). It holds for all three questions in all three families <!-- A28 R3 --> (Fig. F1).
+**Preregistered criterion.** The answer's excess over chance is at most half of the probe's, (AUC_answer − 0.5) ≤ 0.5 · (AUC_probe − 0.5). It holds for all three questions in all three families <!-- A28 R3 --> (Fig. F1). The probe is trained on the hidden state at the same position from which the answer is read; it is thus a trained linear bridge from that state. The gap between the probe and the answer therefore points to the mapping from this state to the answer tokens, rather than to an absence of the information at this position. <!-- report_body.run_lm: зонд и ответ — одно скрытое состояние на последней позиции -->
 
 **Two observations qualify this picture.**
 - Random-weight networks also support high probes (0.892–0.937), while their answers stay at chance (0.50–0.53) <!-- A28 R3 -->. Descriptively, pretraining adds more to the answer channel (+0.09 to +0.13 AUC) than to the probe (+0.04 to +0.06) <!-- A28 R3; PAPER_OUTLINE сверка -->. We did not test this difference.
@@ -226,12 +226,15 @@ the meaning of a word. *Routing* is limited: word meaning is present at the word
 barely reaches the position that summarizes the episode. *Expression* is narrow: the answer channel
 recovers the latent sign only weakly, and when word meaning conflicts with in-context experience, the
 answer follows the word. On this reading, the bottleneck of a frozen model reading an embodied situation
-lies not in what it registers but in what reaches its output.
+lies not in what it registers but in what reaches its output. We use representation, routing and
+expression as operational descriptions of the measurements — linear decodability from a specified
+hidden state, the change in decodability between positions, and the effect on the model's answer
+distribution — not as claims about separately localized mechanisms.
 
 High probe accuracy alone does not show that a model uses the information [Hewitt 2019; Belinkov 2021;
 Elazar 2020], and our random-weight controls make this point concrete: random networks also support
 probes at 0.89–0.94 while answering at chance. Descriptively, what distinguishes pretrained models in our data is
-mainly the answer channel. We therefore treat the answer as the measure of use, and the probe as an
+mainly the answer channel. We therefore treat the answer as the measure of observable use at the tested output channel, and the probe as an
 upper bound on what could be used — in line with the observation that prompted judgments can
 understate what a model encodes [Hu 2023], and with reports that models encode more about facts than
 they express [Orgad 2024; Gekhman 2025].
@@ -270,7 +273,7 @@ agents, where the data a model sees are shaped by the agent that produces them.
 6.9B for some analyses. We did not study instruction-tuned models, whose answer channel is trained to
 report and may behave differently — the most important open question for the practical implications
 above. The environment is a toy designed to separate mechanisms, not to resemble a real process. Probes
-are linear; answers are read as a logit difference between two tokens rather than as free text. The
+are linear; high linear decodability indicates accessible information, but low decodability does not establish its absence; answers are read as a logit difference between two tokens rather than as free text. The
 cross-episode in-context test was run on Pythia only. Code was implemented and run with an AI coding
 assistant under the author's direction; all preregistrations, code and results are released.
 

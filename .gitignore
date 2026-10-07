@@ -15,3 +15,4 @@ tools_remote/*.npz
 models/
 
 tools_remote/.publish_patterns
+release/

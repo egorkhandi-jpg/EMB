@@ -70,7 +70,7 @@ What pretraining contributes here is sequence-processing machinery over discrete
 
 **Answer.** Asked directly, the same models answer far worse: AUC 0.607–0.612, 0.623–0.637 and 0.615–0.627 across the three questions <!-- A28 R3 -->. This repeats the original Pythia result (zero-shot AUC 0.61 against a probe at 0.98–0.99) <!-- A22 -->.
 
-**Preregistered criterion.** The answer's excess over chance is at most half of the probe's, (AUC_answer − 0.5) ≤ 0.5 · (AUC_probe − 0.5). It holds for all three questions in all three families <!-- A28 R3 --> (Fig. F1).
+**Preregistered criterion.** The answer's excess over chance is at most half of the probe's, (AUC_answer − 0.5) ≤ 0.5 · (AUC_probe − 0.5). It holds for all three questions in all three families <!-- A28 R3 --> (Fig. F1). The probe is trained on the hidden state at the same position from which the answer is read; it is thus a trained linear bridge from that state. The gap between the probe and the answer therefore points to the mapping from this state to the answer tokens, rather than to an absence of the information at this position. <!-- report_body.run_lm: зонд и ответ — одно скрытое состояние на последней позиции -->
 
 **Two observations qualify this picture.**
 - Random-weight networks also support high probes (0.892–0.937), while their answers stay at chance (0.50–0.53) <!-- A28 R3 -->. Descriptively, pretraining adds more to the answer channel (+0.09 to +0.13 AUC) than to the probe (+0.04 to +0.06) <!-- A28 R3; PAPER_OUTLINE сверка -->. We did not test this difference.

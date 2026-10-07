@@ -7,12 +7,15 @@ the meaning of a word. *Routing* is limited: word meaning is present at the word
 barely reaches the position that summarizes the episode. *Expression* is narrow: the answer channel
 recovers the latent sign only weakly, and when word meaning conflicts with in-context experience, the
 answer follows the word. On this reading, the bottleneck of a frozen model reading an embodied situation
-lies not in what it registers but in what reaches its output.
+lies not in what it registers but in what reaches its output. We use representation, routing and
+expression as operational descriptions of the measurements — linear decodability from a specified
+hidden state, the change in decodability between positions, and the effect on the model's answer
+distribution — not as claims about separately localized mechanisms.
 
 High probe accuracy alone does not show that a model uses the information [Hewitt 2019; Belinkov 2021;
 Elazar 2020], and our random-weight controls make this point concrete: random networks also support
 probes at 0.89–0.94 while answering at chance. Descriptively, what distinguishes pretrained models in our data is
-mainly the answer channel. We therefore treat the answer as the measure of use, and the probe as an
+mainly the answer channel. We therefore treat the answer as the measure of observable use at the tested output channel, and the probe as an
 upper bound on what could be used — in line with the observation that prompted judgments can
 understate what a model encodes [Hu 2023], and with reports that models encode more about facts than
 they express [Orgad 2024; Gekhman 2025].
@@ -51,7 +54,7 @@ agents, where the data a model sees are shaped by the agent that produces them.
 6.9B for some analyses. We did not study instruction-tuned models, whose answer channel is trained to
 report and may behave differently — the most important open question for the practical implications
 above. The environment is a toy designed to separate mechanisms, not to resemble a real process. Probes
-are linear; answers are read as a logit difference between two tokens rather than as free text. The
+are linear; high linear decodability indicates accessible information, but low decodability does not establish its absence; answers are read as a logit difference between two tokens rather than as free text. The
 cross-episode in-context test was run on Pythia only. Code was implemented and run with an AI coding
 assistant under the author's direction; all preregistrations, code and results are released.
 
